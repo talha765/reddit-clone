@@ -1,24 +1,42 @@
-
-
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+/* Custom Scrollbar Styles */
+.sidebar-scrollbar {
+  overflow-y: auto; /* Allow vertical scrolling */
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+/* Hide scrollbar by default for WebKit-based browsers */
+.sidebar-scrollbar::-webkit-scrollbar {
+  width: 8px; /* Width of the scrollbar */
+  opacity: 0; /* Hide the scrollbar initially */
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+/* Show scrollbar on hover for WebKit-based browsers */
+.sidebar-scrollbar:hover::-webkit-scrollbar {
+  opacity: 1; /* Show scrollbar on hover */
 }
 
+/* Track styles for WebKit-based browsers */
+.sidebar-scrollbar::-webkit-scrollbar-track {
+  background: #2d2d2d; /* Background color of the scrollbar track */
+}
+
+/* Thumb styles for WebKit-based browsers */
+.sidebar-scrollbar::-webkit-scrollbar-thumb {
+  background: #555; /* Color of the scrollbar thumb */
+  border-radius: 8px; /* Rounded corners for the thumb */
+}
+
+/* Thumb hover styles for WebKit-based browsers */
+.sidebar-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #777; /* Lighter color on hover */
+}
+
+/* Firefox styles */
+.sidebar-scrollbar {
+  scrollbar-width: thin; /* Make scrollbar thin */
+  scrollbar-color: transparent transparent; /* Hide scrollbar initially */
+}
+
+/* Show scrollbar on hover for Firefox */
+.sidebar-scrollbar:hover {
+  scrollbar-color: #555 #2d2d2d; /* Change thumb color on hover */
+}

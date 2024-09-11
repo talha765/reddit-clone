@@ -28,8 +28,8 @@ const SideBar = () => {
       <div
         className={`${
           isOpen ? 'translate-x-0' : '-translate-x-full'
-        }  md:translate-x-0 transform bg-gray-900 text-white h-full w-60 top-0 left-0 transition-transform duration-300 ease-in-out z-40`}> {/* Sticky sidebar */}
-        <nav className="p-4 h-full overflow-y-auto">
+        } fixed md:translate-x-0 transform bg-gray-900 text-white h-screen w-60 top-0 left-0 transition-transform duration-300 ease-in-out z-40 sidebar-scrollbar`}>
+        <nav className="p-4 h-full">
           <ul className="space-y-4">
             {/* Home Link */}
             <li className="flex items-center space-x-2">
@@ -41,25 +41,29 @@ const SideBar = () => {
               </Link>
             </li>
 
-            {/* QnA Link */}
-            <li className="flex items-center space-x-2">
-              <QuestionMarkCircleIcon className="w-6 h-6" />
-              <Link
-                to="/qna"
-                className="block py-2 px-4 rounded-md hover:bg-gray-700 transition-colors">
-                QnA
-              </Link>
-            </li>
+            {/* QnA Links */}
+            {Array.from({ length: 10 }, (_, index) => (
+              <li key={index} className="flex items-center space-x-2">
+                <QuestionMarkCircleIcon className="w-6 h-6" />
+                <Link
+                  to="/qna"
+                  className="block py-2 px-4 rounded-md hover:bg-gray-700 transition-colors">
+                  QnA Item {index + 1}
+                </Link>
+              </li>
+            ))}
 
-            {/* Requirements Link */}
-            <li className="flex items-center space-x-2">
-              <ClipboardDocumentCheckIcon className="w-6 h-6" />
-              <Link
-                to="/requirements"
-                className="block py-2 px-4 rounded-md hover:bg-gray-700 transition-colors">
-                Requirements
-              </Link>
-            </li>
+            {/* Requirements Links */}
+            {Array.from({ length: 10 }, (_, index) => (
+              <li key={index + 10} className="flex items-center space-x-2">
+                <ClipboardDocumentCheckIcon className="w-6 h-6" />
+                <Link
+                  to="/requirements"
+                  className="block py-2 px-4 rounded-md hover:bg-gray-700 transition-colors">
+                  Requirements Item {index + 1}
+                </Link>
+              </li>
+            ))}
           </ul>
         </nav>
       </div>

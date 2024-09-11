@@ -57,3 +57,36 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+/* Custom Scrollbar Styles */
+.sidebar-scrollbar {
+  overflow-y: auto; /* Ensure the scrollbar only appears when needed */
+}
+
+.sidebar-scrollbar::-webkit-scrollbar {
+  width: 8px; /* Width of the scrollbar */
+  opacity: 0; /* Hide the scrollbar initially */
+  transition: opacity 0.3s; /* Smooth transition for showing/hiding */
+}
+
+.sidebar-scrollbar::-webkit-scrollbar-track {
+  background: #2d2d2d; /* Background color of the scrollbar track */
+}
+
+.sidebar-scrollbar::-webkit-scrollbar-thumb {
+  background: #555; /* Color of the scrollbar thumb */
+  border-radius: 8px; /* Rounded corners for the thumb */
+}
+
+.sidebar-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #777; /* Lighter color on hover */
+}
+
+.sidebar-scrollbar:hover::-webkit-scrollbar {
+  opacity: 1; /* Show scrollbar on hover */
+}
+
+/* For Firefox */
+.sidebar-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #555 #2d2d2d;
+}
