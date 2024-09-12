@@ -5,8 +5,8 @@ import HomePage from "./Components/HomePage"
 const App = () => (
   <Router>
     <div className="flex flex-col h-screen">
-       {/* <HomePage /> */}
-      <LandingPage />
+       <HomePage />
+      {/* <LandingPage /> */}
     </div>
   </Router>
 );
