@@ -4,7 +4,7 @@ import avatar from '../assets/avatar.png';
 
 const NavBar = () => {
     return (
-        <header className="fixed top-0 left-0 w-full flex items-center bg-gray-900 p-3 z-50"> 
+        <header className="fixed top-0 left-0 w-full flex items-center bg-gray-900 p-3 z-50 border-b border-gray-300"> 
             <div className="mx-4">
                 <img src={logo} className="w-10 h-10 mr-20" alt="Logo" /> 
             </div>

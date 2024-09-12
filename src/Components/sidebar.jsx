@@ -14,7 +14,7 @@ const SideBar = () => {
   };
 
   return (
-    <div className="flex h-screen overflow-hidden">
+    <div className="h-screen overflow-hidden ">
       {/* Button to toggle sidebar for small screens */}
       <div className="md:hidden fixed top-4 left-4 z-50">
         <button
@@ -28,18 +28,10 @@ const SideBar = () => {
       <div
         className={`${
           isOpen ? 'translate-x-0' : '-translate-x-full'
-        } fixed md:translate-x-0 transform bg-gray-900 text-white h-screen w-60 top-0 left-0 transition-transform duration-300 ease-in-out z-40 sidebar-scrollbar`}>
-        <nav className="p-4 h-full">
+        } bg-gray-800 md:translate-x-0 transform  text-white h-screen w-60 top-0 left-0 transition-transform duration-300 ease-in-out z-40 sidebar-scrollbar`}>
+        <nav className=" pt-9 p-3 h-full">
           <ul className="space-y-4">
-            {/* Home Link */}
-            <li className="flex items-center space-x-2">
-              <HomeIcon className="w-6 h-6" />
-              <Link
-                to="/"
-                className="block py-2 px-4 rounded-md hover:bg-gray-700 transition-colors">
-                Home
-              </Link>
-            </li>
+      
 
             {/* QnA Links */}
             {Array.from({ length: 10 }, (_, index) => (

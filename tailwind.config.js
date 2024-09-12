@@ -11,6 +11,12 @@ module.exports = {
         DEFAULT: '#030303', 
       },
     },
+     borderWidth:{
+      '1':'1px',
+     },
+     fontFamily: {
+      poppins: ['Poppins', 'sans-serif'],
+    },
   },
 },
   plugins: [],
