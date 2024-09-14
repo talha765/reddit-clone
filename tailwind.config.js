@@ -7,9 +7,9 @@ module.exports = {
   theme: {
     extend: {
       colors:{
-      reddit_dark:{
-        DEFAULT: '#030303', 
-      },
+        colors: {
+          'black-50': 'rgba(0, 0, 0, 1)', // Custom RGBA color
+        },
     },
      borderWidth:{
       '1':'1px',

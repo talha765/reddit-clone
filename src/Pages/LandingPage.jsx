@@ -1,5 +1,5 @@
 import { BrowserRouter as Router } from 'react-router-dom';
-import LandingNavbar from "./LandingNavbar";
+import LandingNavbar from "../Components/LandingNavbar";
 
 const App = () => (
     <div className="flex flex-col h-screen bg-gray-900 font-poppins">

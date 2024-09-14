@@ -1,4 +1,4 @@
-import logo from '../assets/logo.png';
+import logo from '../assets/backpack.png';
 import { MagnifyingGlassIcon, BellIcon, ChatBubbleOvalLeftEllipsisIcon, PlusIcon } from '@heroicons/react/24/outline';
 import avatar from '../assets/avatar.png';
 
