@@ -51,9 +51,12 @@ const SideBar = () => {
 
       {/* Sidebar */}
       <div
-        className={`${
-          isOpen ? 'translate-x-0' : '-translate-x-full'
-        } fixed top-0 left-0 h-screen w-64 bg-gradient-to-br from-gray-900 to-gray-800 border-r border-white transition-transform duration-300 ease-in-out z-40 md:translate-x-0`}
+        className={`
+          ${isOpen ? 'translate-x-0' : '-translate-x-full'}
+          fixed top-0 left-0 h-screen w-64 bg-gradient-to-br from-gray-900 to-gray-800
+          border-r border-white transition-transform duration-300 ease-in-out z-40 md:translate-x-0
+          overflow-y-hidden hover:overflow-y-auto
+        `}
       >
         <nav className="pt-9 p-3 h-full">
           <ul className="space-y-4">
@@ -64,13 +67,10 @@ const SideBar = () => {
                   <QuestionMarkCircleIcon className="w-5 h-5 text-white" />
                   <button
                     onClick={toggleQnA}
-                    className="block py-2 px-4 w-full text-left hover:bg-gray-800 cursor-pointer rounded-md flex justify-between items-center text-sm font-semibold text-white transition-colors duration-200 focus:ring-gray-500"
+                    className="py-2 px-4 w-full text-left hover:bg-gray-800 cursor-pointer rounded-md flex justify-between items-center text-sm font-semibold text-white transition-colors duration-200 focus:ring-gray-500"
                   >
                     InventSpace
-                    {qnaOpen ?
-                      <ChevronUpIcon className="w-4 h-4 ml-2" /> :
-                      <ChevronDownIcon className="w-4 h-4 ml-2" />
-                    }
+                    {qnaOpen ? <ChevronUpIcon className="w-4 h-4 ml-2" /> : <ChevronDownIcon className="w-4 h-4 ml-2" />}
                   </button>
                 </div>
               </div>
@@ -103,13 +103,10 @@ const SideBar = () => {
                   <ClipboardDocumentCheckIcon className="w-5 h-5 text-white" />
                   <button
                     onClick={toggleRequirements}
-                    className="block py-2 px-4 w-full text-left hover:bg-gray-800 cursor-pointer rounded-md flex justify-between items-center text-sm font-semibold text-white transition-colors duration-200 focus:ring-gray-500"
+                    className="py-2 px-4 w-full text-left hover:bg-gray-800 cursor-pointer rounded-md flex justify-between items-center text-sm font-semibold text-white transition-colors duration-200 focus:ring-gray-500"
                   >
                     Requirements
-                    {requirementsOpen ?
-                      <ChevronUpIcon className="w-4 h-4 ml-2" /> :
-                      <ChevronDownIcon className="w-4 h-4 ml-2" />
-                    }
+                    {requirementsOpen ? <ChevronUpIcon className="w-4 h-4 ml-2" /> : <ChevronDownIcon className="w-4 h-4 ml-2" />}
                   </button>
                 </div>
               </div>
@@ -142,13 +139,10 @@ const SideBar = () => {
                   <ClipboardDocumentCheckIcon className="w-5 h-5 text-white" />
                   <button
                     onClick={toggleCommunities}
-                    className="block py-2 px-4 w-full text-left hover:bg-gray-800 cursor-pointer rounded-md flex justify-between items-center text-sm font-semibold text-white transition-colors duration-200 focus:ring-gray-500"
+                    className="py-2 px-4 w-full text-left hover:bg-gray-800 cursor-pointer rounded-md flex justify-between items-center text-sm font-semibold text-white transition-colors duration-200 focus:ring-gray-500"
                   >
                     Communities
-                    {communitiesOpen ?
-                      <ChevronUpIcon className="w-4 h-4 ml-2" /> :
-                      <ChevronDownIcon className="w-4 h-4 ml-2" />
-                    }
+                    {communitiesOpen ? <ChevronUpIcon className="w-4 h-4 ml-2" /> : <ChevronDownIcon className="w-4 h-4 ml-2" />}
                   </button>
                 </div>
               </div>
@@ -181,13 +175,10 @@ const SideBar = () => {
                   <AcademicCapIcon className="w-5 h-5 text-white" />
                   <button
                     onClick={toggleResearch}
-                    className="block py-2 px-4 w-full text-left hover:bg-gray-800 cursor-pointer rounded-md flex justify-between items-center text-sm font-semibold text-white transition-colors duration-200 focus:ring-gray-500"
+                    className="py-2 px-4 w-full text-left hover:bg-gray-800 cursor-pointer rounded-md flex justify-between items-center text-sm font-semibold text-white transition-colors duration-200 focus:ring-gray-500"
                   >
                     Research
-                    {researchOpen ?
-                      <ChevronUpIcon className="w-4 h-4 ml-2" /> :
-                      <ChevronDownIcon className="w-4 h-4 ml-2" />
-                    }
+                    {researchOpen ? <ChevronUpIcon className="w-4 h-4 ml-2" /> : <ChevronDownIcon className="w-4 h-4 ml-2" />}
                   </button>
                 </div>
               </div>

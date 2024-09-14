@@ -1,21 +1,21 @@
-// Layout.jsx
-import React from 'react';
-import NavBar from './NavBar';  // Import NavBar
-import SideBar from './sidebar';  // Import SideBar
+import { Outlet } from 'react-router-dom';
+import NavBar from './NavBar'; // Adjust based on the actual file location
+import SideBar from './sidebar'; // Adjust based on the actual file location
 
-const Layout = ({ children }) => {
+const Layout = () => {
   return (
-    <div className="flex">
-      {/* Sidebar remains on the left */}
-      <SideBar />
-      
+    <div className="flex h-screen">
+      {/* Sidebar with fixed width */}
+      <SideBar className="w-64 flex-shrink-0" />
+
       {/* Main content area */}
-      <div className="flex-1">
-        {/* Navbar remains at the top */}
+      <div className="flex-1 flex flex-col overflow-hidden">
+        {/* Navbar on top */}
         <NavBar />
-        {/* Render the page content */}
-        <div className="p-4">
-          {children}
+
+        {/* Page content area */}
+        <div className="flex-1 overflow-y-auto p-6 bg-gray-100">
+          <Outlet />
         </div>
       </div>
     </div>

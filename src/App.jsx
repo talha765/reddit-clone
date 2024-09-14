@@ -1,26 +1,24 @@
 import './Index.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import LandingPage from "./Pages/LandingPage";
-import HomePage from "./Pages/HomePage";
-import LoginPage from "./Pages/LoginPage"; // Import the login page
-import InventSpace from "./Pages/InventSpace";
-import Requirements from "./Pages/Requirements";
-import Communities from "./Pages/Communities";
-import Research from "./Pages/Research";
+import HomePage from './Pages/HomePage';
+import Requirements from './Pages/Requirements';
+import Communities from './Pages/Communities';
+import Research from './Pages/Research';
+import InventSpace from './Pages/InventSpace';
+import Layout from './Components/Layout'; // Import the Layout component
 
 const App = () => (
   <Router>
-    <div className="flex flex-col h-screen">
     <Routes>
-      <Route path='/' element={<HomePage />} /> 
-      <Route path='/qna' element={<InventSpace />} /> 
-      <Route path='/requirements' element={<Requirements />} /> 
-      <Route path='/communities' element={<Communities />} /> 
-      <Route path='/research' element={<Research />} /> 
-      {/* <LandingPage /> */}
-      {/* <LoginPage /> */}
+      {/* Define the routes that will use the shared Layout */}
+      <Route element={<Layout />}>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/qna" element={<InventSpace />} />
+        <Route path="/requirements" element={<Requirements />} />
+        <Route path="/communities" element={<Communities />} />
+        <Route path="/research" element={<Research />} />
+      </Route>
     </Routes>
-    </div>
   </Router>
 );
 
