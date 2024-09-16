@@ -1,4 +1,3 @@
-
 import NavBar from "../Components/NavBar";
 import SideBar from '../Components/sidebar';
 
