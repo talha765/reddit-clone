@@ -27,8 +27,11 @@ const Requirements = () => {
     ]);
 
     const [showModal, setShowModal] = useState(false);
-    const [activePost, setActivePost] = useState(null); // Track the post being displayed in the modal
+    const [activePost, setActivePost] = useState(null);
     const [newPost, setNewPost] = useState({ title: '', content: '' });
+
+    const [showAddPostModal, setShowAddPostModal] = useState(false);
+    const [newPostForm, setNewPostForm] = useState({ title: '', content: '' });
 
     const handleLike = (postId) => {
         const updatedPosts = posts.map((post) =>
@@ -54,10 +57,22 @@ const Requirements = () => {
         setActivePost(null);
     };
 
+    const openAddPostModal = () => {
+        setShowAddPostModal(true);
+    };
+
+    const closeAddPostModal = () => {
+        setShowAddPostModal(false);
+        setNewPostForm({ title: '', content: '' });
+    };
+
     const handlePostSubmit = () => {
-        // Logic for submitting the post to the backend
-        console.log('New post submitted:', newPost);
-        setShowModal(false);
+        if (newPostForm.title && newPostForm.content) {
+            const newPostId = posts.length ? Math.max(posts.map(post => post.id)) + 1 : 1;
+            const newPost = { ...newPostForm, id: newPostId, likes: 0, comments: [] };
+            setPosts([...posts, newPost]);
+            closeAddPostModal();
+        }
     };
 
     return (
@@ -67,7 +82,7 @@ const Requirements = () => {
                 <h1 className="text-2xl font-bold text-white">Requirements</h1>
                 <button
                     className="flex items-center bg-blue-600 hover:bg-blue-500 text-white py-2 px-4 rounded-lg transition duration-200 ease-in-out"
-                    onClick={() => setShowModal(true)}
+                    onClick={openAddPostModal}
                 >
                     <FaPlus className="mr-2" /> Add Post
                 </button>
@@ -86,7 +101,7 @@ const Requirements = () => {
                             <button
                                 className="text-white"
                                 onClick={(e) => {
-                                    e.stopPropagation(); // Prevent the modal from opening
+                                    e.stopPropagation();
                                     handleLike(post.id);
                                 }}
                             >
@@ -137,6 +152,46 @@ const Requirements = () => {
                         >
                             Close
                         </button>
+                    </div>
+                </div>
+            )}
+
+            {/* Modal for Adding New Post */}
+            {showAddPostModal && (
+                <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex justify-center items-center">
+                    <div className="bg-gray-800 rounded-lg shadow-lg p-6 w-full max-w-3xl">
+                        <h2 className="text-lg text-white font-bold mb-4">Add New Post</h2>
+                        <form onSubmit={(e) => { e.preventDefault(); handlePostSubmit(); }}>
+                            <input
+                                type="text"
+                                className="w-full p-2 mb-4 border border-gray-600 rounded-lg bg-gray-900 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                placeholder="Post Title"
+                                value={newPostForm.title}
+                                onChange={(e) => setNewPostForm({ ...newPostForm, title: e.target.value })}
+                            />
+                            <textarea
+                                className="w-full p-2 mb-4 border border-gray-600 rounded-lg bg-gray-900 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                placeholder="Post Content"
+                                rows="4"
+                                value={newPostForm.content}
+                                onChange={(e) => setNewPostForm({ ...newPostForm, content: e.target.value })}
+                            />
+                            <div className="flex justify-between">
+                                <button
+                                    type="button"
+                                    className="bg-red-500 hover:bg-red-400 text-white py-2 px-4 rounded-lg"
+                                    onClick={closeAddPostModal}
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type="submit"
+                                    className="bg-blue-600 hover:bg-blue-500 text-white py-2 px-4 rounded-lg"
+                                >
+                                    Add Post
+                                </button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             )}
@@ -193,4 +248,5 @@ const CommentSection = ({ postId, comments, handleAddComment }) => {
         </div>
     );
 };
+
 export default Requirements;

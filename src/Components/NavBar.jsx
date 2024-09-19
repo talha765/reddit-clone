@@ -1,6 +1,5 @@
 import logo from '../assets/backpack.png';
-import { MagnifyingGlassIcon, BellIcon, ChatBubbleOvalLeftEllipsisIcon, PlusIcon } from '@heroicons/react/24/outline';
-import avatar from '../assets/avatar.png';
+import { MagnifyingGlassIcon, UserIcon, BellIcon, ChatBubbleOvalLeftEllipsisIcon, PlusIcon } from '@heroicons/react/24/outline';
 
 const NavBar = () => {
     return (
@@ -12,7 +11,7 @@ const NavBar = () => {
                 <input 
                     type="text" 
                     className="bg-gray-600 h-10 w-full text-white pl-10 pr-3 rounded-2xl" 
-                    placeholder="Search InventSpace" 
+                    placeholder="Search for solutions" 
                 />
                 <MagnifyingGlassIcon className="absolute left-3 w-6 h-6 text-white" /> 
             </form>
@@ -22,12 +21,10 @@ const NavBar = () => {
             <button className="mx-2 mr-5 bg-transparent focus:outline-none hover:bg-gradient-to-r hover:from-blue-900 hover:to-blue-900 p-2 rounded-full">
                 <ChatBubbleOvalLeftEllipsisIcon className="w-7 h-7 text-white" /> 
             </button>
-            <button className="mx-2 bg-transparent focus:outline-none hover:bg-gradient-to-r hover:from-blue-900 hover:to-blue-900 p-2 rounded-full">
-                <PlusIcon className='w-7 h-7 text-white' /> 
+            <button className="mx-2 mr-5 bg-transparent focus:outline-none hover:bg-gradient-to-r hover:from-blue-900 hover:to-blue-900 p-2 rounded-full">
+                <UserIcon className="w-7 h-7 text-white" /> 
             </button>
-            <button className="mx-2 bg-gray-600 rounded-full p-1 mr-5 ml-20">
-                <img src={avatar} alt="Avatar" className="w-8 h-8 rounded-full" style={{ filter: 'invert(100%)' }} /> {/* Avatar image */}
-            </button>
+           
         </header>
     );
 };
