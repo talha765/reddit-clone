@@ -2,6 +2,9 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup'; // For validation
 import { useNavigate } from 'react-router-dom';
 import logo from '../assets/backpack.png';
+import axios from 'axios';
+
+const api_route = "http://localhost:3000/api/auth/register";
 
 const SignupPage = () => {
     const navigate = useNavigate();
@@ -27,18 +30,32 @@ const SignupPage = () => {
 
     const handleSubmit = (values) => {
         console.log('Signup submitted:', values);
+        const firstName = values.firstName;
+        const lastName = values.lastName;
+        const email = values.email;
+        const password = values.password;
+        const username = values.username;
+        const type = values.type;
+        const phone = values.phone;
         // Add logic for API call or validation
         // Redirect to home page or dashboard after signup
-        navigate('/home');
+        axios.post(api_route, { firstName, lastName, email, password, username, type, phone})
+            .then((response) => {
+                alert("signup successful");
+                navigate('/login');
+            }).catch((err) => {
+                console.error(err); 
+                alert("signup failed. Error: ", err);
+            });
     };
 
     return (
         <div className="min-h-screen bg-gray-900 flex flex-col items-center justify-center font-poppins">
-            <div className="flex flex-col items-center justify-center w-full max-w-md bg-gray-800 p-8 rounded-md shadow-lg">
+            <div className="mt-5 mb-5 flex flex-col items-center justify-center w-full max-w-md bg-gray-800 p-8 rounded-md shadow-lg">
                 <img src={logo} className="w-20 h-20 mb-4" alt="Logo" />
 
                 <h2 className="text-3xl font-semibold text-white mb-6">Sign Up</h2>
-
+                
                 <Formik
                     initialValues={{ firstName: '', lastName: '', type: '', email: '', password: '', phoneNo: '' }}
                     validationSchema={validationSchema}
@@ -84,7 +101,8 @@ const SignupPage = () => {
                                     <option value="">Select Type</option>
                                     <option value="student">Student</option>
                                     <option value="researcher">Researcher</option>
-                                </Field>
+                                    <option value="company">Company</option>
+                                </Field>    
                                 <ErrorMessage
                                     name="type"
                                     component="div"
@@ -129,6 +147,20 @@ const SignupPage = () => {
                                 />
                                 <ErrorMessage
                                     name="phoneNo"
+                                    component="div"
+                                    className="text-red-500 mt-1"
+                                />
+                            </div>
+
+                            <div>
+                                <label htmlFor="username" className="block text-white mb-2">username</label>
+                                <Field
+                                    type="text"
+                                    name="username"
+                                    className="w-full px-3 py-2 text-white-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-900"
+                                />
+                                <ErrorMessage
+                                    name="username"
                                     component="div"
                                     className="text-red-500 mt-1"
                                 />

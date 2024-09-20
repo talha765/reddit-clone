@@ -34,9 +34,11 @@ const NavBar = () => {
 
             {/* Get App and Login Buttons */}
             <div className="flex items-center space-x-4 ml-auto">
+                <Link to="/signup">
                 <button className="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white font-semibold py-2 px-4 rounded-lg transition duration-200 ease-in-out">
-                    Get App
+                    Sign Up
                 </button>
+                </Link>
                 <Link to="/login">
                     <button className="bg-gray-700 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-200 ease-in-out">
                         Login

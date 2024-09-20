@@ -9,21 +9,24 @@ import Layout from './Components/Layout'; // Import the Layout component
 import HomePage from './Pages/HomePage';
 import SignupPage from './Pages/SignUp';
 import LandingPage from './Pages/LandingPage';
+import ProtectedRoute from './Components/ProtectedRoute';
 
 const App = () => (
+
   <Router>
     <Routes>
-        <Route path='login' element={<LoginPage />} />
-        <Route path='signup' element={<SignupPage />} />
+        <Route path='/login' element={<LoginPage />} />
+        <Route path='/signup' element={<SignupPage />} />
         <Route path="/landing" element={<LandingPage />} />
 
       {/* Define the routes that will use the shared Layout */}
       <Route element={<Layout />}>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/qna" element={<InventSpace />} />
-        <Route path="/requirements" element={<Requirements />} />
-        <Route path="/communities" element={<Communities />} />
-        <Route path="/research" element={<Research />} />
+        <Route path="/" element={<ProtectedRoute component={HomePage} />} />
+        <Route path='/homepage' element={<ProtectedRoute component={HomePage} />} />
+        <Route path="/qna" element={<ProtectedRoute component={InventSpace} />} />
+        <Route path="/requirements" element={<ProtectedRoute component={Requirements} />} />
+        <Route path="/communities" element={<ProtectedRoute component={Communities} />} />
+        <Route path="/research" element={<ProtectedRoute component={Research} />} />
 
         {/* Add a new route for post detail */}
       </Route>

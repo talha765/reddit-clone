@@ -2,6 +2,9 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup'; // For validation
 import { useNavigate } from 'react-router-dom';
 import logo from '../assets/backpack.png';
+import axios from "axios";
+
+const api_route = "http://localhost:3000/api/auth/login"; // Updated to HTTP
 
 const LoginPage = () => {
     const navigate = useNavigate();
@@ -15,12 +18,36 @@ const LoginPage = () => {
             .required('Password is required'),
     });
 
-    const handleSubmit = (values) => {
-        console.log('Login submitted:', values);
-        // Add logic for authentication (API call or validation)
-        // Redirect to home page or dashboard after login
-        navigate('/home');
+    // Formik's handleSubmit will automatically pass the values into this function
+    const handleSubmit = (values, { setSubmitting }) => {
+        const email = values.email;
+        const password = values.password;
+    
+        console.log('email:', values.email);
+        console.log("password: ", values.password);
+    
+        axios.post(api_route, { email, password })
+            .then((response) => {
+                // Ensure all items are set in localStorage before proceeding
+                return new Promise((resolve) => {
+                    localStorage.setItem('token', response.data.token);
+                    localStorage.setItem('id', response.data.id);
+                    resolve();  // Resolve the promise after setting localStorage
+                });
+            })
+            .then(() => {
+                // Navigate after localStorage is set
+                navigate('/');
+            })
+            .catch((err) => {
+                console.error(err);
+                alert("Invalid username or password. Error: ", err);
+            })
+            .finally(() => {
+                setSubmitting(false);  // Ensure form is no longer submitting
+            });
     };
+    
 
     return (
         <div className="min-h-screen bg-gray-900 flex flex-col items-center justify-center font-poppins">
@@ -32,7 +59,7 @@ const LoginPage = () => {
                 <Formik
                     initialValues={{ email: '', password: '' }}
                     validationSchema={validationSchema}
-                    onSubmit={handleSubmit}
+                    onSubmit={handleSubmit} // Formik automatically passes form values here
                 >
                     {({ isSubmitting }) => (
                         <Form className="w-full space-y-6">
@@ -42,6 +69,7 @@ const LoginPage = () => {
                                     type="email"
                                     name="email"
                                     className="w-full px-3 py-2 text-white-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-900"
+                                    placeholder="example@example.com"
                                 />
                                 <ErrorMessage
                                     name="email"
