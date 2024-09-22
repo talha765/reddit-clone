@@ -28,10 +28,11 @@ const Requirements = () => {
 
     const [showModal, setShowModal] = useState(false);
     const [activePost, setActivePost] = useState(null);
-    const [newPost, setNewPost] = useState({ title: '', content: '' });
-
-    const [showAddPostModal, setShowAddPostModal] = useState(false);
     const [newPostForm, setNewPostForm] = useState({ title: '', content: '' });
+    const [showAddPostModal, setShowAddPostModal] = useState(false);
+
+    // State to manage the token
+    const [token, setToken] = useState(localStorage.getItem('token'));
 
     const handleLike = (postId) => {
         const updatedPosts = posts.map((post) =>
@@ -143,6 +144,7 @@ const Requirements = () => {
                             postId={activePost.id}
                             comments={activePost.comments}
                             handleAddComment={handleAddComment}
+                            token={token} // Pass token to CommentSection
                         />
 
                         {/* Modal Close Button */}
@@ -199,14 +201,14 @@ const Requirements = () => {
     );
 };
 
-const CommentSection = ({ postId, comments, handleAddComment }) => {
+const CommentSection = ({ postId, comments, handleAddComment, token }) => {
     const [newComment, setNewComment] = useState('');
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (newComment.trim() !== '') {
+        if (newComment.trim()) {
             handleAddComment(postId, newComment);
-            setNewComment(''); // Clear input after submitting comment
+            setNewComment('');
         }
     };
 
@@ -230,21 +232,25 @@ const CommentSection = ({ postId, comments, handleAddComment }) => {
             </div>
 
             {/* Add Comment */}
-            <form onSubmit={handleSubmit} className="mt-2 flex items-center">
-                <input
-                    type="text"
-                    className="flex-grow p-2 border border-gray-600 rounded-lg bg-gray-900 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Add a comment..."
-                    value={newComment}
-                    onChange={(e) => setNewComment(e.target.value)}
-                />
-                <button
-                    type="submit"
-                    className="ml-2 bg-blue-600 hover:bg-blue-500 p-2 rounded-lg text-white"
-                >
-                    <FaArrowRight />
-                </button>
-            </form>
+            {token ? (
+                <form onSubmit={handleSubmit} className="mt-2 flex items-center">
+                    <input
+                        type="text"
+                        className="flex-grow p-2 border border-gray-600 rounded-lg bg-gray-900 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        placeholder="Add a comment..."
+                        value={newComment}
+                        onChange={(e) => setNewComment(e.target.value)}
+                    />
+                    <button
+                        type="submit"
+                        className="ml-2 bg-blue-600 hover:bg-blue-500 text-white py-2 px-4 rounded-lg"
+                    >
+                        Comment
+                    </button>
+                </form>
+            ) : (
+                <p className="text-white">You must be logged in to comment.</p>
+            )}
         </div>
     );
 };

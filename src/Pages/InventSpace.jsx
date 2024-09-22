@@ -297,11 +297,17 @@ const CommentSection = ({ postId, comments, handleAddComment, token }) => {
   return (
     <div className="mt-4">
       <h3 className="text-lg text-white font-semibold mb-2">Comments</h3>
-      {comments.map((comment, index) => (
-        <div key={index} className="bg-gray-700 p-2 rounded-lg mb-2 text-white">
-          {comment}
+      {comments.length === 0 ? (
+        <div className="bg-gray-700 p-2 rounded-lg mb-2 text-white">
+          No comments yet.
         </div>
-      ))}
+      ) : (
+        comments.map((comment, index) => (
+          <div key={index} className="bg-gray-700 p-2 rounded-lg mb-2 text-white">
+            {comment}
+          </div>
+        ))
+      )}
       {token ? (
         <form onSubmit={handleSubmit}>
           <input
