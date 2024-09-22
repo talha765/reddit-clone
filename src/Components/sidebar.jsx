@@ -6,13 +6,15 @@ import {
   QuestionMarkCircleIcon,
   ClipboardDocumentCheckIcon,
   AcademicCapIcon,
-  ArrowLeftStartOnRectangleIcon
+  ArrowLeftOnRectangleIcon,
+  InformationCircleIcon
 } from "@heroicons/react/24/outline";
-
 
 const SideBar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
+  const token = localStorage.getItem('token'); // Check for token here
+
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
   };
@@ -46,14 +48,13 @@ const SideBar = () => {
 
       {/* Sidebar */}
       <div
-        className={`
-          ${isOpen ? "translate-x-0" : "-translate-x-full"}
-          fixed top-0 left-0 h-screen w-64 bg-gradient-to-br from-gray-900 to-gray-800
+        className={`${
+          isOpen ? "translate-x-0" : "-translate-x-full"
+        } fixed top-0 left-0 h-screen w-64 bg-gradient-to-br from-gray-900 to-gray-800
           border-r border-white transition-transform duration-300 ease-in-out z-40 md:translate-x-0
-          overflow-y-hidden hover:overflow-y-auto mt-7
-        `}
+          overflow-y-hidden hover:overflow-y-auto mt-7`}
       >
-        <nav className="pt-9 p-3 h-full">
+        <nav className="pt-9 p-3 h-full relative">
           <ul className="space-y-4">
             {/* Help Center (QnA) */}
             <li className="mt-6">
@@ -127,26 +128,45 @@ const SideBar = () => {
               <hr className="border-t border-white border-opacity-20" />
             </li>
 
-            {/* Logout */}
+            {/* About Us */}
             <li className="mt-4">
               <div className="flex items-center space-x-2">
-                <ArrowLeftStartOnRectangleIcon className="w-5 h-5 text-white" />
+                <InformationCircleIcon className="w-5 h-5 text-white" />
+                <Link
+                  to="/about"
+                  className="py-2 px-4 w-full text-left hover:bg-gray-800 cursor-pointer rounded-md flex justify-between items-center text-sm font-semibold text-white transition-colors duration-200 focus:ring-gray-500"
+                >
+                  About Us
+                </Link>
+              </div>
+            </li>
+
+            {/* Divider (White Line) */}
+            <li>
+              <hr className="border-t border-white border-opacity-20" />
+            </li>
+          </ul>
+
+          {/* Logout (Bottom-right) */}
+          {token && ( // Only display if the token exists
+            <div className="absolute bottom-5 left-0 w-full px-4">
+              <div className="flex items-center space-x-2">
+                <ArrowLeftOnRectangleIcon className="w-5 h-5 text-white mb-4" />
                 <button
                   onClick={handleLogout}
-                  className="py-2 px-4 w-full hover:bg-gray-800 text-left cursor-pointer rounded-md flex justify-between items-center text-sm font-semibold text-white transition-colors duration-200 hover:text-red-600 focus:ring-gray-500"                >
+                  className="py-2 px-4 mb-5 w-full hover:bg-gray-800 text-left cursor-pointer rounded-md flex justify-between items-center text-sm font-semibold text-white transition-colors duration-200 hover:text-red-600 focus:ring-gray-500"
+                >
                   Logout
                 </button>
               </div>
-            </li>
-          </ul>
+            </div>
+          )}
         </nav>
       </div>
 
       {/* Main content */}
       <div
-        className={`flex-1 ${
-          isOpen ? "ml-64" : "ml-0"
-        } transition-all duration-300 ease-in-out`}
+        className={`flex-1 ${isOpen ? "ml-64" : "ml-0"} transition-all duration-300 ease-in-out`}
       >
         {/* Your main content here */}
       </div>

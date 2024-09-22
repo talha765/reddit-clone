@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { FaThumbsUp, FaCommentAlt, FaPlus, FaArrowRight } from "react-icons/fa";
+import { FaThumbsUp, FaCommentAlt, FaPlus } from "react-icons/fa";
 import axios from "axios";
 
 const InventSpace = () => {
@@ -7,14 +7,18 @@ const InventSpace = () => {
   const [posts, setPosts] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [activePost, setActivePost] = useState(null);
-
   const [showAddPostModal, setShowAddPostModal] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
   const [newPostForm, setNewPostForm] = useState({
     title: "",
     content: "",
     userId: "",
   });
 
+  // State to manage the token
+  const [token, setToken] = useState(localStorage.getItem('token'));
+
+  // Handle liking posts
   const handleLike = (postId) => {
     const updatedPosts = posts.map((post) =>
       post.id === postId ? { ...post, likes: post.likes + 1 } : post
@@ -22,6 +26,7 @@ const InventSpace = () => {
     setPosts(updatedPosts);
   };
 
+  // Handle adding comments
   const handleAddComment = (postId, comment) => {
     const updatedPosts = posts.map((post) =>
       post.id === postId
@@ -31,6 +36,7 @@ const InventSpace = () => {
     setPosts(updatedPosts);
   };
 
+  // Open and close post viewing modal
   const openModal = (post) => {
     setActivePost(post);
     setShowModal(true);
@@ -41,8 +47,13 @@ const InventSpace = () => {
     setActivePost(null);
   };
 
+  // Open and close post adding modal
   const openAddPostModal = () => {
-    setShowAddPostModal(true);
+    if (token) {
+      setShowAddPostModal(true);
+    } else {
+      setShowLoginModal(true); // If not logged in, show login prompt
+    }
   };
 
   const closeAddPostModal = () => {
@@ -50,6 +61,12 @@ const InventSpace = () => {
     setNewPostForm({ title: "", content: "", userId: "" });
   };
 
+  // Close login modal
+  const closeLoginModal = () => {
+    setShowLoginModal(false);
+  };
+
+  // Handle submitting a new post
   const handlePostSubmit = () => {
     if (newPostForm.title && newPostForm.content && userId) {
       axios.post(`http://localhost:3000/api/content/post-invent/${userId}`, {
@@ -59,44 +76,51 @@ const InventSpace = () => {
           const newPost = { ...newPostForm, id: userId, likes: 0, comments: [] };
           setPosts([...posts, newPost]);
           closeAddPostModal();
-      }).catch((err)=> {
-            alert("cannot add post");
+      }).catch((err) => {
+            alert("Cannot add post");
             console.log(err);
-      })
-    //   const newPostId = posts.length
-    //     ? Math.max(posts.map((post) => post.id)) + 1
-    //     : 1;
+      });
     }
   };
 
+  // Fetch posts from the API on mount
   useEffect(() => {
     axios
       .get("http://localhost:3000/api/content/get-invent")
       .then((response) => {
-        console.log("response.data: ", response.data);
-
-        // Map the response to match the expected structure
         const formattedPosts = response.data.map((post) => ({
           id: post.id,
           title: post.title,
-          content: post.description, // Map description to content
-          likes: post.likes || 0, // Default likes to 0 if not provided
-          comments: post.comments || [], // Default comments to an empty array if not provided
+          content: post.description,
+          likes: post.likes || 0,
+          comments: post.comments || [],
         }));
 
-        setPosts(formattedPosts); // Set posts with the mapped data
-        console.log("posts: ", formattedPosts);
+        setPosts(formattedPosts);
       })
       .catch((error) => {
-        console.error("Error fetching forms:", error);
+        console.error("Error fetching posts:", error);
       });
   }, []);
 
+  // Function to handle user login
+  const handleLogin = (loginData) => {
+    axios.post("http://localhost:3000/api/login", loginData)
+      .then(response => {
+        const { token, userId } = response.data; // Adjust based on your API response
+        localStorage.setItem('token', token);
+        localStorage.setItem('id', userId);
+        setToken(token);
+        setUserId(userId); // Update userId if needed
+        closeLoginModal();
+      })
+      .catch(error => {
+        console.error("Login failed:", error);
+      });
+  };
+
   return (
-    <div
-      className="p-4 bg-gray-800 min-h-screen"
-      style={{ paddingTop: "80px" }}
-    >
+    <div className="p-4 bg-gray-800 min-h-screen" style={{ paddingTop: "80px" }}>
       {/* Add New Post Button */}
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold text-white">InventSpace</h1>
@@ -165,6 +189,7 @@ const InventSpace = () => {
               postId={activePost.id}
               comments={activePost.comments}
               handleAddComment={handleAddComment}
+              token={token} // Pass token to CommentSection
             />
 
             {/* Modal Close Button */}
@@ -226,56 +251,76 @@ const InventSpace = () => {
           </div>
         </div>
       )}
+
+      {/* Modal for Login Prompt */}
+      {showLoginModal && (
+        <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex justify-center items-center">
+          <div className="bg-gray-800 rounded-lg shadow-lg p-6 w-full max-w-md">
+            <h2 className="text-lg text-white font-bold mb-4">Please Log In</h2>
+            <p className="text-white mb-4">
+              You must be logged in to add a post. Please log in to continue.
+            </p>
+            <div className="flex justify-between">
+              <button
+                className="bg-blue-600 hover:bg-blue-500 text-white py-2 px-4 rounded-lg"
+                onClick={() => {
+                  window.location.href = "/login"; // Add your login logic here
+                }}
+              >
+                Go to Login
+              </button>
+              <button
+                className="bg-gray-600 hover:bg-gray-500 text-white py-2 px-4 rounded-lg"
+                onClick={closeLoginModal}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
-const CommentSection = ({ postId, comments, handleAddComment }) => {
+const CommentSection = ({ postId, comments, handleAddComment, token }) => {
   const [newComment, setNewComment] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (newComment.trim() !== "") {
+    if (newComment.trim()) {
       handleAddComment(postId, newComment);
-      setNewComment(""); // Clear input after submitting comment
+      setNewComment("");
     }
   };
 
   return (
-    <div className="mt-6">
-      <h3 className="text-sm font-semibold mb-2 text-white">Comments</h3>
-
-      {/* Scrollable Comments Section */}
-      <div className="max-h-32 overflow-y-auto bg-gray-700 rounded-lg p-4 mb-4">
-        {comments.length === 0 ? (
-          <p className="text-white">No comments yet.</p>
-        ) : (
-          <ul className="list-disc ml-6 text-white">
-            {comments.map((comment, index) => (
-              <li key={index} className="mb-2">
-                {comment}
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
-
-      {/* Add Comment */}
-      <form onSubmit={handleSubmit} className="mt-2 flex items-center">
-        <input
-          type="text"
-          className="flex-grow p-2 border border-gray-600 rounded-lg bg-gray-900 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-          placeholder="Add a comment..."
-          value={newComment}
-          onChange={(e) => setNewComment(e.target.value)}
-        />
-        <button
-          type="submit"
-          className="ml-2 bg-blue-600 hover:bg-blue-500 p-2 rounded-lg text-white"
-        >
-          <FaArrowRight />
-        </button>
-      </form>
+    <div className="mt-4">
+      <h3 className="text-lg text-white font-semibold mb-2">Comments</h3>
+      {comments.map((comment, index) => (
+        <div key={index} className="bg-gray-700 p-2 rounded-lg mb-2 text-white">
+          {comment}
+        </div>
+      ))}
+      {token ? (
+        <form onSubmit={handleSubmit}>
+          <input
+            type="text"
+            className="w-full p-2 mb-2 border border-gray-600 rounded-lg bg-gray-900 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Add a comment"
+            value={newComment}
+            onChange={(e) => setNewComment(e.target.value)}
+          />
+          <button
+            type="submit"
+            className="bg-blue-600 hover:bg-blue-500 text-white py-2 px-4 rounded-lg"
+          >
+            Add Comment
+          </button>
+        </form>
+      ) : (
+        <p className="text-white">Log in to comment</p>
+      )}
     </div>
   );
 };

@@ -11,7 +11,7 @@ const InventSpace = require('./models/InventSpace');
 const app = express();
 
 app.use(cors({
-  origin: 'http://localhost:5173', // Allow only your frontend origin
+  origin: 'http://localhost:5172', // Allow only your frontend origin
   credentials: true, // Allow credentials (cookies, authorization headers, etc.)
 }));
 
