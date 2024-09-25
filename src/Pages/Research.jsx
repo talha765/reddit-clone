@@ -4,11 +4,13 @@ import axios from "axios";
 
 const Research = () => {
   const [userId, setUserId] = useState(localStorage.getItem("id"));
+  const [userType, setUserType] = useState(""); // To store user type
   const [posts, setPosts] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [activePost, setActivePost] = useState(null);
   const [showAddPostModal, setShowAddPostModal] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showResearcherWarning, setShowResearcherWarning] = useState(false); // To show warning if user is not a researcher
   const [newPostForm, setNewPostForm] = useState({
     title: "",
     content: "",
@@ -17,6 +19,28 @@ const Research = () => {
 
   // State to manage the token
   const [token, setToken] = useState(localStorage.getItem('token'));
+
+  // Fetch user type function
+  const fetchUserType = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        console.error("No token found");
+        return;
+      }
+
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      const response = await axios.get("http://localhost:3000/api/auth/user", config);
+      setUserType(response.data.type);
+    } catch (error) {
+      console.error("Error fetching user type:", error);
+    }
+  };
 
   // Handle liking posts
   const handleLike = (postId) => {
@@ -49,10 +73,12 @@ const Research = () => {
 
   // Open and close post adding modal
   const openAddPostModal = () => {
-    if (token) {
-      setShowAddPostModal(true);
-    } else {
+    if (!token) {
       setShowLoginModal(true); // If not logged in, show login prompt
+    } else if (userType === "researcher") {
+      setShowAddPostModal(true); // Only allow researchers to add posts
+    } else {
+      setShowResearcherWarning(true); // Show warning if user is not a researcher
     }
   };
 
@@ -64,6 +90,11 @@ const Research = () => {
   // Close login modal
   const closeLoginModal = () => {
     setShowLoginModal(false);
+  };
+
+  // Close researcher warning
+  const closeResearcherWarning = () => {
+    setShowResearcherWarning(false);
   };
 
   // Handle submitting a new post
@@ -85,6 +116,7 @@ const Research = () => {
 
   // Fetch posts from the API on mount
   useEffect(() => {
+    fetchUserType(); // Fetch user type on mount
     axios
       .get("http://localhost:3000/api/content/get-research")
       .then((response) => {
@@ -102,7 +134,6 @@ const Research = () => {
         console.error("Error fetching posts:", error);
       });
   }, []);
-
 
   return (
     <div className="p-4 bg-gray-800 min-h-screen" style={{ paddingTop: "80px" }}>
@@ -215,23 +246,20 @@ const Research = () => {
                 onChange={(e) =>
                   setNewPostForm({ ...newPostForm, content: e.target.value })
                 }
-              />
-              <div className="flex justify-between">
-                <button
-                  type="button"
-                  className="bg-red-500 hover:bg-red-400 text-white py-2 px-4 rounded-lg"
-                  onClick={closeAddPostModal}
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="bg-blue-600 hover:bg-blue-500 text-white py-2 px-4 rounded-lg"
-                >
-                  Add Post
-                </button>
-              </div>
+              ></textarea>
+              <button
+                type="submit"
+                className="w-full py-2 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-lg"
+              >
+                Submit Post
+              </button>
             </form>
+            <button
+              className="mt-4 w-full py-2 bg-red-500 hover:bg-red-400 text-white font-bold rounded-lg"
+              onClick={closeAddPostModal}
+            >
+              Cancel
+            </button>
           </div>
         </div>
       )}
@@ -239,77 +267,33 @@ const Research = () => {
       {/* Modal for Login Prompt */}
       {showLoginModal && (
         <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex justify-center items-center">
-          <div className="bg-gray-800 rounded-lg shadow-lg p-6 w-full max-w-md">
-            <h2 className="text-lg text-white font-bold mb-4">Please Log In</h2>
-            <p className="text-white mb-4">
-              You must be logged in to add a post. Please log in to continue.
-            </p>
-            <div className="flex justify-between">
-              <button
-                className="bg-blue-600 hover:bg-blue-500 text-white py-2 px-4 rounded-lg"
-                onClick={() => {
-                  window.location.href = "/login"; // Add your login logic here
-                }}
-              >
-                Go to Login
-              </button>
-              <button
-                className="bg-gray-600 hover:bg-gray-500 text-white py-2 px-4 rounded-lg"
-                onClick={closeLoginModal}
-              >
-                Cancel
-              </button>
-            </div>
+          <div className="bg-gray-800 rounded-lg shadow-lg p-6 w-full max-w-3xl">
+            <h2 className="text-lg text-white font-bold mb-4">Login Required</h2>
+            <p className="text-white mb-4">Please log in to add a post.</p>
+            <button
+              className="bg-blue-600 hover:bg-blue-500 text-white py-2 px-4 rounded-lg"
+              onClick={closeLoginModal}
+            >
+              Close
+            </button>
           </div>
         </div>
       )}
-    </div>
-  );
-};
 
-const CommentSection = ({ postId, comments, handleAddComment, token }) => {
-  const [newComment, setNewComment] = useState("");
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (newComment.trim()) {
-      handleAddComment(postId, newComment);
-      setNewComment("");
-    }
-  };
-
-  return (
-    <div className="mt-4">
-      <h3 className="text-lg text-white font-semibold mb-2">Comments</h3>
-      {comments.length === 0 ? (
-        <div className="bg-gray-700 p-2 rounded-lg mb-2 text-white">
-          No comments yet.
-        </div>
-      ) : (
-        comments.map((comment, index) => (
-          <div key={index} className="bg-gray-700 p-2 rounded-lg mb-2 text-white">
-            {comment}
+      {/* Modal for Researcher Warning */}
+      {showResearcherWarning && (
+        <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex justify-center items-center">
+          <div className="bg-gray-800 rounded-lg shadow-lg p-6 w-full max-w-lg text-white">
+            <h2 className="text-lg text-white font-bold mb-4">Access Denied</h2>
+            <p className="text-white mb-4">Only researchers can add posts.</p>
+            <button
+              className="bg-blue-600 hover:bg-blue-500 text-white py-2 px-4 rounded-lg"
+              onClick={closeResearcherWarning}
+            >
+              Close
+            </button>
           </div>
-        ))
-      )}
-      {token ? (
-        <form onSubmit={handleSubmit}>
-          <input
-            type="text"
-            className="w-full p-2 mb-2 border border-gray-600 rounded-lg bg-gray-900 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Add a comment"
-            value={newComment}
-            onChange={(e) => setNewComment(e.target.value)}
-          />
-          <button
-            type="submit"
-            className="bg-blue-600 hover:bg-blue-500 text-white py-2 px-4 rounded-lg"
-          >
-            Add Comment
-          </button>
-        </form>
-      ) : (
-        <p className="text-white">Log in to comment</p>
+        </div>
       )}
     </div>
   );
