@@ -16,7 +16,7 @@ const SignupPage = () => {
         lastName: Yup.string()
             .required('Last Name is required'),
         type: Yup.string()
-            .oneOf(['student', 'researcher'], 'Select a valid type')
+            .oneOf(['student', 'researcher','company'], 'Select a valid type')
             .required('Type is required'),
         email: Yup.string()
             .email('Invalid email address')

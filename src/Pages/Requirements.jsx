@@ -4,11 +4,13 @@ import axios from "axios";
 
 const Requirements = () => {
   const [userId, setUserId] = useState(localStorage.getItem("id"));
+  const [userType, setUserType] = useState(""); // To store user type
   const [posts, setPosts] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [activePost, setActivePost] = useState(null);
   const [showAddPostModal, setShowAddPostModal] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showCompanyWarning, setShowCompanyWarning] = useState(false); // To show warning if user is not a company
   const [newPostForm, setNewPostForm] = useState({
     title: "",
     content: "",
@@ -17,6 +19,28 @@ const Requirements = () => {
 
   // State to manage the token
   const [token, setToken] = useState(localStorage.getItem('token'));
+
+  // Fetch user type function
+  const fetchUserType = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        console.error("No token found");
+        return;
+      }
+
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      const response = await axios.get("http://localhost:3000/api/auth/user", config);
+      setUserType(response.data.type);
+    } catch (error) {
+      console.error("Error fetching user type:", error);
+    }
+  };
 
   // Handle liking posts
   const handleLike = (postId) => {
@@ -49,10 +73,12 @@ const Requirements = () => {
 
   // Open and close post adding modal
   const openAddPostModal = () => {
-    if (token) {
-      setShowAddPostModal(true);
-    } else {
+    if (!token) {
       setShowLoginModal(true); // If not logged in, show login prompt
+    } else if (userType === "company") {
+      setShowAddPostModal(true); // Only allow companies to add posts
+    } else {
+      setShowCompanyWarning(true); // Show warning if user is not a company
     }
   };
 
@@ -64,6 +90,11 @@ const Requirements = () => {
   // Close login modal
   const closeLoginModal = () => {
     setShowLoginModal(false);
+  };
+
+  // Close company warning
+  const closeCompanyWarning = () => {
+    setShowCompanyWarning(false);
   };
 
   // Handle submitting a new post
@@ -85,6 +116,7 @@ const Requirements = () => {
 
   // Fetch posts from the API on mount
   useEffect(() => {
+    fetchUserType(); // Fetch user type on mount
     axios
       .get("http://localhost:3000/api/content/get-requirements")
       .then((response) => {
@@ -102,7 +134,6 @@ const Requirements = () => {
         console.error("Error fetching posts:", error);
       });
   }, []);
-
 
   return (
     <div className="p-4 bg-gray-800 min-h-screen" style={{ paddingTop: "80px" }}>
@@ -163,9 +194,7 @@ const Requirements = () => {
       {showModal && activePost && (
         <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex justify-center items-center">
           <div className="bg-gray-800 rounded-lg shadow-lg p-6 w-full max-w-3xl">
-            <h2 className="text-lg text-white font-bold mb-4">
-              {activePost.title}
-            </h2>
+            <h2 className="text-lg text-white font-bold mb-4">{activePost.title}</h2>
             <p className="text-white mb-4">{activePost.content}</p>
 
             {/* Comments Section */}
@@ -216,22 +245,19 @@ const Requirements = () => {
                   setNewPostForm({ ...newPostForm, content: e.target.value })
                 }
               />
-              <div className="flex justify-between">
-                <button
-                  type="button"
-                  className="bg-red-500 hover:bg-red-400 text-white py-2 px-4 rounded-lg"
-                  onClick={closeAddPostModal}
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="bg-blue-600 hover:bg-blue-500 text-white py-2 px-4 rounded-lg"
-                >
-                  Add Post
-                </button>
-              </div>
+              <button
+                type="submit"
+                className="w-full py-2 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-lg"
+              >
+                Submit Post
+              </button>
             </form>
+            <button
+              className="mt-4 w-full py-2 bg-red-500 hover:bg-red-400 text-white font-bold rounded-lg"
+              onClick={closeAddPostModal}
+            >
+              Close
+            </button>
           </div>
         </div>
       )}
@@ -239,77 +265,35 @@ const Requirements = () => {
       {/* Modal for Login Prompt */}
       {showLoginModal && (
         <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex justify-center items-center">
-          <div className="bg-gray-800 rounded-lg shadow-lg p-6 w-full max-w-md">
+          <div className="bg-gray-800 rounded-lg shadow-lg p-6 w-full max-w-3xl">
             <h2 className="text-lg text-white font-bold mb-4">Please Log In</h2>
-            <p className="text-white mb-4">
-              You must be logged in to add a post. Please log in to continue.
-            </p>
-            <div className="flex justify-between">
-              <button
-                className="bg-blue-600 hover:bg-blue-500 text-white py-2 px-4 rounded-lg"
-                onClick={() => {
-                  window.location.href = "/login"; // Add your login logic here
-                }}
-              >
-                Go to Login
-              </button>
-              <button
-                className="bg-gray-600 hover:bg-gray-500 text-white py-2 px-4 rounded-lg"
-                onClick={closeLoginModal}
-              >
-                Cancel
-              </button>
-            </div>
+            <p className="text-white mb-4">You need to log in to add a post.</p>
+            <button
+              className="bg-blue-600 hover:bg-blue-500 text-white py-2 px-4 rounded-lg transition duration-200 ease-in-out"
+              onClick={closeLoginModal}
+            >
+              Close
+            </button>
           </div>
         </div>
       )}
-    </div>
-  );
-};
 
-const CommentSection = ({ postId, comments, handleAddComment, token }) => {
-  const [newComment, setNewComment] = useState("");
+      {/* Modal for Company Warning */}
+      {showCompanyWarning && (
+        <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex justify-center items-center">
+          <div className="bg-gray-800 rounded-lg shadow-lg p-6 w-full max-w-lg text-white">
+            <h2 className="text-lg text-white font-bold mb-4">Access Denied</h2>
+            <p className="text-white mb-4">Only Company users are allowed to add posts in InventSpace.
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (newComment.trim()) {
-      handleAddComment(postId, newComment);
-      setNewComment("");
-    }
-  };
-
-  return (
-    <div className="mt-4">
-      <h3 className="text-lg text-white font-semibold mb-2">Comments</h3>
-      {comments.length === 0 ? (
-        <div className="bg-gray-700 p-2 rounded-lg mb-2 text-white">
-          No comments yet.
-        </div>
-      ) : (
-        comments.map((comment, index) => (
-          <div key={index} className="bg-gray-700 p-2 rounded-lg mb-2 text-white">
-            {comment}
+</p>
+            <button
+              className="bg-blue-600 mt-4 text-white py-2 px-4 rounded-lg transition duration-200 ease-in-out"
+              onClick={closeCompanyWarning}
+            >
+              Close
+            </button>
           </div>
-        ))
-      )}
-      {token ? (
-        <form onSubmit={handleSubmit}>
-          <input
-            type="text"
-            className="w-full p-2 mb-2 border border-gray-600 rounded-lg bg-gray-900 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Add a comment"
-            value={newComment}
-            onChange={(e) => setNewComment(e.target.value)}
-          />
-          <button
-            type="submit"
-            className="bg-blue-600 hover:bg-blue-500 text-white py-2 px-4 rounded-lg"
-          >
-            Add Comment
-          </button>
-        </form>
-      ) : (
-        <p className="text-white">Log in to comment</p>
+        </div>
       )}
     </div>
   );

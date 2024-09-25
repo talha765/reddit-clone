@@ -4,19 +4,43 @@ import axios from "axios";
 
 const InventSpace = () => {
   const [userId, setUserId] = useState(localStorage.getItem("id"));
+  const [userType, setUserType] = useState(""); // To store the user type
   const [posts, setPosts] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [activePost, setActivePost] = useState(null);
   const [showAddPostModal, setShowAddPostModal] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showStudentWarning, setShowStudentWarning] = useState(false); // To show warning if user is not a student
   const [newPostForm, setNewPostForm] = useState({
     title: "",
     content: "",
     userId: "",
   });
 
-  // State to manage the token
   const [token, setToken] = useState(localStorage.getItem('token'));
+
+  const fetchUserType = async () => {
+    try {
+      const token = localStorage.getItem("token"); // Ensure token is fetched correctly
+      if (!token) {
+        console.error("No token found");
+        return;
+      }
+  
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`, // Pass token in Authorization header
+        },
+      };
+  
+      const response = await axios.get("http://localhost:3000/api/auth/user", config); // No need for userId in the URL
+      setUserType(response.data.type);
+    } catch (error) {
+      console.error("Error fetching user type:", error);
+    }
+  };
+  
+
 
   // Handle liking posts
   const handleLike = (postId) => {
@@ -49,10 +73,14 @@ const InventSpace = () => {
 
   // Open and close post adding modal
   const openAddPostModal = () => {
-    if (token) {
-      setShowAddPostModal(true);
-    } else {
+    if (!token) {
       setShowLoginModal(true); // If not logged in, show login prompt
+    } else if (userType === "student") {
+      
+      setShowAddPostModal(true);
+      console.log(userType) // Only allow students to add posts
+    } else {
+      setShowStudentWarning(true); // Show warning if user is not a student
     }
   };
 
@@ -64,6 +92,11 @@ const InventSpace = () => {
   // Close login modal
   const closeLoginModal = () => {
     setShowLoginModal(false);
+  };
+
+  // Close student warning
+  const closeStudentWarning = () => {
+    setShowStudentWarning(false);
   };
 
   // Handle submitting a new post
@@ -101,6 +134,8 @@ const InventSpace = () => {
       .catch((error) => {
         console.error("Error fetching posts:", error);
       });
+
+    fetchUserType(); // Fetch user type on mount
   }, []);
 
   return (
@@ -216,50 +251,51 @@ const InventSpace = () => {
                   setNewPostForm({ ...newPostForm, content: e.target.value })
                 }
               />
-              <div className="flex justify-between">
-                <button
-                  type="button"
-                  className="bg-red-500 hover:bg-red-400 text-white py-2 px-4 rounded-lg"
-                  onClick={closeAddPostModal}
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="bg-blue-600 hover:bg-blue-500 text-white py-2 px-4 rounded-lg"
-                >
-                  Add Post
-                </button>
-              </div>
+              <button
+                type="submit"
+                className="w-full py-2 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-lg"
+              >
+                Submit Post
+              </button>
             </form>
+            <button
+              className="mt-4 w-full py-2 bg-red-500 hover:bg-red-400 text-white font-bold rounded-lg"
+              onClick={closeAddPostModal}
+            >
+              Close
+            </button>
           </div>
         </div>
       )}
 
-      {/* Modal for Login Prompt */}
+      {/* Modal for Login Required */}
       {showLoginModal && (
         <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex justify-center items-center">
-          <div className="bg-gray-800 rounded-lg shadow-lg p-6 w-full max-w-md">
-            <h2 className="text-lg text-white font-bold mb-4">Please Log In</h2>
-            <p className="text-white mb-4">
-              You must be logged in to add a post. Please log in to continue.
-            </p>
-            <div className="flex justify-between">
-              <button
-                className="bg-blue-600 hover:bg-blue-500 text-white py-2 px-4 rounded-lg"
-                onClick={() => {
-                  window.location.href = "/login"; // Add your login logic here
-                }}
-              >
-                Go to Login
-              </button>
-              <button
-                className="bg-gray-600 hover:bg-gray-500 text-white py-2 px-4 rounded-lg"
-                onClick={closeLoginModal}
-              >
-                Cancel
-              </button>
-            </div>
+          <div className="bg-gray-800 rounded-lg shadow-lg p-6 w-full max-w-lg text-white">
+            <h2 className="text-lg font-bold mb-4">Login Required</h2>
+            <p>Please log in to add a post.</p>
+            <button
+              className="mt-4 bg-blue-600 hover:bg-blue-500 text-white py-2 px-4 rounded-lg"
+              onClick={closeLoginModal}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Modal for Non-Student Warning */}
+      {showStudentWarning && (
+        <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex justify-center items-center">
+          <div className="bg-gray-800 rounded-lg shadow-lg p-6 w-full max-w-lg text-white">
+            <h2 className="text-lg font-bold mb-4">Access Denied</h2>
+            <p>Only students are allowed to add posts in InventSpace.</p>
+            <button
+              className="mt-4 bg-blue-600 hover:bg-blue-500 text-white py-2 px-4 rounded-lg"
+              onClick={closeStudentWarning}
+            >
+              Close
+            </button>
           </div>
         </div>
       )}
@@ -270,47 +306,40 @@ const InventSpace = () => {
 const CommentSection = ({ postId, comments, handleAddComment, token }) => {
   const [newComment, setNewComment] = useState("");
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (newComment.trim()) {
+  const submitComment = () => {
+    if (token) {
       handleAddComment(postId, newComment);
       setNewComment("");
+    } else {
+      alert("You need to be logged in to comment.");
     }
   };
 
   return (
     <div className="mt-4">
-      <h3 className="text-lg text-white font-semibold mb-2">Comments</h3>
-      {comments.length === 0 ? (
-        <div className="bg-gray-700 p-2 rounded-lg mb-2 text-white">
-          No comments yet.
-        </div>
-      ) : (
-        comments.map((comment, index) => (
-          <div key={index} className="bg-gray-700 p-2 rounded-lg mb-2 text-white">
+      <h3 className="text-lg font-semibold text-white">Comments</h3>
+      <ul className="mt-2">
+        {comments.map((comment, index) => (
+          <li key={index} className="mb-2 text-white">
             {comment}
-          </div>
-        ))
-      )}
-      {token ? (
-        <form onSubmit={handleSubmit}>
-          <input
-            type="text"
-            className="w-full p-2 mb-2 border border-gray-600 rounded-lg bg-gray-900 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Add a comment"
-            value={newComment}
-            onChange={(e) => setNewComment(e.target.value)}
-          />
-          <button
-            type="submit"
-            className="bg-blue-600 hover:bg-blue-500 text-white py-2 px-4 rounded-lg"
-          >
-            Add Comment
-          </button>
-        </form>
-      ) : (
-        <p className="text-white">Log in to comment</p>
-      )}
+          </li>
+        ))}
+      </ul>
+      <div className="mt-2 flex items-center">
+        <input
+          type="text"
+          className="flex-grow p-2 border border-gray-600 rounded-lg bg-gray-900 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+          placeholder="Add a comment"
+          value={newComment}
+          onChange={(e) => setNewComment(e.target.value)}
+        />
+        <button
+          className="ml-2 bg-blue-600 hover:bg-blue-500 text-white py-2 px-4 rounded-lg"
+          onClick={submitComment}
+        >
+          Comment
+        </button>
+      </div>
     </div>
   );
 };
