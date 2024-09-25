@@ -9,6 +9,7 @@ const NavBar = () => {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
+  const [searchInput, setSearchInput] = useState("");
 
   const handleUserIconClick = async () => {
     setShowDropdown((prev) => !prev);
@@ -31,6 +32,16 @@ const NavBar = () => {
     }
   };
 
+  const handleSearch = async (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      if (searchInput.trim()) {
+        // Redirect to search results page and pass the search query
+        navigate(`/search?query=${encodeURIComponent(searchInput.trim())}`);
+      }
+    }
+  };
+
   const handleLogout = () => {
     localStorage.removeItem('id');
     localStorage.removeItem('token');
@@ -49,11 +60,14 @@ const NavBar = () => {
         <div className="mx-4">
           <img src={logo} className="w-10 h-10 mr-20" alt="Logo" />
         </div>
-        <form action="" className="relative flex items-center bg-gray-600 rounded-2xl flex-grow mx-4 ml-20 mr-20">
+        <form className="relative flex items-center bg-gray-600 rounded-2xl flex-grow mx-4 ml-20 mr-20">
           <input
             type="text"
             className="bg-gray-600 h-10 w-full text-white pl-10 pr-3 rounded-2xl"
             placeholder="Search"
+            value={searchInput}
+            onChange={(e) => {setSearchInput(e.target.value)}}
+            onKeyDown={handleSearch}  // Trigger search on pressing Enter
           />
           <MagnifyingGlassIcon className="absolute left-3 w-6 h-6 text-white" />
           

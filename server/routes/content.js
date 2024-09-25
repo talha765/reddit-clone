@@ -4,6 +4,54 @@ const router = express.Router();
 const inventspace = require("../models/InventSpace");
 const Requirement = require('../models/Requirement');
 const Research = require("../models/Research");
+const { Op } = require('sequelize');
+
+router.get('/search', async (req, res) => {
+  const query = req.query.query;
+  console.log("Search query received: ", query);  // Debugging
+
+  try {
+    const inventspaceResults = await inventspace.findAll({
+      where: {
+        [Op.or]: [
+          { title: { [Op.iLike]: `%${query}%` } },
+          { description: { [Op.iLike]: `%${query}%` } }
+        ]
+      }
+    });
+
+    const requirementResults = await Requirement.findAll({
+      where: {
+        [Op.or]: [
+          { title: { [Op.iLike]: `%${query}%` } },
+          { description: { [Op.iLike]: `%${query}%` } }
+        ]
+      }
+    });
+
+    const researchResults = await Research.findAll({
+      where: {
+        [Op.or]: [
+          { title: { [Op.iLike]: `%${query}%` } },
+          { description: { [Op.iLike]: `%${query}%` } }
+        ]
+      }
+    });
+
+    const results = {
+      inventspace: inventspaceResults,
+      requirements: requirementResults,
+      research: researchResults
+    };
+
+    console.log("Search results found: ", results);  // Debugging
+    res.status(200).json(results);
+  } catch (error) {
+    console.error('Error during search: ', error);  // Debugging
+    res.status(500).json({ error: 'An error occurred while searching' });
+  }
+});
+
 
 router.post("/post-invent/:id", async (req, res) => {
   const { title, description } = req.body;
