@@ -285,7 +285,7 @@ const Research = () => {
         <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex justify-center items-center">
           <div className="bg-gray-800 rounded-lg shadow-lg p-6 w-full max-w-lg text-white">
             <h2 className="text-lg text-white font-bold mb-4">Access Denied</h2>
-            <p className="text-white mb-4">Only researchers can add posts.</p>
+            <p className="text-white mb-4">Only researchers can add posts in Research.</p>
             <button
               className="bg-blue-600 hover:bg-blue-500 text-white py-2 px-4 rounded-lg"
               onClick={closeResearcherWarning}

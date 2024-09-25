@@ -283,7 +283,7 @@ const Requirements = () => {
         <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex justify-center items-center">
           <div className="bg-gray-800 rounded-lg shadow-lg p-6 w-full max-w-lg text-white">
             <h2 className="text-lg text-white font-bold mb-4">Access Denied</h2>
-            <p className="text-white mb-4">Only Company users are allowed to add posts in InventSpace.
+            <p className="text-white mb-4">Only Company users are allowed to add posts in Requirement.
 
 </p>
             <button
