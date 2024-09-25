@@ -103,22 +103,6 @@ const InventSpace = () => {
       });
   }, []);
 
-  // Function to handle user login
-  const handleLogin = (loginData) => {
-    axios.post("http://localhost:3000/api/login", loginData)
-      .then(response => {
-        const { token, userId } = response.data; // Adjust based on your API response
-        localStorage.setItem('token', token);
-        localStorage.setItem('id', userId);
-        setToken(token);
-        setUserId(userId); // Update userId if needed
-        closeLoginModal();
-      })
-      .catch(error => {
-        console.error("Login failed:", error);
-      });
-  };
-
   return (
     <div className="p-4 bg-gray-800 min-h-screen" style={{ paddingTop: "80px" }}>
       {/* Add New Post Button */}
@@ -163,7 +147,7 @@ const InventSpace = () => {
           {/* Comments and Actions */}
           <div className="mt-4 flex items-center justify-between text-white">
             <span className="flex items-center">
-              <FaCommentAlt className="mr-1" /> {post.comments.length} Comments
+              <FaCommentAlt className="mr-1" /> {post.comments.length}
             </span>
             <button
               className="text-white underline"

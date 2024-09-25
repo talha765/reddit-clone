@@ -53,9 +53,10 @@ const NavBar = () => {
           <input
             type="text"
             className="bg-gray-600 h-10 w-full text-white pl-10 pr-3 rounded-2xl"
-            placeholder="Search for solutions"
+            placeholder="Search"
           />
           <MagnifyingGlassIcon className="absolute left-3 w-6 h-6 text-white" />
+          
         </form>
         <button className="ml-10 mr-5 mx-2 bg-transparent focus:outline-none hover:bg-gradient-to-r hover:from-blue-900 hover:to-blue-900 p-2 rounded-full">
           <BellIcon className='w-7 h-7 text-white' />
