@@ -22,14 +22,14 @@ const App = () => (
 
       {/* Define the routes that will use the shared Layout */}
       <Route element={<Layout />}>
-      <Route path="/" element={<HomePage />} />
-      <Route path="/search" element={<SearchResults />} />
-    <Route path='/homepage' element={<HomePage />} />
-    <Route path="/qna" element={<InventSpace />} />
-    <Route path="/requirements" element={<Requirements />} />
-    <Route path="/communities" element={<Communities />} />
-    <Route path="/research" element={<Research />} />
-    <Route path="/about" element={<AboutUsPage />} />
+        <Route path="/" element={<InventSpace />} />
+        <Route path="/search" element={<SearchResults />} />
+        <Route path='/homepage' element={<HomePage />} />
+        <Route path="/qna" element={<InventSpace />} />
+        <Route path="/requirements" element={<Requirements />} />
+        <Route path="/communities" element={<Communities />} />
+        <Route path="/research" element={<Research />} />
+        <Route path="/about" element={<AboutUsPage />} />
 
 
         {/* Add a new route for post detail */}
