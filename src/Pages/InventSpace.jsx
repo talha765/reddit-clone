@@ -101,16 +101,19 @@ const InventSpace = () => {
   };
 
   const handleAddPost = () => {
-    const newPost = {
-      id: posts.length + 1,
-      title: newPostForm.title,
-      content: newPostForm.content,
-      likes: 0,
-      comments: [],
-    };
-    setPosts([newPost, ...posts]);
-    setNewPostForm({ title: "", content: "", userId: "" });
-    closeAddPostModal();
+    if (newPostForm.title && newPostForm.content && userId) {
+      axios.post(`http://localhost:3000/api/content/post-invent/${userId}`, {
+        title: newPostForm.title,
+        description: newPostForm.content,
+      }).then(() => {
+          const newPost = { ...newPostForm, id: userId, likes: 0, comments: [] };
+          setPosts([...posts, newPost]);
+          closeAddPostModal();
+      }).catch((err) => {
+            alert("Cannot add post");
+            console.log(err);
+      });
+    }
   };
 
   return (
