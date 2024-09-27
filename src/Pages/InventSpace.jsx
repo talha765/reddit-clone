@@ -159,8 +159,18 @@ const InventSpace = () => {
           onClick={() => openModal(post)}
         >
           <div className="flex">
-            {/* Upvote Button */}
-            <div className="mr-4 flex flex-col items-center">
+            {/* Post Details */}
+            <div className="flex-grow">
+              <h2 className="text-lg font-semibold text-white">{post.title}</h2>
+              <p className="mt-2 text-white">{post.content}</p>
+            </div>
+          </div>
+
+          {/* Comments and Actions */}
+          <div className="mt-4 flex items-center justify-between text-white">
+          <div className="flex">
+          {/* Upvote Button */}
+          <div className="mr-4 flex items-center">
               <button
                 className="text-white"
                 onClick={(e) => {
@@ -172,18 +182,10 @@ const InventSpace = () => {
               </button>
               <span className="text-white">{post.likes}</span>
             </div>
-            {/* Post Details */}
-            <div className="flex-grow">
-              <h2 className="text-lg font-semibold text-white">{post.title}</h2>
-              <p className="mt-2 text-white">{post.content}</p>
-            </div>
-          </div>
-
-          {/* Comments and Actions */}
-          <div className="mt-4 flex items-center justify-between text-white">
             <span className="flex items-center">
               <FaCommentAlt className="mr-1" /> {post.comments.length}
             </span>
+            </div>
             <button
               className="text-white underline"
               onClick={() => openModal(post)}
