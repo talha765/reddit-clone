@@ -69,7 +69,7 @@ const LandingPage = () => {
                             {invent.map((item, index) => (
                                 <div key={index} className="bg-gray-700 p-4 rounded-lg shadow-sm">
                                     <p className="text-white text-sm font-medium">
-                                        {_.truncate(item.title, { 'length': 20 })}
+                                        {_.truncate(item.title, { 'length': 10 })}
                                     </p>
                                 </div>
                             ))}
