@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { FaThumbsUp, FaCommentAlt, FaPlus } from "react-icons/fa";
 import axios from "axios";
+import _ from "lodash";
 
 const InventSpace = () => {
   const [userId, setUserId] = useState(localStorage.getItem("id"));
@@ -138,8 +139,9 @@ const InventSpace = () => {
               onClick={() => openModal(post)}
               style={{ maxWidth: "100%", height: "190px" }} // Reduced the height by 1 unit as requested
             >
-              <h2 className="text-xl font-semibold text-white">{post.title}</h2>
-              <p className="mt-2 text-white overflow-hidden text-ellipsis">{post.content}</p>
+              <h2 className="text-xl font-semibold text-white">{_.truncate(post.title, { length: 21 })}
+              </h2>
+              <p className="mt-2 text-white overflow-hidden text-ellipsis">{_.truncate(post.content, { length: 21 })}</p>
               <div className="mt-4 flex items-center justify-between text-white">
                 <div className="flex">
                   <div className="mr-4 flex items-center">
