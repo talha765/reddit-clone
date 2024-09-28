@@ -244,14 +244,14 @@ const InventSpace = () => {
               <div className="flex justify-end">
                 <button
                   type="submit"
-                  className="bg-blue-600 hover:bg-blue-500 text-white py-2 px-4 rounded-lg"
+                  className="w-full py-2 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-lg"
                 >
                   Submit Post
                 </button>
               </div>
             </form>
             <button
-              className="mt-4 bg-red-500 hover:bg-red-400 text-white py-2 px-4 rounded-lg"
+              className="mt-4 w-full py-2 bg-red-500 hover:bg-red-400 text-white font-bold rounded-lg"
               onClick={closeAddPostModal}
             >
               Close
@@ -284,7 +284,7 @@ const InventSpace = () => {
           <div className="bg-gray-800 rounded-lg shadow-lg p-6 w-full max-w-lg">
             <h2 className="text-lg text-white font-bold mb-4">Permission Denied</h2>
             <p className="text-white mb-4">
-              Only students are allowed to add posts. Please contact your administrator if you need access.
+              Only students are allowed to add posts.
             </p>
             <button
               className="mt-4 bg-red-500 hover:bg-red-400 text-white py-2 px-4 rounded-lg"
