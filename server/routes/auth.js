@@ -58,7 +58,7 @@ router.post('/login', async (req, res) => {
     if (!isValid) return res.status(400).json({ error: 'Invalid password' });
 
     // Generate JWT Token
-    const token = jwt.sign({ id: user.id }, JWT_SECRET, { expiresIn: '1h' });
+    const token = jwt.sign({ id: user.id }, JWT_SECRET);
 
     // Include user type in the response
     res.json({ message: 'Login successful', token, id: user.id, type: user.type });

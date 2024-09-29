@@ -12,6 +12,9 @@ const Community = require('./models/Community');
 const Post = require('./models/Post');
 const PostImage = require('./models/PostImage');
 const UserCommunity = require('./models/UserCommunity');
+const InventLike = require("./models/InventLike");
+const RequirementLike = require("./models/RequirementLike");
+const ResearchLike = require("./models/ResearchLike");
 
 
 const app = express();
@@ -50,12 +53,32 @@ PostImage.belongsTo(Post);
 User.belongsToMany(Community, { through: UserCommunity, as: 'communities' });  // User can join multiple communities
 User.hasMany(Post, { as: 'posts' });  // User can create many posts
 
-Community.hasMany(UserCommunity, { foreignKey: 'communityId' });
+Community.hasMany(UserCommunity, { foreignKey: 'communityId', as: 'user_communities' });
 
 UserCommunity.belongsTo(User, { foreignKey: 'userId' });
 UserCommunity.belongsTo(Community, { foreignKey: 'communityId' });
 
 User.hasMany(UserCommunity, { foreignKey: 'userId' });
+
+InventSpace.hasMany(InventLike); // A post can be liked by many users
+User.hasMany(InventLike); // A user can like many posts
+
+InventLike.belongsTo(User); // A like belongs to a user
+InventLike.belongsTo(InventSpace); // A like belongs to a post
+
+InventSpace.hasMany(RequirementLike); // A post can be liked by many users
+User.hasMany(RequirementLike); // A user can like many posts
+
+RequirementLike.belongsTo(User); // A like belongs to a user
+RequirementLike.belongsTo(InventSpace); // A like belongs to a post
+
+InventSpace.hasMany(ResearchLike); // A post can be liked by many users
+User.hasMany(ResearchLike); // A user can like many posts
+
+ResearchLike.belongsTo(User); // A like belongs to a user
+ResearchLike.belongsTo(InventSpace); // A like belongs to a post
+
+sequelize.sync({ alter: true });   
 
 // Sync the database and start the server
 sequelize.sync({ force: false })

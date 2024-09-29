@@ -2,9 +2,6 @@
 const { DataTypes } = require('sequelize');
 const bcrypt = require('bcryptjs');
 const sequelize = require('../src/db');
-const Post = require('./Post');
-const Community = require('./Community');
-const UserCommunity = require('./UserCommunity');
 
 const User = sequelize.define('user', {
   firstName: {

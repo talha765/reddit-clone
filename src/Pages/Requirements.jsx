@@ -18,7 +18,7 @@ const Requirements = () => {
   });
 
   // State to manage the token
-  const [token, setToken] = useState(localStorage.getItem('token'));
+  const [token, setToken] = useState(localStorage.getItem("token"));
 
   // Fetch user type function
   const fetchUserType = async () => {
@@ -35,7 +35,10 @@ const Requirements = () => {
         },
       };
 
-      const response = await axios.get("http://localhost:3000/api/auth/user", config);
+      const response = await axios.get(
+        "http://localhost:3000/api/auth/user",
+        config
+      );
       setUserType(response.data.type);
     } catch (error) {
       console.error("Error fetching user type:", error);
@@ -43,11 +46,28 @@ const Requirements = () => {
   };
 
   // Handle liking posts
-  const handleLike = (postId) => {
-    const updatedPosts = posts.map((post) =>
-      post.id === postId ? { ...post, likes: post.likes + 1 } : post
-    );
-    setPosts(updatedPosts);
+  const handleLike = async (postId) => {
+    try {
+      const response = await axios.post(
+        `http://localhost:3000/api/content/requirementlike/${postId}`,
+        { userId }
+      );
+      setPosts((prevPosts) =>
+        prevPosts.map((post) =>
+          post.id === postId
+            ? {
+                ...post,
+                likes:
+                  response.data.message === "Liked"
+                    ? post.likes + 1
+                    : post.likes - 1,
+              }
+            : post
+        )
+      );
+    } catch (error) {
+      console.error("Error liking post:", error);
+    }
   };
 
   // Handle adding comments
@@ -100,17 +120,25 @@ const Requirements = () => {
   // Handle submitting a new post
   const handlePostSubmit = () => {
     if (newPostForm.title && newPostForm.content && userId) {
-      axios.post(`http://localhost:3000/api/content/post-requirement/${userId}`, {
-        title: newPostForm.title,
-        description: newPostForm.content,
-      }).then(() => {
-          const newPost = { ...newPostForm, id: userId, likes: 0, comments: [] };
+      axios
+        .post(`http://localhost:3000/api/content/post-requirement/${userId}`, {
+          title: newPostForm.title,
+          description: newPostForm.content,
+        })
+        .then(() => {
+          const newPost = {
+            ...newPostForm,
+            id: userId,
+            likes: 0,
+            comments: [],
+          };
           setPosts([...posts, newPost]);
           closeAddPostModal();
-      }).catch((err) => {
-            alert("Cannot add post");
-            console.log(err);
-      });
+        })
+        .catch((err) => {
+          alert("Cannot add post");
+          console.log(err);
+        });
     }
   };
 
@@ -136,7 +164,10 @@ const Requirements = () => {
   }, []);
 
   return (
-    <div className="p-4 bg-gray-800 min-h-screen" style={{ paddingTop: "80px" }}>
+    <div
+      className="p-4 bg-gray-800 min-h-screen"
+      style={{ paddingTop: "80px" }}
+    >
       {/* Add New Post Button */}
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold text-white">Requirements</h1>
@@ -194,7 +225,9 @@ const Requirements = () => {
       {showModal && activePost && (
         <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex justify-center items-center">
           <div className="bg-gray-800 rounded-lg shadow-lg p-6 w-full max-w-3xl">
-            <h2 className="text-lg text-white font-bold mb-4">{activePost.title}</h2>
+            <h2 className="text-lg text-white font-bold mb-4">
+              {activePost.title}
+            </h2>
             <p className="text-white mb-4">{activePost.content}</p>
 
             {/* Comments Section */}
@@ -283,9 +316,9 @@ const Requirements = () => {
         <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex justify-center items-center">
           <div className="bg-gray-800 rounded-lg shadow-lg p-6 w-full max-w-lg text-white">
             <h2 className="text-lg text-white font-bold mb-4">Access Denied</h2>
-            <p className="text-white mb-4">Only Company users are allowed to add posts in Requirement.
-
-</p>
+            <p className="text-white mb-4">
+              Only Company users are allowed to add posts in Requirement.
+            </p>
             <button
               className="bg-blue-600 mt-4 text-white py-2 px-4 rounded-lg transition duration-200 ease-in-out"
               onClick={closeCompanyWarning}

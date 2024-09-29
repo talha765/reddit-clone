@@ -43,12 +43,20 @@ const Research = () => {
   };
 
   // Handle liking posts
-  const handleLike = (postId) => {
-    const updatedPosts = posts.map((post) =>
-      post.id === postId ? { ...post, likes: post.likes + 1 } : post
-    );
-    setPosts(updatedPosts);
-  };
+  const handleLike = async (postId) => {
+    try {
+        const response = await axios.post(`http://localhost:3000/api/content/researchlike/${postId}`, { userId });
+        setPosts(prevPosts =>
+            prevPosts.map(post =>
+                post.id === postId 
+                    ? { ...post, likes: response.data.message === "Liked" ? post.likes + 1 : post.likes - 1 }
+                    : post
+            )
+        );
+    } catch (error) {
+        console.error("Error liking post:", error);
+    }
+};
 
   // Handle adding comments
   const handleAddComment = (postId, comment) => {

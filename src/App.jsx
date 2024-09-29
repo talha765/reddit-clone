@@ -12,6 +12,7 @@ import LandingPage from "./Pages/LandingPage";
 import ProtectedRoute from "./Components/ProtectedRoute";
 import AboutUsPage from "./Pages/AboutUs";
 import SearchResults from "./Pages/SearchResults";
+import CommunityPosts from "./pages/CommunityPosts";
 
 const App = () => (
   <Router>
@@ -30,7 +31,7 @@ const App = () => (
         <Route path="/communities" element={<Communities />} />
         <Route path="/research" element={<Research />} />
         <Route path="/about" element={<AboutUsPage />} />
-
+        <Route path="/community/:communityId" element={<CommunityPosts />} />
 
         {/* Add a new route for post detail */}
       </Route>

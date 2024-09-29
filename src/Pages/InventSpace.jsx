@@ -4,6 +4,7 @@ import axios from "axios";
 
 const InventSpace = () => {
   const [userId, setUserId] = useState(localStorage.getItem("id"));
+  const [topCommunities, setTopCommunities] = useState([]);
   const [userType, setUserType] = useState("");
   const [posts, setPosts] = useState([]);
   const [showModal, setShowModal] = useState(false);
@@ -19,6 +20,27 @@ const InventSpace = () => {
 
   const [token, setToken] = useState(localStorage.getItem("token"));
 
+  useEffect(() => {
+    axios
+      .get("http://localhost:3000/api/content/get-top-communities")
+      .then((response) => {
+        // Logic for top communities, sorted by member count
+        console.log("API Response:", response.data); // Check the response structure
+        const unfilteredCommunities = response.data;
+
+        // Sort all communities by memberCount in descending order
+        const sortedByMemberCount = unfilteredCommunities.sort(
+          (a, b) => b.memberCount - a.memberCount
+        );
+
+        // Set the top 5 communities
+        setTopCommunities(sortedByMemberCount.slice(0, 5));
+      })
+      .catch((error) => {
+        console.error("Error fetching top communities:", error);
+      });
+  }, []);
+
   const fetchUserType = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -31,7 +53,10 @@ const InventSpace = () => {
           Authorization: `Bearer ${token}`,
         },
       };
-      const response = await axios.get("http://localhost:3000/api/auth/user", config);
+      const response = await axios.get(
+        "http://localhost:3000/api/auth/user",
+        config
+      );
       setUserType(response.data.type);
     } catch (error) {
       console.error("Error fetching user type:", error);
@@ -39,33 +64,30 @@ const InventSpace = () => {
   };
 
   useEffect(() => {
-    axios
-      .get("http://localhost:3000/api/content/get-invent")
-      .then((response) => {
-        const formattedPosts = response.data.map((post) => ({
-          id: post.id,
-          title: post.title,
-          content: post.description,
-          likes: post.likes || 0,
-          comments: post.comments || [],
-        }));
-        setPosts(formattedPosts);
-      })
-      .catch((error) => {
-        console.error("Error fetching posts:", error);
-      });
+    fetchUserType();
+    axios.get("http://localhost:3000/api/content/get-invent")
+        .then((response) => {
+            const formattedPosts = response.data.map((post) => ({
+                id: post.id,
+                title: post.title,
+                content: post.description,
+                likes: post.likes,
+            }));
+            setPosts(formattedPosts);
+        })
+        .catch((error) => {
+            console.error("Error fetching posts:", error);
+        });
+}, []);
 
-    fetchUserType(); // Fetch user type on mount
-  }, []);
-
-  const handleAddComment = (postId, comment) => {
-    const updatedPosts = posts.map((post) =>
-      post.id === postId
-        ? { ...post, comments: [...post.comments, comment] }
-        : post
-    );
-    setPosts(updatedPosts);
-  };
+  // const handleAddComment = (postId, comment) => {
+  //   const updatedPosts = posts.map((post) =>
+  //     post.id === postId
+  //       ? { ...post, comments: [...post.comments, comment] }
+  //       : post
+  //   );
+  //   setPosts(updatedPosts);
+  // };
 
   const openModal = (post) => {
     setActivePost(post);
@@ -93,31 +115,50 @@ const InventSpace = () => {
     setShowLoginModal(false);
   };
 
-  const handleLike = (postId) => {
-    const updatedPosts = posts.map((post) =>
-      post.id === postId ? { ...post, likes: post.likes + 1 } : post
-    );
-    setPosts(updatedPosts);
-  };
+  const handleLike = async (postId) => {
+    try {
+        const response = await axios.post(`http://localhost:3000/api/content/inventlike/${postId}`, { userId });
+        setPosts(prevPosts =>
+            prevPosts.map(post =>
+                post.id === postId 
+                    ? { ...post, likes: response.data.message === "Liked" ? post.likes + 1 : post.likes - 1 }
+                    : post
+            )
+        );
+    } catch (error) {
+        console.error("Error liking post:", error);
+    }
+};
 
   const handleAddPost = () => {
     if (newPostForm.title && newPostForm.content && userId) {
-      axios.post(`http://localhost:3000/api/content/post-invent/${userId}`, {
-        title: newPostForm.title,
-        description: newPostForm.content,
-      }).then(() => {
-          const newPost = { ...newPostForm, id: userId, likes: 0, comments: [] };
+      axios
+        .post(`http://localhost:3000/api/content/post-invent/${userId}`, {
+          title: newPostForm.title,
+          description: newPostForm.content,
+        })
+        .then(() => {
+          const newPost = {
+            ...newPostForm,
+            id: userId,
+            likes: 0,
+            comments: [],
+          };
           setPosts([...posts, newPost]);
           closeAddPostModal();
-      }).catch((err) => {
-            alert("Cannot add post");
-            console.log(err);
-      });
+        })
+        .catch((err) => {
+          alert("Cannot add post");
+          console.log(err);
+        });
     }
   };
 
   return (
-    <div className="p-4 bg-gray-800 min-h-screen" style={{ paddingTop: "80px", overflow: "hidden" }}>
+    <div
+      className="p-4 bg-gray-800 min-h-screen"
+      style={{ paddingTop: "80px", overflow: "hidden" }}
+    >
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 h-full">
         {/* Main Posts Section */}
         <div className="col-span-2">
@@ -139,26 +180,31 @@ const InventSpace = () => {
               style={{ maxWidth: "100%", height: "190px" }} // Reduced the height by 1 unit as requested
             >
               <h2 className="text-xl font-semibold text-white">{post.title}</h2>
-              <p className="mt-2 text-white overflow-hidden text-ellipsis">{post.content}</p>
+              <p className="mt-2 text-white overflow-hidden text-ellipsis">
+                {post.content}
+              </p>
               <div className="mt-4 flex items-center justify-between text-white">
                 <div className="flex">
                   <div className="mr-4 flex items-center">
-                    <button
-                      className="text-white"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleLike(post.id);
-                      }}
-                    >
-                      <FaThumbsUp />
-                    </button>
-                    <span className="text-white ml-2">{post.likes}</span>
+                    <span className="flex items-center text-white ml-2">
+                      <FaThumbsUp
+                        className={`mr-1`} // Change color based on like state
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleLike(post.id);
+                        }}
+                      />
+                      {post.likes}
+                    </span>
                   </div>
-                  <span className="flex items-center">
+                  {/* <span className="flex items-center">
                     <FaCommentAlt className="mr-1" /> {post.comments.length}
-                  </span>
+                  </span> */}
                 </div>
-                <button className="text-white underline" onClick={() => openModal(post)}>
+                <button
+                  className="text-white underline"
+                  onClick={() => openModal(post)}
+                >
                   View Post
                 </button>
               </div>
@@ -168,22 +214,26 @@ const InventSpace = () => {
 
         {/* Top Communities Section */}
         <div className="col-span-1">
-          <div className="bg-gray-900 p-4 rounded-lg shadow-md" style={{ width: "100%", minHeight: "600px" }}> {/* Increased overall container height */}
-            <h2 className="text-xl font-bold text-white mb-4 text-center">Top Communities</h2>
+          <div
+            className="bg-gray-900 p-4 rounded-lg shadow-md"
+            style={{ width: "100%", minHeight: "600px" }}
+          >
+            {" "}
+            {/* Increased overall container height */}
+            <h2 className="text-xl font-bold text-white mb-4 text-center">
+              Top Communities
+            </h2>
             <ul className="space-y-9">
+              {topCommunities.map((community) => (
+                <li
+                  key={community.id}
+                  className="bg-gray-800 p-4 rounded-md text-white"
+                  style={{ height: "100px" }}
+                >
+                  {community.name}
+                </li>
+              ))}
               {/* Limited to only 4 communities, increased height of each community */}
-              <li className="bg-gray-800 p-4 rounded-md text-white" style={{ height: "100px" }}>
-                Community 1
-              </li>
-              <li className="bg-gray-800 p-4 rounded-md text-white" style={{ height: "100px" }}>
-                Community 2
-              </li>
-              <li className="bg-gray-800 p-4 rounded-md text-white" style={{ height: "100px" }}>
-                Community 3
-              </li>
-              <li className="bg-gray-800 p-4 rounded-md text-white" style={{ height: "100px" }}>
-                Community 4
-              </li>
             </ul>
           </div>
         </div>
@@ -193,16 +243,18 @@ const InventSpace = () => {
       {showModal && activePost && (
         <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex justify-center items-center">
           <div className="bg-gray-800 rounded-lg shadow-lg p-6 w-full max-w-3xl">
-            <h2 className="text-lg text-white font-bold mb-4">{activePost.title}</h2>
+            <h2 className="text-lg text-white font-bold mb-4">
+              {activePost.title}
+            </h2>
             <p className="text-white mb-4">{activePost.content}</p>
 
             {/* Comments Section */}
-            <CommentSection
+            {/* <CommentSection
               postId={activePost.id}
               comments={activePost.comments}
               handleAddComment={handleAddComment}
               token={token} // Pass token to CommentSection
-            />
+            /> */}
 
             {/* Modal Close Button */}
             <button
@@ -231,14 +283,18 @@ const InventSpace = () => {
                 className="w-full p-2 mb-4 border border-gray-600 rounded-lg bg-gray-900 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Post Title"
                 value={newPostForm.title}
-                onChange={(e) => setNewPostForm({ ...newPostForm, title: e.target.value })}
+                onChange={(e) =>
+                  setNewPostForm({ ...newPostForm, title: e.target.value })
+                }
                 required
               />
               <textarea
                 className="w-full p-2 mb-4 border border-gray-600 rounded-lg bg-gray-900 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Post Content"
                 value={newPostForm.content}
-                onChange={(e) => setNewPostForm({ ...newPostForm, content: e.target.value })}
+                onChange={(e) =>
+                  setNewPostForm({ ...newPostForm, content: e.target.value })
+                }
                 required
               />
               <div className="flex justify-end">
@@ -264,9 +320,15 @@ const InventSpace = () => {
       {showLoginModal && (
         <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex justify-center items-center">
           <div className="bg-gray-800 rounded-lg shadow-lg p-6 w-full max-w-lg">
-            <h2 className="text-lg text-white font-bold mb-4">Login Required</h2>
+            <h2 className="text-lg text-white font-bold mb-4">
+              Login Required
+            </h2>
             <p className="text-white mb-4">
-              Please <a href="/login" className="text-blue-500 underline">login</a> to add a post.
+              Please{" "}
+              <a href="/login" className="text-blue-500 underline">
+                login
+              </a>{" "}
+              to add a post.
             </p>
             <button
               className="mt-4 bg-red-500 hover:bg-red-400 text-white py-2 px-4 rounded-lg"
@@ -282,9 +344,12 @@ const InventSpace = () => {
       {showStudentWarning && (
         <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex justify-center items-center">
           <div className="bg-gray-800 rounded-lg shadow-lg p-6 w-full max-w-lg">
-            <h2 className="text-lg text-white font-bold mb-4">Permission Denied</h2>
+            <h2 className="text-lg text-white font-bold mb-4">
+              Permission Denied
+            </h2>
             <p className="text-white mb-4">
-              Only students are allowed to add posts. Please contact your administrator if you need access.
+              Only students are allowed to add posts. Please contact your
+              administrator if you need access.
             </p>
             <button
               className="mt-4 bg-red-500 hover:bg-red-400 text-white py-2 px-4 rounded-lg"
@@ -299,70 +364,76 @@ const InventSpace = () => {
   );
 };
 
-const CommentSection = ({ postId, comments, handleAddComment, token }) => {
-  const [newComment, setNewComment] = useState("");
+// const CommentSection = ({ postId, comments, handleAddComment, token }) => {
+//   const [newComment, setNewComment] = useState("");
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
 
-    try {
-      const config = {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      };
+//     try {
+//       const config = {
+//         headers: {
+//           Authorization: `Bearer ${token}`,
+//         },
+//       };
 
-      await axios.post(
-        "http://localhost:3000/api/content/createComment",
-        {
-          postId: postId,
-          description: newComment,
-        },
-        config
-      );
+//       await axios.post(
+//         "http://localhost:3000/api/content/createComment",
+//         {
+//           postId: postId,
+//           description: newComment,
+//         },
+//         config
+//       );
 
-      const comment = {
-        id: Date.now(),
-        content: newComment,
-      };
+//       const comment = {
+//         id: Date.now(),
+//         content: newComment,
+//       };
 
-      handleAddComment(postId, comment);
-      setNewComment("");
-    } catch (error) {
-      console.error("Error adding comment:", error);
-    }
-  };
+//       handleAddComment(postId, comment);
+//       setNewComment("");
+//     } catch (error) {
+//       console.error("Error adding comment:", error);
+//     }
+//   };
 
-  return (
-    <div>
-      <h3 className="text-white font-bold mb-2">Comments</h3>
-      {comments.length > 0 ? (
-        <ul className="space-y-2 mb-4">
-          {comments.map((comment) => (
-            <li key={comment.id} className="p-2 bg-gray-700 rounded-md text-white">
-              {comment.content}
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p className="text-gray-400 mb-4">No comments yet.</p>
-      )}
+//   return (
+//     <div>
+//       <h3 className="text-white font-bold mb-2">Comments</h3>
+//       {comments.length > 0 ? (
+//         <ul className="space-y-2 mb-4">
+//           {comments.map((comment) => (
+//             <li
+//               key={comment.id}
+//               className="p-2 bg-gray-700 rounded-md text-white"
+//             >
+//               {comment.content}
+//             </li>
+//           ))}
+//         </ul>
+//       ) : (
+//         <p className="text-gray-400 mb-4">No comments yet.</p>
+//       )}
 
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          className="w-full p-2 mb-2 border border-gray-600 rounded-lg bg-gray-900 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-          placeholder="Add a comment..."
-          value={newComment}
-          onChange={(e) => setNewComment(e.target.value)}
-          required
-        />
-        <button type="submit" className="bg-blue-600 hover:bg-blue-500 text-white py-2 px-4 rounded-lg">
-          Add Comment
-        </button>
-      </form>
-    </div>
-  );
-};
+//       <form onSubmit={handleSubmit}>
+//         <input
+//           type="text"
+//           className="w-full p-2 mb-2 border border-gray-600 rounded-lg bg-gray-900 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+//           placeholder="Add a comment..."
+//           value={newComment}
+//           onChange={(e) => setNewComment(e.target.value)}
+//           required
+//         />
+//         <button
+//           type="submit"
+//           className="bg-blue-600 hover:bg-blue-500 text-white py-2 px-4 rounded-lg"
+//         >
+//           Add Comment
+//         </button>
+//       </form>
+//     </div>
+//   );
+// };
 
 export default InventSpace;

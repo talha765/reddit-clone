@@ -10,4 +10,9 @@ module.exports = sequelize.define("requirement", {
     type: DataTypes.TEXT,
     allowNull: false,
   },
+  likes: {
+    // Adding likes field
+    type: DataTypes.INTEGER,
+    defaultValue: 0,
+  },
 });
