@@ -1,6 +1,6 @@
 import { Outlet } from 'react-router-dom';
 import NavBar from './NavBar';
-import SideBar from './SideBar';
+import SideBar from './sidebar';
 import LandingNavbar from './LandingNavbar';
 import { useState, useEffect } from 'react';
 
