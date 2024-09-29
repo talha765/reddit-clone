@@ -2,8 +2,8 @@ import React from 'react';
 
 const AboutUsPage = () => {
     return (
-        <div className="flex flex-col bg-gray-800 text-white p-10">
-            <div className="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="flex flex-col bg-gray-800 text-white p-10 h-screen"> {/* Add h-screen to make it full height */}
+            <div className="flex-flex mt-10 grid grid-cols-1 lg:grid-cols-2 gap-8"> {/* Added flex-1 here */}
                 {/* About Us Section */}
                 <section className="bg-gray-900 p-6 rounded-lg">
                     <h1 className="text-3xl font-semibold mb-4">About Us</h1>
@@ -23,7 +23,7 @@ const AboutUsPage = () => {
             </div>
 
             {/* Values, Contact, Get Involved */}
-            <div className="mt-10 grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="flex flex mt-10 grid grid-cols-1 lg:grid-cols-3 gap-8"> {/* Added flex-1 here */}
                 {/* Our Values Section */}
                 <section className="bg-gray-900 p-6 rounded-lg">
                     <h2 className="text-3xl font-semibold mb-4">Our Values</h2>

@@ -22,7 +22,7 @@ const App = () => (
 
       {/* Define the routes that will use the shared Layout */}
       <Route element={<Layout />}>
-        <Route path="/" element={<HomePage />} />
+        <Route path="/" element={<AboutUsPage />} />
         <Route path="/search" element={<SearchResults />} />
         <Route path='/homepage' element={<HomePage />} />
         <Route path="/qna" element={<InventSpace />} />
