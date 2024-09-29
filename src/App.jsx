@@ -13,6 +13,9 @@ import ProtectedRoute from "./Components/ProtectedRoute";
 import AboutUsPage from "./Pages/AboutUs";
 import SearchResults from "./Pages/SearchResults";
 import CommunityPosts from "./pages/CommunityPosts";
+import Invent_Page from "./Pages/InventSpacePage";
+import Requirement_Page from "./Pages/RequirementPage";
+import Research_Page from "./Pages/ResearchPage";
 
 const App = () => (
   <Router>
@@ -23,16 +26,21 @@ const App = () => (
 
       {/* Define the routes that will use the shared Layout */}
       <Route element={<Layout />}>
-        <Route path="/" element={<AboutUsPage />} />
+      <Route path="/homepage" element={<HomePage />} />
+        <Route path="/" element={<HomePage />} />
         <Route path="/search" element={<SearchResults />} />
-        <Route path='/homepage' element={<HomePage />} />
         <Route path="/qna" element={<InventSpace />} />
         <Route path="/requirements" element={<Requirements />} />
         <Route path="/communities" element={<Communities />} />
         <Route path="/research" element={<Research />} />
         <Route path="/about" element={<AboutUsPage />} />
         <Route path="/community/:communityId" element={<CommunityPosts />} />
-
+        <Route path="/invent-post/:postId" element={<Invent_Page />} />
+        <Route
+          path="/requirement-post/:postId"
+          element={<Requirement_Page />}
+        />
+        <Route path="/research-post/:postId" element={<Research_Page />} />
         {/* Add a new route for post detail */}
       </Route>
     </Routes>

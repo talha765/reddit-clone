@@ -11,7 +11,104 @@ const Post = require("../models/Post");
 const InventLike = require("../models/InventLike");
 const RequirementLike = require("../models/RequirementLike");
 const ResearchLike = require("../models/ResearchLike");
+const PostLike = require('../models/PostLike');
+const InventComment = require('../models/InventComment');
+const RequirementComment = require('../models/RequirementComment');
+const ResearchComment = require('../models/ResearchComment');
 const sequelize = require("../src/db");
+
+router.post('/add-invent-comment/:postId', async (req, res) => {
+  const { userId, content } = req.body;
+  const {postId} = req.params; // Assuming user ID is in the token
+
+  try {
+    const comment = await InventComment.create({
+      postId,
+      userId,
+      content,
+    });
+    await inventspace.increment('commentsCount', { where: { id: postId } });
+    res.status(201).json({ message: 'Comment added successfully', comment });
+  } catch (error) {
+    res.status(500).json({ error: error });
+  }
+});
+
+router.get('/inventspace/:postId/comments', async (req, res) => {
+  const { postId } = req.params;
+
+  try {
+    const comments = await InventComment.findAll({
+      where: { postId },
+      include: ['user'], // Include user details
+    });
+    res.status(200).json(comments);
+  } catch (error) {
+    res.status(500).json({ error: 'Error fetching comments' });
+  }
+});
+
+router.post('/add-requirement-comment/:postId', async (req, res) => {
+  const { userId, content } = req.body;
+  const {postId} = req.params; // Assuming user ID is in the token
+
+  try {
+    const comment = await RequirementComment.create({
+      postId,
+      userId,
+      content,
+    });
+    await Requirement.increment('commentsCount', { where: { id: postId } });
+    res.status(201).json({ message: 'Comment added successfully', comment });
+  } catch (error) {
+    res.status(500).json({ error: error });
+  }
+});
+
+router.get('/requirement/:postId/comments', async (req, res) => {
+  const { postId } = req.params;
+
+  try {
+    const comments = await RequirementComment.findAll({
+      where: { postId },
+      include: ['user'], // Include user details
+    });
+    res.status(200).json(comments);
+  } catch (error) {
+    res.status(500).json({ error: 'Error fetching comments' });
+  }
+});
+
+router.post('/add-research-comment/:postId', async (req, res) => {
+  const { userId, content } = req.body;
+  const {postId} = req.params; // Assuming user ID is in the token
+
+  try {
+    const comment = await ResearchComment.create({
+      postId,
+      userId,
+      content,
+    });
+    await Research.increment('commentsCount', { where: { id: postId } });
+    res.status(201).json({ message: 'Comment added successfully', comment });
+  } catch (error) {
+    res.status(500).json({ error: error });
+  }
+});
+
+router.get('/research/:postId/comments', async (req, res) => {
+  const { postId } = req.params;
+
+  try {
+    const comments = await ResearchComment.findAll({
+      where: { postId },
+      include: ['user'], // Include user details
+    });
+    res.status(200).json(comments);
+  } catch (error) {
+    res.status(500).json({ error: 'Error fetching comments' });
+  }
+});
 
 router.post('/inventlike/:postId', async (req, res) => {
   const { userId } = req.body;
@@ -27,6 +124,28 @@ router.post('/inventlike/:postId', async (req, res) => {
       } else {
           await InventLike.create({ userId, postId }); // Like
           await inventspace.increment('likes', { where: { id: postId } }); // Increment likes count
+          return res.json({ message: 'Liked' });
+      }
+      
+  } catch (error) {
+      res.status(500).json({ error: 'Error processing like' });
+  }
+});
+
+router.post('/postlike/:postId', async (req, res) => {
+  const { userId } = req.body;
+  const { postId } = req.params;
+
+  try {
+      const existingLike = await PostLike.findOne({ where: { userId, postId } });
+      
+      if (existingLike) {
+          await existingLike.destroy(); // Unlike
+          await Post.decrement('likes', { where: { id: postId } }); // Decrement likes count
+          return res.json({ message: 'Unliked' });
+      } else {
+          await PostLike.create({ userId, postId }); // Like
+          await Post.increment('likes', { where: { id: postId } }); // Increment likes count
           return res.json({ message: 'Liked' });
       }
       

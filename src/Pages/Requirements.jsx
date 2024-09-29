@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { FaThumbsUp, FaCommentAlt, FaPlus } from "react-icons/fa";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import _ from "lodash";
 
 const Requirements = () => {
+  const navigate = useNavigate();
   const [userId, setUserId] = useState(localStorage.getItem("id"));
+  const [topCommunities, setTopCommunities] = useState([]);
   const [userType, setUserType] = useState("");
   const [posts, setPosts] = useState([]);
   const [showModal, setShowModal] = useState(false);
@@ -19,6 +23,28 @@ const Requirements = () => {
 
   // State to manage the token
   const [token, setToken] = useState(localStorage.getItem("token"));
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:3000/api/content/get-top-communities")
+      .then((response) => {
+        // Logic for top communities, sorted by member count
+        console.log("API Response:", response.data); // Check the response structure
+        const unfilteredCommunities = response.data;
+
+        // Sort all communities by memberCount in descending order
+        const sortedByMemberCount = unfilteredCommunities.sort(
+          (a, b) => b.memberCount - a.memberCount
+        );
+
+        // Set the top 5 communities
+        setTopCommunities(sortedByMemberCount.slice(0, 5));
+        console.log("top communities: ", topCommunities);
+      })
+      .catch((error) => {
+        console.error("Error fetching top communities:", error);
+      });
+  }, []);
 
   const fetchUserType = async () => {
     try {
@@ -139,27 +165,59 @@ const Requirements = () => {
   };
 
   useEffect(() => {
+    fetchUserType();
+    
     axios
       .get("http://localhost:3000/api/content/get-requirements")
-      .then((response) => {
-        const formattedPosts = response.data.map((post) => ({
-          id: post.id,
-          title: post.title,
-          content: post.description,
-          likes: post.likes || 0,
-          comments: post.comments || [],
-        }));
-        setPosts(formattedPosts);
+      .then(async (response) => {
+        const posts = response.data;
+  
+        // Fetch comments for each post in parallel using Promise.all
+        const postsWithComments = await Promise.all(
+          posts.map(async (post) => {
+            try {
+              // Fetch comments for each post
+              const commentsResponse = await axios.get(
+                `http://localhost:3000/api/content/requirement/${post.id}/comments`
+              );
+              const comments = commentsResponse.data;
+  
+              // Return post with comments included
+              return {
+                id: post.id,
+                title: post.title,
+                content: post.description,
+                likes: post.likes,
+                comments: comments || [],  // Include fetched comments
+                commentsCount: comments.length || 0,  // Update comments count based on fetched comments
+              };
+            } catch (error) {
+              console.error(`Error fetching comments for post ${post.id}:`, error);
+              return {
+                id: post.id,
+                title: post.title,
+                content: post.description,
+                likes: post.likes,
+                comments: [],  // Default to empty comments if error occurs
+                commentsCount: 0,
+              };
+            }
+          })
+        );
+  
+        // Set the formatted posts with comments
+        setPosts(postsWithComments);
       })
       .catch((error) => {
         console.error("Error fetching posts:", error);
       });
-
-    fetchUserType(); // Fetch user type on mount
-  }, []);
+  }, [posts]);
 
   return (
-    <div className="p-4 bg-gray-800 min-h-screen" style={{ paddingTop: "80px" }}>
+    <div
+      className="p-4 bg-gray-800 min-h-screen"
+      style={{ paddingTop: "80px" }}
+    >
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 h-full">
         {/* Main Posts Section */}
         <div className="col-span-2">
@@ -177,32 +235,42 @@ const Requirements = () => {
             <div
               key={post.id}
               className="mb-6 p-4 bg-gray-900 rounded-lg shadow-md border border-gray-600 transition duration-200 ease-in-out hover:cursor-pointer hover:bg-gray-700"
-              onClick={() => openModal(post)}
-              style={{ maxWidth: "100%", height: "190px" }} // Reduced the height by 1 unit as requested
+              onClick={() => navigate(`/requirement-post/${post.id}`, { state: { post } })}
+              style={{ maxWidth: "100%", height: "150px" }} // Reduced the height by 1 unit as requested
             >
-              <h2 className="text-xl font-semibold text-white">{post.title}</h2>
-              <p className="mt-2 text-white overflow-hidden text-ellipsis">{post.content}</p>
-              <div className="mt-4 flex items-center justify-between text-white">
+             <h2 className="text-xl font-semibold text-white">
+                {_.truncate(post.title, { length: 30 })}
+              </h2>
+              <p className="mt-2 text-white overflow-hidden text-ellipsis">
+                {_.truncate(post.content, { length: 30 })}
+              </p>
+              <div className="mt-4 flex items-end justify-between text-white ">
                 <div className="flex">
                   <div className="mr-4 flex items-center">
-                    <button
-                      className="text-white"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleLike(post.id);
-                      }}
-                    >
-                      <FaThumbsUp />
-                    </button>
-                    <span className="text-white ml-2">{post.likes}</span>
+                    <span className="flex items-center text-white ml-2">
+                      <FaThumbsUp
+                        className={`mr-1`} // Change color based on like state
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleLike(post.id);
+                        }}
+                      />
+                      {post.likes}
+                    </span>
                   </div>
                   <span className="flex items-center">
                     <FaCommentAlt className="mr-1" /> {post.comments.length}
                   </span>
                 </div>
-                <button className="text-white underline" onClick={() => openModal(post)}>
+                {/* <button
+                  className="text-white underline"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    navigate(`/requirement-post/${post}`);
+                  }}
+                >
                   View Post
-                </button>
+                </button> */}
               </div>
             </div>
           ))}
@@ -210,21 +278,25 @@ const Requirements = () => {
 
         {/* Top Communities Section */}
         <div className="col-span-1">
-          <div className="bg-gray-900 p-4 rounded-lg shadow-md" style={{ width: "100%", minHeight: "600px" }}>
-            <h2 className="text-xl font-bold text-white mb-4 text-center">Top Communities</h2>
-            <ul className="space-y-9">
-              <li className="bg-gray-800 p-4 rounded-md text-white" style={{ height: "100px" }}>
-                Community 1
-              </li>
-              <li className="bg-gray-800 p-4 rounded-md text-white" style={{ height: "100px" }}>
-                Community 2
-              </li>
-              <li className="bg-gray-800 p-4 rounded-md text-white" style={{ height: "100px" }}>
-                Community 3
-              </li>
-              <li className="bg-gray-800 p-4 rounded-md text-white" style={{ height: "100px" }}>
-                Community 4
-              </li>
+          <div
+            className="bg-gray-900 p-4 rounded-lg shadow-md"
+            style={{ width: "100%", minHeight: "600px" }}
+          >
+            <h2 className="text-xl font-bold text-white mb-4 text-center">
+              Top Communities
+            </h2>
+            <ul className="space-y-4">
+              {topCommunities.map((community) => {
+                return (
+                  <li
+                    key={community.id}
+                    className="bg-gray-800 p-4 rounded-md text-white"
+                    style={{ height: "100px" }}
+                  >
+                    {community.name}
+                  </li>
+                );
+              })}
             </ul>
           </div>
         </div>
@@ -234,7 +306,9 @@ const Requirements = () => {
       {showModal && activePost && (
         <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex justify-center items-center">
           <div className="bg-gray-800 rounded-lg shadow-lg p-6 w-full max-w-3xl">
-            <h2 className="text-lg text-white font-bold mb-4">{activePost.title}</h2>
+            <h2 className="text-lg text-white font-bold mb-4">
+              {activePost.title}
+            </h2>
             <p className="text-white mb-4">{activePost.content}</p>
 
             <CommentSection
@@ -297,7 +371,9 @@ const Requirements = () => {
       {showLoginModal && (
         <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex justify-center items-center">
           <div className="bg-gray-800 rounded-lg shadow-lg p-6 w-full max-w-3xl">
-            <h2 className="text-lg text-white font-bold mb-4">Login Required</h2>
+            <h2 className="text-lg text-white font-bold mb-4">
+              Login Required
+            </h2>
             <p className="text-white mb-4">Please login to add a post.</p>
             <button
               className="bg-red-500 hover:bg-red-400 text-white py-2 px-4 rounded-lg"
@@ -313,7 +389,9 @@ const Requirements = () => {
       {showCompanyWarning && (
         <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex justify-center items-center">
           <div className="bg-gray-800 rounded-lg shadow-lg p-6 w-full max-w-3xl">
-            <h2 className="text-lg text-white font-bold mb-4">Company Account Required</h2>
+            <h2 className="text-lg text-white font-bold mb-4">
+              Company Account Required
+            </h2>
             <p className="text-white mb-4">
               Only companies are allowed to add posts. Please login as a company
               to proceed.

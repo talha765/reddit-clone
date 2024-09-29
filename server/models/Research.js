@@ -15,4 +15,8 @@ module.exports = sequelize.define("research", {
     type: DataTypes.INTEGER,
     defaultValue: 0,
   },
+  commentsCount: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0,
+  }
 });

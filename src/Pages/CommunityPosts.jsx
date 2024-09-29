@@ -15,7 +15,9 @@ const CommunityPosts = () => {
   // Fetch posts for the specific community
   useEffect(() => {
     axios
-      .get(`http://localhost:3000/api/content/get-posts-by-community/${communityId}`)
+      .get(
+        `http://localhost:3000/api/content/get-posts-by-community/${communityId}`
+      )
       .then((response) => {
         setPosts(response.data.posts);
         setCommunityDetails(response.data.community); // Also fetch community details
@@ -33,6 +35,30 @@ const CommunityPosts = () => {
     }
   };
 
+  const handleLike = async (postId) => {
+    try {
+      const response = await axios.post(
+        `http://localhost:3000/api/content/postlike/${postId}`,
+        { userId }
+      );
+      setPosts((prevPosts) =>
+        prevPosts.map((post) =>
+          post.id === postId
+            ? {
+                ...post,
+                likes:
+                  response.data.message === "Liked"
+                    ? post.likes + 1
+                    : post.likes - 1,
+              }
+            : post
+        )
+      );
+    } catch (error) {
+      console.error("Error liking post:", error);
+    }
+  };
+
   const handleCloseAddPostModal = () => {
     setShowAddPostModal(false);
     setShowLoginModal(false);
@@ -41,7 +67,10 @@ const CommunityPosts = () => {
   const handleAddPost = () => {
     if (newPostForm.title && newPostForm.description) {
       axios
-        .post(`http://localhost:3000/api/content/post-in-community/${communityId}/${userId}`, newPostForm)
+        .post(
+          `http://localhost:3000/api/content/post-in-community/${communityId}/${userId}`,
+          newPostForm
+        )
         .then((response) => {
           setPosts([...posts, response.data]); // Add new post to the list
           setShowAddPostModal(false); // Close the modal
@@ -53,9 +82,14 @@ const CommunityPosts = () => {
   };
 
   return (
-    <div className="p-4 bg-gray-800 min-h-screen" style={{ paddingTop: "80px" }}>
+    <div
+      className="p-4 bg-gray-800 min-h-screen"
+      style={{ paddingTop: "80px" }}
+    >
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-white">{communityDetails.name}</h1>
+        <h1 className="text-2xl font-bold text-white">
+          {communityDetails.name}
+        </h1>
         <button
           className="flex items-center bg-blue-600 hover:bg-blue-500 text-white py-2 px-4 rounded-lg transition duration-200 ease-in-out"
           onClick={handleOpenAddPostModal} // Open modal on click
@@ -65,13 +99,21 @@ const CommunityPosts = () => {
       </div>
 
       {posts.map((post) => (
-        <div key={post.id} className="mb-6 p-4 bg-gray-900 rounded-lg shadow-md">
+        <div
+          key={post.id}
+          className="mb-6 p-4 bg-gray-900 rounded-lg shadow-md"
+        >
           <h2 className="text-xl font-semibold text-white">{post.title}</h2>
           <p className="mt-2 text-white">{post.description}</p>
           <div className="mt-4 flex items-center justify-between text-white">
             <div className="flex">
               <div className="mr-4 flex items-center">
-                <FaThumbsUp />
+                <FaThumbsUp
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleLike(post.id);
+                  }}
+                />
                 <span className="text-white ml-2">{post.likes}</span>
               </div>
               {/* <span className="flex items-center">
@@ -99,14 +141,21 @@ const CommunityPosts = () => {
                 className="w-full p-2 mb-4 border border-gray-600 rounded-lg bg-gray-900 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Post Title"
                 value={newPostForm.title}
-                onChange={(e) => setNewPostForm({ ...newPostForm, title: e.target.value })}
+                onChange={(e) =>
+                  setNewPostForm({ ...newPostForm, title: e.target.value })
+                }
                 required
               />
               <textarea
                 className="w-full p-2 mb-4 border border-gray-600 rounded-lg bg-gray-900 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Post Content"
                 value={newPostForm.description}
-                onChange={(e) => setNewPostForm({ ...newPostForm, description: e.target.value })}
+                onChange={(e) =>
+                  setNewPostForm({
+                    ...newPostForm,
+                    description: e.target.value,
+                  })
+                }
                 required
               />
               <div className="flex justify-end">
@@ -132,9 +181,15 @@ const CommunityPosts = () => {
       {showLoginModal && (
         <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex justify-center items-center">
           <div className="bg-gray-800 rounded-lg shadow-lg p-6 w-full max-w-lg">
-            <h2 className="text-lg text-white font-bold mb-4">Login Required</h2>
+            <h2 className="text-lg text-white font-bold mb-4">
+              Login Required
+            </h2>
             <p className="text-white mb-4">
-              Please <a href="/login" className="text-blue-500 underline">login</a> to add a post.
+              Please{" "}
+              <a href="/login" className="text-blue-500 underline">
+                login
+              </a>{" "}
+              to add a post.
             </p>
             <button
               className="mt-4 bg-red-500 hover:bg-red-400 text-white py-2 px-4 rounded-lg"

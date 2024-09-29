@@ -10,11 +10,15 @@ const Requirement = require('./models/Requirement');
 const Research = require('./models/Research');
 const Community = require('./models/Community');
 const Post = require('./models/Post');
+const PostLike = require('./models/PostLike');
 const PostImage = require('./models/PostImage');
 const UserCommunity = require('./models/UserCommunity');
 const InventLike = require("./models/InventLike");
 const RequirementLike = require("./models/RequirementLike");
 const ResearchLike = require("./models/ResearchLike");
+const InventComment = require('./models/InventComment');
+const RequirementComment = require("./models/RequirementComment");
+const ResearchComment = require("./models/ResearchComment")
 
 
 const app = express();
@@ -77,6 +81,27 @@ User.hasMany(ResearchLike); // A user can like many posts
 
 ResearchLike.belongsTo(User); // A like belongs to a user
 ResearchLike.belongsTo(InventSpace); // A like belongs to a post
+
+Post.hasMany(PostLike); // A post can be liked by many users
+User.hasMany(PostLike); // A user can like many posts
+
+PostLike.belongsTo(User); // A like belongs to a user
+PostLike.belongsTo(Post); // A like belongs to a post
+
+User.hasMany(InventComment, { foreignKey: 'userId' });
+InventSpace.hasMany(InventComment, { foreignKey: 'postId' });
+InventComment.belongsTo(User, { foreignKey: 'userId' });
+InventComment.belongsTo(InventSpace, { foreignKey: 'postId' });
+
+User.hasMany(RequirementComment, { foreignKey: 'userId' });
+Requirement.hasMany(RequirementComment, { foreignKey: 'postId' });
+RequirementComment.belongsTo(User, { foreignKey: 'userId' });
+RequirementComment.belongsTo(Requirement, { foreignKey: 'postId' });
+
+User.hasMany(ResearchComment, { foreignKey: 'userId' });
+Research.hasMany(ResearchComment, { foreignKey: 'postId' });
+ResearchComment.belongsTo(User, { foreignKey: 'userId' });
+ResearchComment.belongsTo(Research, { foreignKey: 'postId' });
 
 sequelize.sync({ alter: true });   
 
