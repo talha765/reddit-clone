@@ -9,6 +9,7 @@ import {
   ArrowLeftOnRectangleIcon,
   InformationCircleIcon,
   QuestionMarkCircleIcon,
+  ExclamationCircleIcon
 } from "@heroicons/react/24/outline";
 
 const SideBar = () => {
@@ -160,11 +161,19 @@ const SideBar = () => {
             </li>
 
             {/* Divider (White Line) */}
-            <li>
+       
               <hr className="border-t border-white border-opacity-20" />
-            </li>
+         
           </ul>
 
+          <div className="mt-4">
+              <div className="flex items-center space-x-2">
+            <ExclamationCircleIcon className="mt-1 h-5 w-5" />
+               <p>This is the beta version</p>
+              </div>
+            </div>
+
+          
           {/* Logout (Bottom-right) */}
           {token && ( // Only display if the token exists
             <div className="absolute bottom-5 left-0 w-full px-4">
