@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import logo from "../assets/backpack.png";
 import { Link, useNavigate } from "react-router-dom";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline"; // Icons for mobile menu
+import Cookies from 'js-cookie';
 
 const NavBar = () => {
   const [searchInput, setSearchInput] = useState("");
@@ -18,8 +19,9 @@ const NavBar = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("id");
-    localStorage.removeItem("token");
+    Cookies.remove('token');
+    Cookies.remove('id');
+    Cookies.remove('type');
     console.log("Logging out...");
     navigate("/landing");
   };

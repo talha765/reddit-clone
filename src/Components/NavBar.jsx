@@ -10,6 +10,7 @@ import {
 } from '@heroicons/react/24/outline'; 
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
 
 const NavBar = () => {
   const [showDropdown, setShowDropdown] = useState(false);
@@ -23,7 +24,8 @@ const NavBar = () => {
     setShowDropdown((prev) => !prev);
     if (!showDropdown) {
       try {
-        const token = localStorage.getItem('token');
+        const token = Cookies.get('token');
+
         if (!token) {
           console.log("No token found. Please log in.");
           return;
@@ -50,8 +52,9 @@ const NavBar = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('id');
-    localStorage.removeItem('token');
+    Cookies.remove('token');
+    Cookies.remove('id');
+    Cookies.remove('type');
     console.log("Logging out...");
     navigate('/landing');
   };

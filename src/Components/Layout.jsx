@@ -3,9 +3,10 @@ import NavBar from './NavBar';
 import SideBar from './sidebar';
 import LandingNavbar from './LandingNavbar';
 import { useState, useEffect } from 'react';
+import Cookies from 'js-cookie';
 
 const Layout = () => {
-  const token = localStorage.getItem('token');
+  const token = Cookies.get('token');
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   const toggleSidebar = () => {

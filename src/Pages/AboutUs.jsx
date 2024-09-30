@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from "axios";
 
 const AboutUsPage = () => {
     const [formData, setFormData] = useState({
@@ -15,11 +16,26 @@ const AboutUsPage = () => {
         });
     };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        // Handle form submission logic here
-        console.log(formData);
-        alert('Thank you for your feedback!');
+    const handleSubmit = (event) => {
+        event.preventDefault(); // Prevent default form submission
+    
+        const { name, email, phone, feedback } = formData;
+    
+        axios.post('http://localhost:3000/api/content/contact', { name, email, phone, feedback })
+            .then((response) => {
+                alert(response.data.message || 'Form submitted successfully!');
+                // Optionally, reset the form here
+                setFormData({
+                    name: '',
+                    email: '',
+                    phone: '',
+                    feedback: '',
+                });
+            })
+            .catch((error) => {
+                console.error('Error sending form data:', error);
+                alert('Failed to send the form data.');
+            });
     };
 
     return (

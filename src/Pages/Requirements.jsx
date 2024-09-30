@@ -3,10 +3,11 @@ import { FaThumbsUp, FaCommentAlt, FaPlus } from "react-icons/fa";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import _ from "lodash";
+import Cookies from 'js-cookie';
 
 const Requirements = () => {
   const navigate = useNavigate();
-  const [userId, setUserId] = useState(localStorage.getItem("id"));
+  const userId = Cookies.get('id');
   const [topCommunities, setTopCommunities] = useState([]);
   const [userType, setUserType] = useState("");
   const [posts, setPosts] = useState([]);
@@ -22,7 +23,7 @@ const Requirements = () => {
   });
 
   // State to manage the token
-  const [token, setToken] = useState(localStorage.getItem("token"));
+  const token = Cookies.get('token');
 
   useEffect(() => {
     axios
@@ -48,7 +49,7 @@ const Requirements = () => {
 
   const fetchUserType = async () => {
     try {
-      const token = localStorage.getItem("token");
+      const token = Cookies.get('token');
       if (!token) {
         console.error("No token found");
         return;

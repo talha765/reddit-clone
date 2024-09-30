@@ -3,13 +3,14 @@ import { useLocation, useParams } from "react-router-dom";
 import { FaThumbsUp, FaCommentAlt, FaPlus } from "react-icons/fa";
 import axios from "axios";
 import CommentSection from "../Components/CommentSection";
+import Cookies from 'js-cookie';
 
 const Requirement_Page = () => {
   const location = useLocation();
   const { postId } = useParams();
-  const [userId, setUserId] = useState(localStorage.getItem("id"));
+  const userId = Cookies.get('id');
   const [post, setPost] = useState(location.state?.post || null);
-  const [token, setToken] = useState(localStorage.getItem("token"));
+  const token = Cookies.get('token');
   console.log(post);
 
   const handleAddComment = async (postId, content) => {

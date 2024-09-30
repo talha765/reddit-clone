@@ -3,13 +3,14 @@ import { useLocation, useParams } from "react-router-dom";
 import { FaThumbsUp, FaCommentAlt, FaPlus } from "react-icons/fa";
 import axios from "axios";
 import CommentSection from "../Components/CommentSection";
+import Cookies from 'js-cookie';
 
 const Invent_Page = () => {
   const location = useLocation();
   const { postId } = useParams();
-  const [userId, setUserId] = useState(localStorage.getItem("id"));
+  const userId = Cookies.get('id');
   const [post, setPost] = useState(location.state?.post || null);
-  const [token, setToken] = useState(localStorage.getItem("token"));
+  const token = Cookies.get('token');
   console.log(post);
 
   if (!post) {
@@ -74,15 +75,12 @@ const Invent_Page = () => {
           {post.likes}
         </span>
         <h3 className="text-white font-bold mb-2">Comments</h3>
-        {post.comments && post.comments.length > 0 ? (
           <CommentSection
               postId={post.id}
               comments={post.comments}
               handleAddComment={handleAddComment}
             />
-        ) : (
-          <p className="text-gray-400">No comments yet.</p>
-        )}
+
       </div>
     </div>
   );

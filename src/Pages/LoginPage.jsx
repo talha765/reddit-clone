@@ -3,6 +3,7 @@ import * as Yup from 'yup'; // For validation
 import { useNavigate } from 'react-router-dom';
 import logo from '../assets/backpack.png';
 import axios from "axios";
+import Cookies from 'js-cookie';
 
 const api_route = "http://localhost:3000/api/auth/login"; // Updated to HTTP
 
@@ -28,15 +29,15 @@ const LoginPage = () => {
     
         axios.post(api_route, { email, password })
             .then((response) => {
-                // Ensure all items are set in localStorage before proceeding
-                return new Promise((resolve) => {
-                    localStorage.setItem('token', response.data.token);
-                    localStorage.setItem('id', response.data.id);
-                    resolve();  // Resolve the promise after setting localStorage
-                });
+                // Set token and user ID in cookies
+                Cookies.set('token', response.data.token, { expires: 7 }); // Expires in 7 days
+                Cookies.set('id', response.data.id, { expires: 7 }); // Expires in 7 days
+                
+                // Optionally, you can also set the user type in cookies
+                Cookies.set('type', response.data.type, { expires: 7 });
             })
             .then(() => {
-                // Navigate after localStorage is set
+                // Navigate after cookies are set
                 navigate('/');
             })
             .catch((err) => {

@@ -1,6 +1,7 @@
 // PostCard.jsx
 import React from "react";
 import { FaThumbsUp, FaCommentAlt } from "react-icons/fa";
+import Cookies from 'js-cookie';
 
 const PostCard = ({ post, handleLike, openModal }) => {
   return (

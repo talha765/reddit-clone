@@ -11,11 +11,12 @@ import {
   QuestionMarkCircleIcon,
   ExclamationCircleIcon
 } from "@heroicons/react/24/outline";
+import Cookies from 'js-cookie';
 
 const SideBar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
-  const token = localStorage.getItem("token"); // Check for token here
+  const token = Cookies.get('token'); // Check for token here
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
@@ -23,8 +24,9 @@ const SideBar = () => {
 
   const handleLogout = () => {
     try {
-      localStorage.removeItem("id");
-      localStorage.removeItem("token");
+      Cookies.remove('token');
+      Cookies.remove('id');
+      Cookies.remove('type');
       console.log("Logging out...");
       navigate("/landing"); // Redirect to landing page
     } catch (error) {

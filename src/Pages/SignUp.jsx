@@ -24,8 +24,7 @@ const SignupPage = () => {
         password: Yup.string()
             .required('Password is required'),
         phoneNo: Yup.string()
-            .matches(/^[0-9]{10}$/, 'Phone number must be 10 digits')
-            .required('Phone number is required'),
+            .matches(/^[0-9]{10}$/, 'Phone number must be 10 digits'),
     });
 
     const handleSubmit = (values) => {

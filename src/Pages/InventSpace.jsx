@@ -3,10 +3,11 @@ import { FaThumbsUp, FaCommentAlt, FaPlus } from "react-icons/fa";
 import axios from "axios";
 import _ from "lodash";
 import { useNavigate } from "react-router-dom";
+import Cookies from 'js-cookie';
 
 const InventSpace = () => {
   const navigate = useNavigate();
-  const [userId, setUserId] = useState(localStorage.getItem("id"));
+  const userId = Cookies.get('id');
   const [topCommunities, setTopCommunities] = useState([]);
   const [userType, setUserType] = useState("");
   const [posts, setPosts] = useState([]);
@@ -21,7 +22,7 @@ const InventSpace = () => {
     userId: "",
   });
 
-  const [token, setToken] = useState(localStorage.getItem("token"));
+  const token = Cookies.get('token');
 
   useEffect(() => {
     axios
@@ -47,7 +48,7 @@ const InventSpace = () => {
 
   const fetchUserType = async () => {
     try {
-      const token = localStorage.getItem("token");
+      const token = Cookies.get('token');
       if (!token) {
         console.error("No token found");
         return;

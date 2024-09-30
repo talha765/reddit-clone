@@ -2,9 +2,10 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import { FaThumbsUp, FaCommentAlt, FaPlus } from "react-icons/fa";
+import Cookies from 'js-cookie';
 
 const CommunityPosts = () => {
-  const [userId, setUserId] = useState(localStorage.getItem("id"));
+  const userId = Cookies.get('id');
   const { communityId } = useParams(); // Get community ID from URL
   const [posts, setPosts] = useState([]);
   const [communityDetails, setCommunityDetails] = useState({});

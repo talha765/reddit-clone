@@ -1,5 +1,6 @@
 // components/UserModal.js
 import React from 'react';
+import Cookies from 'js-cookie';
 
 const UserModal = ({ user, onClose }) => {
   if (!user) return null; // Don't render if no user

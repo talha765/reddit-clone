@@ -16,6 +16,36 @@ const InventComment = require('../models/InventComment');
 const RequirementComment = require('../models/RequirementComment');
 const ResearchComment = require('../models/ResearchComment');
 const sequelize = require("../src/db");
+const nodemailer = require('nodemailer');
+
+const transporter = nodemailer.createTransport({
+  service: 'gmail', // Use your email provider
+  auth: {
+      user: 'info.vinzelo@gmail.com', // Your email
+      pass: 'jackyjazy34', // Your email password or App Password
+  },
+});
+
+router.post('/contact', async (req, res) => {
+  const { name, email, phone, feedback } = req.body;
+
+  // Set up email data
+  const mailOptions = {
+      from: email, // Sender address
+      to: 'recipient-email@example.com', // List of recipients
+      subject: `Contact Us Form Submission from ${name}`, // Subject line
+      text: `Name: ${name}\nEmail: ${email}\nPhone: ${phone}\nFeedback: ${feedback}`, // Plain text body
+  };
+
+  try {
+      await transporter.sendMail(mailOptions);
+      res.status(200).json({ message: 'Email sent successfully' });
+  } catch (error) {
+      console.error('Error sending email:', error);
+      res.status(500).json({ error: 'Failed to send email' });
+  }
+});
+
 
 router.post('/add-invent-comment/:postId', async (req, res) => {
   const { userId, content } = req.body;
