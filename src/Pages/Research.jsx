@@ -341,51 +341,42 @@ const Research = () => {
       {/* Modal for Adding New Post */}
       {showAddPostModal && (
         <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex justify-center items-center">
-          <div className="bg-gray-800 rounded-lg shadow-lg p-6 w-full max-w-3xl">
-            <h2 className="text-lg text-white font-bold mb-4">Add New Post</h2>
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                handleAddPost();
-              }}
-            >
-              <input
-                type="text"
-                className="w-full p-2 mb-4 border border-gray-600 rounded-lg bg-gray-900 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Post Title"
-                value={newPostForm.title}
-                onChange={(e) =>
-                  setNewPostForm({ ...newPostForm, title: e.target.value })
-                }
-                required
-              />
-              <textarea
-                className="w-full p-2 mb-4 border border-gray-600 rounded-lg bg-gray-900 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Post Content"
-                value={newPostForm.content}
-                onChange={(e) =>
-                  setNewPostForm({ ...newPostForm, content: e.target.value })
-                }
-                required
-              />
-              <div className="flex justify-end">
-                <button
-                  type="submit"
-                  className="w-full py-2 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-lg"
-                >
-                  Submit Post
-                </button>
-              </div>
-            </form>
-            <button
-              className="mt-4 w-full py-2 bg-red-500 hover:bg-red-400 text-white font-bold rounded-lg"
-              onClick={closeAddPostModal}
-            >
-              Close
-            </button>
-          </div>
+        <div className="bg-gray-800 rounded-lg shadow-lg p-6 w-full max-w-3xl">
+          <h2 className="text-lg text-white font-bold mb-4">Add New Post</h2>
+          <input
+            className="w-full mb-4 p-2 rounded-lg bg-gray-700 text-white"
+            type="text"
+            placeholder="Title"
+            value={newPostForm.title}
+            onChange={(e) =>
+              setNewPostForm({ ...newPostForm, title: e.target.value })
+            }
+          />
+          <textarea
+            className="w-full mb-4 p-2 rounded-lg bg-gray-700 text-white"
+            rows="5"
+            placeholder="Content"
+            value={newPostForm.content}
+            onChange={(e) =>
+              setNewPostForm({ ...newPostForm, content: e.target.value })
+            }
+          />
+          <button
+            className="bg-blue-600 hover:bg-blue-500 text-white py-2 px-4 rounded-lg"
+            onClick={handleAddPost}
+          >
+            Add Post
+          </button>
+          <button
+            className="ml-4 bg-red-500 hover:bg-red-400 text-white py-2 px-4 rounded-lg"
+            onClick={closeAddPostModal}
+          >
+            Cancel
+          </button>
         </div>
-      )}
+      </div>
+    )}
+
 
       {/* Login Modal */}
       {showLoginModal && (
