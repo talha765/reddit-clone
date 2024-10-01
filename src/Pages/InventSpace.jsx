@@ -3,11 +3,12 @@ import { FaThumbsUp, FaCommentAlt, FaPlus } from "react-icons/fa";
 import axios from "axios";
 import _ from "lodash";
 import { useNavigate } from "react-router-dom";
-import Cookies from 'js-cookie';
+import Cookies from "js-cookie";
+import { Filter } from "bad-words";
 
 const InventSpace = () => {
   const navigate = useNavigate();
-  const userId = Cookies.get('id');
+  const userId = Cookies.get("id");
   const [topCommunities, setTopCommunities] = useState([]);
   const [userType, setUserType] = useState("");
   const [posts, setPosts] = useState([]);
@@ -22,7 +23,7 @@ const InventSpace = () => {
     userId: "",
   });
 
-  const token = Cookies.get('token');
+  const token = Cookies.get("token");
 
   useEffect(() => {
     axios
@@ -48,7 +49,7 @@ const InventSpace = () => {
 
   const fetchUserType = async () => {
     try {
-      const token = Cookies.get('token');
+      const token = Cookies.get("token");
       if (!token) {
         console.error("No token found");
         return;
@@ -69,54 +70,58 @@ const InventSpace = () => {
   };
 
   useEffect(() => {
+    // Fetch user type
     fetchUserType();
-    
+  }, []); // Empty dependency array ensures this runs only once when the component mounts
+
+  useEffect(() => {
+    // Fetch posts and their comments
     axios
       .get("http://localhost:3000/api/content/get-invent")
       .then(async (response) => {
-        const posts = response.data;
-  
+        const fetchedPosts = response.data;
+
         // Fetch comments for each post in parallel using Promise.all
         const postsWithComments = await Promise.all(
-          posts.map(async (post) => {
+          fetchedPosts.map(async (post) => {
             try {
-              // Fetch comments for each post
               const commentsResponse = await axios.get(
                 `http://localhost:3000/api/content/inventspace/${post.id}/comments`
               );
               const comments = commentsResponse.data;
-  
+
               // Return post with comments included
               return {
                 id: post.id,
                 title: post.title,
                 content: post.description,
                 likes: post.likes,
-                comments: comments || [],  // Include fetched comments
-                commentsCount: comments.length || 0,  // Update comments count based on fetched comments
+                comments: comments || [],
+                commentsCount: comments.length || 0,
               };
             } catch (error) {
-              console.error(`Error fetching comments for post ${post.id}:`, error);
+              console.error(
+                `Error fetching comments for post ${post.id}:`,
+                error
+              );
               return {
                 id: post.id,
                 title: post.title,
                 content: post.description,
                 likes: post.likes,
-                comments: [],  // Default to empty comments if error occurs
+                comments: [],
                 commentsCount: 0,
               };
             }
           })
         );
-  
-        // Set the formatted posts with comments
-        setPosts(postsWithComments);
+
+        setPosts(postsWithComments); // Only update posts once all data is fetched
       })
       .catch((error) => {
         console.error("Error fetching posts:", error);
       });
-  }, [posts]);
-  
+  }, []); // Empty dependency array ensures this runs only once when the component mounts
 
   const handleAddComment = async (postId, content) => {
     try {
@@ -191,7 +196,15 @@ const InventSpace = () => {
   };
 
   const handleAddPost = () => {
+    const filter = new Filter();
     if (newPostForm.title && newPostForm.content && userId) {
+      if (
+        filter.isProfane(newPostForm.title) ||
+        filter.isProfane(newPostForm.content)
+      ) {
+        alert("Your post contains inappropriate language. Please remove it.");
+        return;
+      }
       axios
         .post(`http://localhost:3000/api/content/post-invent/${userId}`, {
           title: newPostForm.title,
@@ -236,7 +249,9 @@ const InventSpace = () => {
             <div
               key={post.id}
               className="mb-6 p-4 bg-gray-900 rounded-lg shadow-md border border-gray-600 transition duration-200 ease-in-out hover:cursor-pointer hover:bg-gray-700"
-              onClick={() => navigate(`/invent-post/${post.id}`, { state: { post } })}
+              onClick={() =>
+                navigate(`/invent-post/${post.id}`, { state: { post } })
+              }
               style={{ maxWidth: "100%", height: "150px" }}
             >
               <h2 className="text-xl font-semibold text-white">
@@ -331,42 +346,41 @@ const InventSpace = () => {
       {/* Modal for Adding New Post */}
       {showAddPostModal && (
         <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex justify-center items-center">
-        <div className="bg-gray-800 rounded-lg shadow-lg p-6 w-full max-w-3xl">
-          <h2 className="text-lg text-white font-bold mb-4">Add New Post</h2>
-          <input
-            className="w-full mb-4 p-2 rounded-lg bg-gray-700 text-white"
-            type="text"
-            placeholder="Title"
-            value={newPostForm.title}
-            onChange={(e) =>
-              setNewPostForm({ ...newPostForm, title: e.target.value })
-            }
-          />
-          <textarea
-            className="w-full mb-4 p-2 rounded-lg bg-gray-700 text-white"
-            rows="5"
-            placeholder="Content"
-            value={newPostForm.content}
-            onChange={(e) =>
-              setNewPostForm({ ...newPostForm, content: e.target.value })
-            }
-          />
-          <button
-            className="bg-blue-600 hover:bg-blue-500 text-white py-2 px-4 rounded-lg"
-            onClick={handleAddPost}
-          >
-            Add Post
-          </button>
-          <button
-            className="ml-4 bg-red-500 hover:bg-red-400 text-white py-2 px-4 rounded-lg"
-            onClick={closeAddPostModal}
-          >
-            Cancel
-          </button>
+          <div className="bg-gray-800 rounded-lg shadow-lg p-6 w-full max-w-3xl">
+            <h2 className="text-lg text-white font-bold mb-4">Add New Post</h2>
+            <input
+              className="w-full mb-4 p-2 rounded-lg bg-gray-700 text-white"
+              type="text"
+              placeholder="Title"
+              value={newPostForm.title}
+              onChange={(e) =>
+                setNewPostForm({ ...newPostForm, title: e.target.value })
+              }
+            />
+            <textarea
+              className="w-full mb-4 p-2 rounded-lg bg-gray-700 text-white"
+              rows="5"
+              placeholder="Content"
+              value={newPostForm.content}
+              onChange={(e) =>
+                setNewPostForm({ ...newPostForm, content: e.target.value })
+              }
+            />
+            <button
+              className="bg-blue-600 hover:bg-blue-500 text-white py-2 px-4 rounded-lg"
+              onClick={handleAddPost}
+            >
+              Add Post
+            </button>
+            <button
+              className="ml-4 bg-red-500 hover:bg-red-400 text-white py-2 px-4 rounded-lg"
+              onClick={closeAddPostModal}
+            >
+              Cancel
+            </button>
+          </div>
         </div>
-      </div>
-    )}
-
+      )}
 
       {/* Student Warning Modal */}
       {showStudentWarning && (
@@ -447,6 +461,5 @@ const CommentSection = ({ postId, comments, handleAddComment }) => {
     </div>
   );
 };
-
 
 export default InventSpace;

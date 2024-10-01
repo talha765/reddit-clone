@@ -18,32 +18,46 @@ const ResearchComment = require('../models/ResearchComment');
 const sequelize = require("../src/db");
 const nodemailer = require('nodemailer');
 
-const transporter = nodemailer.createTransport({
-  service: 'gmail', // Use your email provider
-  auth: {
-      user: 'info.vinzelo@gmail.com', // Your email
-      pass: 'jackyjazy34', // Your email password or App Password
-  },
-});
 
 router.post('/contact', async (req, res) => {
   const { name, email, phone, feedback } = req.body;
 
-  // Set up email data
-  const mailOptions = {
-      from: email, // Sender address
-      to: 'recipient-email@example.com', // List of recipients
-      subject: `Contact Us Form Submission from ${name}`, // Subject line
-      text: `Name: ${name}\nEmail: ${email}\nPhone: ${phone}\nFeedback: ${feedback}`, // Plain text body
-  };
+    if (!name || !email || !phone || !feedback) {
+        return res.status(400).json({ message: 'All fields are required.' });
+    }
 
-  try {
-      await transporter.sendMail(mailOptions);
-      res.status(200).json({ message: 'Email sent successfully' });
-  } catch (error) {
-      console.error('Error sending email:', error);
-      res.status(500).json({ error: 'Failed to send email' });
-  }
+    // Create a Nodemailer transporter
+    const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: 'hamza.designservices2002@gmail.com', // Replace with your Gmail address
+            pass: 'isjx kipr typn wgxw' // Replace with your Gmail password or App password
+        }
+    });
+
+    // Email options
+    const mailOptions = {
+        from: email, // sender address (user's email)
+        to: 'sameermuhammad19@gmail.com', // the recipient email
+        subject: `New Contact Form Submission from ${name}`,
+        text: `
+        Name: ${name}
+        Email: ${email}
+        Phone: ${phone}
+        
+        Feedback:
+        ${feedback}
+        `
+    };
+
+    try {
+        // Send the email
+        await transporter.sendMail(mailOptions);
+        res.status(200).json({ message: 'Your feedback has been sent successfully!' });
+    } catch (error) {
+        console.error('Error sending email:', error);
+        res.status(500).json({ message: 'Error sending your feedback. Please try again later.' });
+    }
 });
 
 
@@ -285,6 +299,8 @@ router.get("/search", async (req, res) => {
   }
 });
 
+
+
 router.post("/post-invent/:id", async (req, res) => {
   const { title, description } = req.body;
   const userId = req.params.id;
@@ -320,6 +336,16 @@ router.get('/get-invent', async (req, res) => {
   try {
     let posts = await inventspace.findAll();
     res.status(201).json(posts);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
+router.get('/get-invent/:id', async (req, res) => {
+  const {postId} = req.params;
+  try {
+    let post = await inventspace.findByPk(postId);
+    res.status(201).json(post);
   } catch (error) {
     res.status(500).json(error);
   }

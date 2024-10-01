@@ -11,7 +11,7 @@ const CommentSection = ({ postId, comments, handleAddComment }) => {
 
   return (
     <div>
-      <div className="space-y-4 mt-4">
+      {comments && (<div className="space-y-4 mt-4">
         {comments.map((comment) => (
           <div
             key={comment.id}
@@ -25,7 +25,7 @@ const CommentSection = ({ postId, comments, handleAddComment }) => {
             </div>
           </div>
         ))}
-      </div>
+      </div>)}
       <form onSubmit={handleSubmit} className="mt-4">
         <input
           type="text"

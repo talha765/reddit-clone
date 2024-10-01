@@ -3,6 +3,9 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 import { FaThumbsUp, FaCommentAlt, FaPlus } from "react-icons/fa";
 import Cookies from 'js-cookie';
+import { Filter } from "bad-words";
+
+
 
 const CommunityPosts = () => {
   const userId = Cookies.get('id');
@@ -66,7 +69,15 @@ const CommunityPosts = () => {
   };
 
   const handleAddPost = () => {
+    const filter = new Filter();
     if (newPostForm.title && newPostForm.description) {
+      if (
+        filter.isProfane(newPostForm.title) ||
+        filter.isProfane(newPostForm.content)
+      ) {
+        alert("Your post contains inappropriate language. Please remove it.");
+        return;
+      }
       axios
         .post(
           `http://localhost:3000/api/content/post-in-community/${communityId}/${userId}`,

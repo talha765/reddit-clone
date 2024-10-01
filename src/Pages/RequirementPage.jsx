@@ -3,14 +3,14 @@ import { useLocation, useParams } from "react-router-dom";
 import { FaThumbsUp, FaCommentAlt, FaPlus } from "react-icons/fa";
 import axios from "axios";
 import CommentSection from "../Components/CommentSection";
-import Cookies from 'js-cookie';
+import Cookies from "js-cookie";
 
 const Requirement_Page = () => {
   const location = useLocation();
   const { postId } = useParams();
-  const userId = Cookies.get('id');
+  const userId = Cookies.get("id");
   const [post, setPost] = useState(location.state?.post || null);
-  const token = Cookies.get('token');
+  const token = Cookies.get("token");
   console.log(post);
 
   const handleAddComment = async (postId, content) => {
@@ -24,11 +24,10 @@ const Requirement_Page = () => {
       );
       const updatedComment = response.data.comment;
 
-      const updatedPost = ((post) =>
+      const updatedPost = (post) =>
         post.id === postId
           ? { ...post, comments: [...post.comments, updatedComment] }
-          : post
-      );
+          : post;
       setPost(updatedPost);
     } catch (error) {
       console.error("Error adding comment:", error);
@@ -45,10 +44,10 @@ const Requirement_Page = () => {
         `http://localhost:3000/api/content/requirementlike/${post.id}`,
         { userId }
       );
-  
+
       // Check if the response indicates the action was a "Like" or "Unlike"
       const isLiked = response.data.message === "Liked";
-  
+
       // Update the post state based on the response
       setPost((prevPost) => ({
         ...prevPost,
@@ -63,7 +62,13 @@ const Requirement_Page = () => {
     <div className="p-4 bg-gray-800 min-h-screen mt-20">
       <div className="max-w-3xl mx-auto bg-gray-900 p-6 rounded-lg shadow-lg">
         <h1 className="text-2xl text-white font-bold mb-4">{post.title}</h1>
-        <p className="text-white mb-6">{post.content}</p>
+        <p className="mt-2 text-white overflow-hidden text-ellipsis">
+          <div
+            dangerouslySetInnerHTML={{
+              __html: post.content.replace(/\n/g, "<br/>"),
+            }}
+          ></div>
+        </p>
         <span className="flex items-center text-white mb-2">
           <FaThumbsUp
             className={`mr-1`} // Change color based on like state
@@ -75,15 +80,15 @@ const Requirement_Page = () => {
           {post.likes}
         </span>
         <h3 className="text-white font-bold mb-2">Comments</h3>
-        
-          <CommentSection
-              postId={post.id}
-              comments={post.comments}
-              handleAddComment={handleAddComment}
-            />
+
+        <CommentSection
+          postId={post.id}
+          comments={post.comments}
+          handleAddComment={handleAddComment}
+        />
       </div>
     </div>
   );
 };
 
-export default Requirement_Page;   
+export default Requirement_Page;
