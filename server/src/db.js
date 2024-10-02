@@ -1,18 +1,27 @@
-// src/db.js
 const { Sequelize } = require('sequelize');
+require('dotenv').config(); // Load environment variables from .env file
 
-// Initialize Sequelize
-const sequelize = new Sequelize('SRL', 'postgres', 'pgadmin', {
-  host: 'localhost',
-  dialect: 'postgres'
-});
+// Initialize Sequelize with environment variables
+const sequelize = new Sequelize(
+  process.env.DB_NAME,
+  process.env.DB_USER,
+  process.env.DB_PASSWORD,
+  {
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT, // Add port here
+    dialect: process.env.DB_DIALECT,
+    dialectOptions: { // Add SSL options here
+      ssl: {
+        require: true,
+        rejectUnauthorized: false
+      }
+    }
+  }
+);
 
 // Test the connection
 sequelize.authenticate()
   .then(() => console.log('Database connected...'))
   .catch(err => console.log('Error: ' + err));
 
-
 module.exports = sequelize;
-
-
