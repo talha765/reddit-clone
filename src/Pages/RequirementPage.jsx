@@ -4,6 +4,7 @@ import { FaThumbsUp, FaCommentAlt, FaPlus } from "react-icons/fa";
 import axios from "axios";
 import CommentSection from "../Components/CommentSection";
 import Cookies from "js-cookie";
+const api_route = "http://localhost:3000/api/content";
 
 const Requirement_Page = () => {
   const location = useLocation();
@@ -20,7 +21,7 @@ const Requirement_Page = () => {
   
       try {
         const response = await axios.get(
-          `http://localhost:3000/api/content/requirement/${post.id}/comments`
+          `${api_route}/requirement/${post.id}/comments`
         );
         if (response.data) {
           setComments(response.data);  // Set the fetched comments in state
@@ -39,7 +40,7 @@ const Requirement_Page = () => {
   const handleAddComment = async (postId, content) => {
     try {
       const response = await axios.post(
-        `http://localhost:3000/api/content/add-requirement-comment/${postId}`,
+        `${api_route}/add-requirement-comment/${postId}`,
         { userId, content },
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -64,7 +65,7 @@ const Requirement_Page = () => {
   const handleLike = async () => {
     try {
       const response = await axios.post(
-        `http://localhost:3000/api/content/requirementlike/${post.id}`,
+        `${api_route}/requirementlike/${post.id}`,
         { userId }
       );
 

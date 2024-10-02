@@ -4,6 +4,7 @@ import { FaThumbsUp } from "react-icons/fa";
 import axios from "axios";
 import CommentSection from "../Components/CommentSection";
 import Cookies from "js-cookie";
+const api_route = "http://localhost:3000/api/content";
 
 const Research_Page = () => {
   const location = useLocation();
@@ -19,7 +20,7 @@ const Research_Page = () => {
   
       try {
         const response = await axios.get(
-          `http://localhost:3000/api/content/research/${post.id}/comments`
+          `${api_route}/research/${post.id}/comments`
         );
         if (response.data) {
           setComments(response.data);  // Set the fetched comments in state
@@ -39,7 +40,7 @@ const Research_Page = () => {
   const handleAddComment = async (postId, content) => {
     try {
       const response = await axios.post(
-        `http://localhost:3000/api/content/add-research-comment/${postId}`,
+        `${api_route}/add-research-comment/${postId}`,
         { userId, content },
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -57,7 +58,7 @@ const Research_Page = () => {
   const handleLike = async () => {
     try {
       const response = await axios.post(
-        `http://localhost:3000/api/content/researchlike/${post.id}`,
+        `${api_route}/researchlike/${post.id}`,
         { userId }
       );
 

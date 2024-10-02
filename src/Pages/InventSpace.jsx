@@ -5,6 +5,7 @@ import _ from "lodash";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import { Filter } from "bad-words";
+const api_route = "http://localhost:3000/api/content";
 
 const InventSpace = () => {
   const navigate = useNavigate();
@@ -27,7 +28,7 @@ const InventSpace = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:3000/api/content/get-top-communities")
+      .get(`${api_route}/get-top-communities`)
       .then((response) => {
         // Logic for top communities, sorted by member count
         console.log("API Response:", response.data); // Check the response structure
@@ -77,7 +78,7 @@ const InventSpace = () => {
   useEffect(() => {
     // Fetch posts and their comments
     axios
-      .get("http://localhost:3000/api/content/get-invent")
+      .get(`${api_route}/get-invent`)
       .then(async (response) => {
         const fetchedPosts = response.data;
 
@@ -86,7 +87,7 @@ const InventSpace = () => {
           fetchedPosts.map(async (post) => {
             try {
               const commentsResponse = await axios.get(
-                `http://localhost:3000/api/content/inventspace/${post.id}/comments`
+                `${api_route}/inventspace/${post.id}/comments`
               );
               const comments = commentsResponse.data;
 
@@ -127,7 +128,7 @@ const InventSpace = () => {
   const handleAddComment = async (postId, content) => {
     try {
       const response = await axios.post(
-        `http://localhost:3000/api/content/add-invent-comment/${postId}`,
+        `${api_route}/add-invent-comment/${postId}`,
         { userId, content },
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -175,7 +176,7 @@ const InventSpace = () => {
   const handleLike = async (postId) => {
     try {
       const response = await axios.post(
-        `http://localhost:3000/api/content/inventlike/${postId}`,
+        `${api_route}/inventlike/${postId}`,
         { userId }
       );
       setPosts((prevPosts) =>
@@ -207,7 +208,7 @@ const InventSpace = () => {
         return;
       }
       axios
-        .post(`http://localhost:3000/api/content/post-invent/${userId}`, {
+        .post(`${api_route}/post-invent/${userId}`, {
           title: newPostForm.title,
           description: newPostForm.content,
         })

@@ -13,14 +13,17 @@ const Communities = () => {
   const [communities, setCommunities] = useState([]);
   const navigate = useNavigate();
 
+  // Base URL for the API
+  const api_route = "http://localhost:3000/api/content";
+
   const handleCommunityClick = (communityId) => {
-    navigate(`/community/${communityId}`)
+    navigate(`/community/${communityId}`);
   };
 
   // Fetch top communities
   useEffect(() => {
     axios
-      .get("http://localhost:3000/api/content/get-top-communities")
+      .get(`${api_route}/get-top-communities`)
       .then((response) => {
         // Logic for top communities, sorted by member count
         console.log("API Response:", response.data); // Check the response structure
@@ -40,7 +43,7 @@ const Communities = () => {
   // Fetch all communities and sort them alphabetically
   useEffect(() => {
     axios
-      .get("http://localhost:3000/api/content/get-communities")
+      .get(`${api_route}/get-communities`)
       .then((response) => {
         // Sort communities alphabetically by name
         const sortedCommunities = response.data.sort((a, b) =>
@@ -65,25 +68,25 @@ const Communities = () => {
 
       {/* Top Communities */}
       <div>
-      <h4 className="font-bold text-white mb-4">Top Communities</h4>
-      <div className="flex justify-between">
-        {topCommunities.map((community) => (
-          <Card
-            sx={{ width: 200, backgroundColor: "rgb(17 24 39)", color: "white"}}
-            onClick={() => handleCommunityClick(community.id)} // Navigate to community posts page
-          >
-            <CardContent>
-              <Typography variant="h5" component="div">
-                {community.name}
-              </Typography>
-              <Typography gutterBottom sx={{ color: "white", fontSize: 14 }}>
-                {community.memberCount} members
-              </Typography>
-            </CardContent>
-          </Card>
-        ))}
+        <h4 className="font-bold text-white mb-4">Top Communities</h4>
+        <div className="flex justify-between">
+          {topCommunities.map((community) => (
+            <Card
+              sx={{ width: 200, backgroundColor: "rgb(17 24 39)", color: "white" }}
+              onClick={() => handleCommunityClick(community.id)} // Navigate to community posts page
+            >
+              <CardContent>
+                <Typography variant="h5" component="div">
+                  {community.name}
+                </Typography>
+                <Typography gutterBottom sx={{ color: "white", fontSize: 14 }}>
+                  {community.memberCount} members
+                </Typography>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
       </div>
-    </div>
 
       {/* All Communities */}
       <div>

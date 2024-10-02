@@ -4,6 +4,7 @@ import LandingNavbar from "../Components/LandingNavbar";
 import SideBar from "../Components/sidebar";
 import axios from "axios";
 import _ from "lodash";
+const api_route = "http://localhost:3000/api/content";
 
 const LandingPage = () => {
     const [invent, setInvent] = useState([]);
@@ -14,7 +15,7 @@ const LandingPage = () => {
 
     useEffect(() => {
         axios
-            .get("http://localhost:3000/api/content/get-invent")
+            .get(`${api_route}/get-invent`)
             .then((response) => {
                 const limitedInvents = response.data.slice(0, 3);
                 setInvent(limitedInvents);
@@ -24,7 +25,7 @@ const LandingPage = () => {
             });
 
         axios
-            .get("http://localhost:3000/api/content/get-requirements")
+            .get(`${api_route}/get-requirements`)
             .then((response) => {
                 const limitedReq = response.data.slice(0, 3);
                 setRequirements(limitedReq);
@@ -34,7 +35,7 @@ const LandingPage = () => {
             });
 
         axios
-            .get("http://localhost:3000/api/content/get-research")
+            .get(`${api_route}/get-research`)
             .then((response) => {
                 const limitedResearch = response.data.slice(0, 3);
                 setResearch(limitedResearch);

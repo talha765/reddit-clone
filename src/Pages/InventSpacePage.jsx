@@ -4,6 +4,7 @@ import { FaThumbsUp } from "react-icons/fa";
 import axios from "axios";
 import CommentSection from "../Components/CommentSection";
 import Cookies from "js-cookie";
+const api_route = "http://localhost:3000/api/content";
 
 const Invent_Page = () => {
   const location = useLocation();
@@ -20,7 +21,7 @@ const Invent_Page = () => {
 
       try {
         const response = await axios.get(
-          `http://localhost:3000/api/content/inventspace/${post.id}/comments`
+          `${api_route}/inventspace/${post.id}/comments`
         );
         if (response.data) {
           setComments(response.data); // Set the fetched comments in state
@@ -40,7 +41,7 @@ const Invent_Page = () => {
   const handleAddComment = async (postId, content) => {
     try {
       const response = await axios.post(
-        `http://localhost:3000/api/content/add-invent-comment/${postId}`,
+        `${api_route}/add-invent-comment/${postId}`,
         { userId, content },
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -59,7 +60,7 @@ const Invent_Page = () => {
   const handleLike = async () => {
     try {
       const response = await axios.post(
-        `http://localhost:3000/api/content/inventlike/${post.id}`,
+        `${api_route}/inventlike/${post.id}`,
         { userId }
       );
 

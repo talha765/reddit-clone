@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import _ from "lodash";
 import Cookies from 'js-cookie';
+const api_route = "http://localhost:3000/api/content";
 
 const HomePage = () => {
   const [invent, setInvent] = useState([]);
@@ -13,7 +14,7 @@ const HomePage = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:3000/api/content/get-invent")
+      .get(`${api_route}/get-invent`)
       .then((response) => {
         const limitedInvents = response.data.slice(0, 3);
         setInvent(limitedInvents);
@@ -23,7 +24,7 @@ const HomePage = () => {
       });
 
     axios
-      .get("http://localhost:3000/api/content/get-requirements")
+      .get(`${api_route}/get-requirements`)
       .then((response) => {
         const limitedReq = response.data.slice(0, 3);
         setRequirements(limitedReq);
@@ -33,7 +34,7 @@ const HomePage = () => {
       });
 
     axios
-      .get("http://localhost:3000/api/content/get-research")
+      .get(`${api_route}/get-research`)
       .then((response) => {
         const limitedResearch = response.data.slice(0, 3);
         setResearch(limitedResearch);

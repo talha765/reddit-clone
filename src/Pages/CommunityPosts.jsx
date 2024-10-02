@@ -5,6 +5,7 @@ import { FaThumbsUp, FaCommentAlt, FaPlus } from "react-icons/fa";
 import Cookies from 'js-cookie';
 import { Filter } from "bad-words";
 
+const api_route = "http://localhost:3000/api/content";
 
 
 const CommunityPosts = () => {
@@ -20,7 +21,7 @@ const CommunityPosts = () => {
   useEffect(() => {
     axios
       .get(
-        `http://localhost:3000/api/content/get-posts-by-community/${communityId}`
+        `${api_route}/get-posts-by-community/${communityId}`
       )
       .then((response) => {
         setPosts(response.data.posts);
@@ -42,7 +43,7 @@ const CommunityPosts = () => {
   const handleLike = async (postId) => {
     try {
       const response = await axios.post(
-        `http://localhost:3000/api/content/postlike/${postId}`,
+        `${api_route}/postlike/${postId}`,
         { userId }
       );
       setPosts((prevPosts) =>
@@ -80,7 +81,7 @@ const CommunityPosts = () => {
       }
       axios
         .post(
-          `http://localhost:3000/api/content/post-in-community/${communityId}/${userId}`,
+          `${api_route}/post-in-community/${communityId}/${userId}`,
           newPostForm
         )
         .then((response) => {
