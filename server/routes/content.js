@@ -334,7 +334,14 @@ router.post("/post-research/:id", async (req, res) => {
 
 router.get('/get-invent', async (req, res) => {
   try {
-    let posts = await inventspace.findAll();
+    // Fetch posts and include the associated User's username
+    let posts = await inventspace.findAll({
+      include: {
+        model: User,
+        as: 'user',
+        attributes: ['username'], // Only include the username
+      },
+    });
     res.status(201).json(posts);
   } catch (error) {
     res.status(500).json(error);
@@ -353,7 +360,14 @@ router.get('/get-invent/:id', async (req, res) => {
 
 router.get("/get-requirements", async (req, res) => {
   try {
-    let posts = await Requirement.findAll();
+    // Fetch posts and include the associated User's username
+    let posts = await Requirement.findAll({
+      include: {
+        model: User,
+        as: 'user',
+        attributes: ['username'], // Only include the username
+      },
+    });
     res.status(201).json(posts);
   } catch (error) {
     res.status(500).json(error);
@@ -362,7 +376,14 @@ router.get("/get-requirements", async (req, res) => {
 
 router.get("/get-research", async (req, res) => {
   try {
-    let posts = await Research.findAll();
+    // Fetch posts and include the associated User's username
+    let posts = await Research.findAll({
+      include: {
+        model: User,
+        as: 'user',
+        attributes: ['username'], // Only include the username
+      },
+    });
     res.status(201).json(posts);
   } catch (error) {
     res.status(500).json(error);

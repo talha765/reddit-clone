@@ -98,6 +98,7 @@ const InventSpace = () => {
                 likes: post.likes,
                 comments: comments || [],
                 commentsCount: comments.length || 0,
+                username: post.user.username,
               };
             } catch (error) {
               console.error(
@@ -278,15 +279,7 @@ const InventSpace = () => {
                     <FaCommentAlt className="mr-1" /> {post.commentsCount}
                   </span>
                 </div>
-                {/* <button
-                  className="text-white underline"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    navigate(`/invent-post/${post}`);
-                  }}
-                >
-                  View Post
-                </button> */}
+                <p className="text-teal-300">{post.username}</p>
               </div>
             </div>
           ))}

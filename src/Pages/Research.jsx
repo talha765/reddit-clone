@@ -209,6 +209,7 @@ const Research = () => {
                 likes: post.likes,
                 comments: comments || [],
                 commentsCount: comments.length || 0,
+                username: post.user.username,
               };
             } catch (error) {
               console.error(
@@ -285,15 +286,7 @@ const Research = () => {
                     <FaCommentAlt className="mr-1" /> {post.comments.length}
                   </span>
                 </div>
-                {/* <button
-                  className="text-white underline"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    navigate(`/research-post/${post}`);
-                  }}
-                >
-                  View Post
-                </button> */}
+                <p className="text-teal-300">{post.username}</p>
               </div>
             </div>
           ))}

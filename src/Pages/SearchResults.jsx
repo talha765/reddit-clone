@@ -65,7 +65,11 @@ const SearchResults = () => {
           <h2 className="text-xl font-semibold mb-5">Requirements</h2>
           <ul>
             {results.requirements.map((item) => (
-              <PostCard key={item.id} post={item} />
+              <PostCard handleClick={() =>
+                navigate(`/requirement-post/${item.id}`, { state: { post: item } })
+              }
+              key={item.id}
+              post={item} />
             ))}
           </ul>
         </>
@@ -76,7 +80,11 @@ const SearchResults = () => {
           <h2 className="text-xl font-semibold mb-5">Research</h2>
           <ul>
             {results.research.map((item) => (
-              <PostCard key={item.id} post={item} />
+              <PostCard handleClick={() =>
+                navigate(`/research-post/${item.id}`, { state: { post: item } })
+              }
+              key={item.id}
+              post={item} />
             ))}
           </ul>
         </>

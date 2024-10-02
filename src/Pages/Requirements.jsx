@@ -203,6 +203,7 @@ const Requirements = () => {
                 likes: post.likes,
                 comments: comments || [],
                 commentsCount: comments.length || 0,
+                username: post.user.username,
               };
             } catch (error) {
               console.error(
@@ -279,15 +280,7 @@ const Requirements = () => {
                     <FaCommentAlt className="mr-1" /> {post.comments.length}
                   </span>
                 </div>
-                {/* <button
-                  className="text-white underline"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    navigate(`/requirement-post/${post}`);
-                  }}
-                >
-                  View Post
-                </button> */}
+                <p className="text-teal-300">{post.username}</p>
               </div>
             </div>
           ))}

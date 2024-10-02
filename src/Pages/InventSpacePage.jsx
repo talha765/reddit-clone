@@ -11,10 +11,32 @@ const Invent_Page = () => {
   const userId = Cookies.get("id");
   const [post, setPost] = useState(location.state?.post || null);
   const token = Cookies.get("token");
+  const [comments, setComments] = useState([]);
 
-  console.log("Post data:", post);
-  console.log("location.state:", location.state);
+  // Fetch comments when the component mounts or when post changes
+  useEffect(() => {
+    const fetchComments = async () => {
+      if (!post?.id) return; // Ensure post and post.id are available before making the API call
 
+      try {
+        const response = await axios.get(
+          `http://localhost:3000/api/content/inventspace/${post.id}/comments`
+        );
+        if (response.data) {
+          setComments(response.data); // Set the fetched comments in state
+          console.log("comments: ", response.data);
+        } else {
+          console.error("No comments found in the response.");
+        }
+      } catch (error) {
+        console.error("Error fetching comments:", error);
+      }
+    };
+
+    fetchComments(); // Trigger the comments fetching
+  }, [post]);
+
+  // Handle adding a new comment
   const handleAddComment = async (postId, content) => {
     try {
       const response = await axios.post(
@@ -26,15 +48,14 @@ const Invent_Page = () => {
       );
       const updatedComment = response.data.comment;
 
-      setPost((prevPost) => ({
-        ...prevPost,
-        comments: [...prevPost.comments, updatedComment],
-      }));
+      // Add the new comment to the comments state
+      setComments((prevComments) => [...prevComments, updatedComment]);
     } catch (error) {
       console.error("Error adding comment:", error);
     }
   };
 
+  // Handle liking the post
   const handleLike = async () => {
     try {
       const response = await axios.post(
@@ -44,6 +65,7 @@ const Invent_Page = () => {
 
       const isLiked = response.data.message === "Liked";
 
+      // Update the post's like count
       setPost((prevPost) => ({
         ...prevPost,
         likes: isLiked ? prevPost.likes + 1 : prevPost.likes - 1,
@@ -59,7 +81,7 @@ const Invent_Page = () => {
         <div className="max-w-3xl mx-auto bg-gray-900 p-6 rounded-lg shadow-lg">
           <h1 className="text-2xl text-white font-bold mb-4">{post.title}</h1>
 
-          {/* Check if post.content exists before using includes */}
+          {/* Render post description or content */}
           {post.description ? (
             post.description.includes("\n") ? (
               <p className="mt-2 text-white overflow-hidden text-ellipsis">
@@ -84,6 +106,7 @@ const Invent_Page = () => {
             <p className="mt-2 text-white">{post.content}</p> // Render content as plain text if no line breaks
           )}
 
+          {/* Like button and like count */}
           <span className="flex items-center text-white mb-2">
             <FaThumbsUp
               className={`mr-1`}
@@ -94,11 +117,13 @@ const Invent_Page = () => {
             />
             {post.likes}
           </span>
+
+          {/* Comments Section */}
           <h3 className="text-white font-bold mb-2">Comments</h3>
           <CommentSection
             postId={post.id}
-            comments={post.comments}
-            handleAddComment={handleAddComment}
+            comments={comments} // Pass the fetched comments to the CommentSection
+            handleAddComment={handleAddComment} // Handle adding a new comment
           />
         </div>
       ) : (

@@ -2,6 +2,7 @@
 import React from "react";
 import { FaThumbsUp, FaCommentAlt } from "react-icons/fa";
 import Cookies from 'js-cookie';
+import _ from "lodash";
 
 const PostCard = ({ post, handleClick }) => {
   return (
@@ -15,8 +16,8 @@ const PostCard = ({ post, handleClick }) => {
 
         {/* Post Details */}
         <div className="flex-grow">
-          <h2 className="text-lg font-semibold text-white">{post.title}</h2>
-          <p className="mt-2 text-white">{post.description}</p>
+          <h2 className="text-lg font-semibold text-white">{_.truncate(post.title, { length: 30 })}</h2>
+          <p className="mt-2 text-white">{_.truncate(post.description, { length: 30 })}</p>
         </div>
       </div>
       
