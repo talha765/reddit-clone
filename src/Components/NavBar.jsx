@@ -155,6 +155,7 @@ const NavBar = () => {
 
           {/* Menu options */}
           <div className="flex flex-col items-start mx-4">
+            <button className="text-white hover:bg-gray-700 w-full text-left p-2" onClick={()=> navigate("/homepage")}>Home</button>
             <button className="text-white hover:bg-gray-700 w-full text-left p-2" onClick={()=> navigate("/qna")}>InventSpaces</button>
             <button className="text-white hover:bg-gray-700 w-full text-left p-2" onClick={()=> navigate("/requirements")} >Requirements</button>
             <button className="text-white hover:bg-gray-700 w-full text-left p-2" onClick={()=> navigate("/communities")}>Community</button>

@@ -102,6 +102,12 @@ const NavBar = () => {
           <div className="flex flex-col items-start w-full">
             <button
               className="text-white hover:bg-gray-700 w-full text-left p-2"
+              onClick={() => navigate("/homepage")}
+            >
+              Home
+            </button>
+            <button
+              className="text-white hover:bg-gray-700 w-full text-left p-2"
               onClick={() => navigate("/qna")}
             >
               InventSpaces
