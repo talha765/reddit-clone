@@ -4,7 +4,7 @@ import LandingNavbar from "../Components/LandingNavbar";
 import SideBar from "../Components/sidebar";
 import axios from "axios";
 import _ from "lodash";
-const api_route = "http://localhost:3000/api/content";
+const api_route = "https://studentresreachlab.com/api/content";
 
 const LandingPage = () => {
     const [invent, setInvent] = useState([]);

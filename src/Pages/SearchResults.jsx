@@ -21,7 +21,7 @@ const SearchResults = () => {
     const fetchSearchResults = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3000/api/content/search?query=${encodeURIComponent(
+          `https://studentresreachlab.com/api/content/search?query=${encodeURIComponent(
             query
           )}`
         );

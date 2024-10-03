@@ -5,7 +5,7 @@ import { FaThumbsUp, FaCommentAlt, FaPlus } from "react-icons/fa";
 import Cookies from 'js-cookie';
 import { Filter } from "bad-words";
 
-const api_route = "http://localhost:3000/api/content";
+const api_route = "https://studentresreachlab.com/api/content";
 
 
 const CommunityPosts = () => {

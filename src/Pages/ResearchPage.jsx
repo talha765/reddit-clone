@@ -4,7 +4,7 @@ import { FaThumbsUp } from "react-icons/fa";
 import axios from "axios";
 import CommentSection from "../Components/CommentSection";
 import Cookies from "js-cookie";
-const api_route = "http://localhost:3000/api/content";
+const api_route = "https://studentresreachlab.com/api/content";
 
 const Research_Page = () => {
   const location = useLocation();

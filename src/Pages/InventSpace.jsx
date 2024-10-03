@@ -5,7 +5,7 @@ import _ from "lodash";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import { Filter } from "bad-words";
-const api_route = "http://localhost:3000/api/content";
+const api_route = "https://studentresreachlab.com/api/content";
 
 const InventSpace = () => {
   const navigate = useNavigate();
@@ -61,7 +61,7 @@ const InventSpace = () => {
         },
       };
       const response = await axios.get(
-        "http://localhost:3000/api/auth/user",
+        "https://studentresreachlab.com/api/auth/user",
         config
       );
       setUserType(response.data.type);
@@ -246,7 +246,7 @@ const InventSpace = () => {
               <FaPlus className="mr-2" /> Add Post
             </button>
           </div>
-          <div className="mb-5 pt-5 font-poppins pl-2 ">
+          <div className="mb-5  font-poppins pl-2 text-s">
                         <p className="">Students can post their brief statement of issues and solutions here. Interested parties will connect with them for details and further discussions. Ideas which can change the world.
 </p>
 

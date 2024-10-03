@@ -14,7 +14,7 @@ const Communities = () => {
   const navigate = useNavigate();
 
   // Base URL for the API
-  const api_route = "http://localhost:3000/api/content";
+  const api_route = "https://studentresreachlab.com/api/content";
 
   const handleCommunityClick = (communityId) => {
     navigate(`/community/${communityId}`);
