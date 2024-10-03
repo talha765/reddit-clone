@@ -24,7 +24,7 @@ const Research_Page = () => {
         );
         if (response.data) {
           setComments(response.data);  // Set the fetched comments in state
-          console.log("comments: ",comments);
+          
         } else {
           console.error("No comments found in the response.");
         }

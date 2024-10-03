@@ -25,7 +25,7 @@ const Invent_Page = () => {
         );
         if (response.data) {
           setComments(response.data); // Set the fetched comments in state
-          console.log("comments: ", response.data);
+          
         } else {
           console.error("No comments found in the response.");
         }

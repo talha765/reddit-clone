@@ -12,7 +12,7 @@ const Requirement_Page = () => {
   const userId = Cookies.get("id");
   const [post, setPost] = useState(location.state?.post || null);
   const token = Cookies.get("token");
-  console.log(post);
+  
   const [comments, setComments] = useState([]);
 
   useEffect(() => {
@@ -25,7 +25,7 @@ const Requirement_Page = () => {
         );
         if (response.data) {
           setComments(response.data);  // Set the fetched comments in state
-          console.log("comments: ",comments);
+          
         } else {
           console.error("No comments found in the response.");
         }

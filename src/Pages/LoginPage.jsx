@@ -24,8 +24,6 @@ const LoginPage = () => {
         const email = values.email;
         const password = values.password;
     
-        console.log('email:', values.email);
-        console.log("password: ", values.password);
     
         axios.post(`${api_route}/login`, { email, password })
             .then((response) => {

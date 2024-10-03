@@ -28,7 +28,7 @@ const SignupPage = () => {
     });
 
     const handleSubmit = (values) => {
-        console.log('Signup submitted:', values);
+        
         const firstName = values.firstName;
         const lastName = values.lastName;
         const email = values.email;

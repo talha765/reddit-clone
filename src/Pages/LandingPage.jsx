@@ -8,7 +8,7 @@ import _ from "lodash";
 // const api_route = "https://www.studentresearchlab.com/api/content";
 const api_route = import.meta.env.VITE_API_URL_CONTENT;
 
-console.log("test: ", api_route);
+
 
 const LandingPage = () => {
     const [invent, setInvent] = useState([]);

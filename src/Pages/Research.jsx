@@ -33,7 +33,7 @@ const Research = () => {
       .get(`${api_route_content}/get-top-communities`)
       .then((response) => {
         // Logic for top communities, sorted by member count
-        console.log("API Response:", response.data); // Check the response structure
+         // Check the response structure
         const unfilteredCommunities = response.data;
 
         // Sort all communities by memberCount in descending order
@@ -43,7 +43,7 @@ const Research = () => {
 
         // Set the top 5 communities
         setTopCommunities(sortedByMemberCount.slice(0, 5));
-        console.log("top communities: ", topCommunities);
+        
       })
       .catch((error) => {
         console.error("Error fetching top communities:", error);
