@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from "axios";
+const api_route = import.meta.env.VITE_API_URL_CONTENT;
 
 const AboutUsPage = () => {
     const [formData, setFormData] = useState({
@@ -21,7 +22,7 @@ const AboutUsPage = () => {
     
         const { name, email, phone, feedback } = formData;
     
-        axios.post('https://www.studentresearchlab.com/api/content/contact', { name, email, phone, feedback })
+        axios.post(`${api_route}/contact`, { name, email, phone, feedback })
             .then((response) => {
                 alert(response.data.message || 'Form submitted successfully!');
                 // Optionally, reset the form here

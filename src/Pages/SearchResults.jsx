@@ -4,6 +4,7 @@ import axios from "axios";
 import PostCard from "../Components/PostCard"; // Assuming you have a PostCard component
 import { useNavigate } from "react-router-dom";
 
+const api_route = import.meta.env.VITE_API_URL_CONTENT;
 
 const SearchResults = () => {
   const navigate = useNavigate();
@@ -21,7 +22,7 @@ const SearchResults = () => {
     const fetchSearchResults = async () => {
       try {
         const response = await axios.get(
-          `https://www.studentresearchlab.com/api/content/search?query=${encodeURIComponent(
+          `${api_route}/search?query=${encodeURIComponent(
             query
           )}`
         );

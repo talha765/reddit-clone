@@ -5,7 +5,7 @@ import logo from '../assets/backpack.png';
 import axios from "axios";
 import Cookies from 'js-cookie';
 
-const api_route = "https://studentresreachlab.com/api/auth"; // Updated to HTTP
+const api_route = import.meta.env.VITE_API_URL_AUTH;
 
 const LoginPage = () => {
     const navigate = useNavigate();
@@ -27,7 +27,7 @@ const LoginPage = () => {
         console.log('email:', values.email);
         console.log("password: ", values.password);
     
-        axios.post(api_route, { email, password })
+        axios.post(`${api_route}/login`, { email, password })
             .then((response) => {
                 // Set token and user ID in cookies
                 Cookies.set('token', response.data.token, { expires: 7 }); // Expires in 7 days

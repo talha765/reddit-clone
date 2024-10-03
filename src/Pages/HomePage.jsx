@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import _ from "lodash";
 import Cookies from 'js-cookie';
-const api_route = "https://www.studentresearchlab.com/api/content";
+const api_route = import.meta.env.VITE_API_URL_CONTENT;
 
 const HomePage = () => {
   const [invent, setInvent] = useState([]);

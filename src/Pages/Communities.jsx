@@ -14,7 +14,8 @@ const Communities = () => {
   const navigate = useNavigate();
 
   // Base URL for the API
-  const api_route = "https://www.studentresearchlab.com/api/content";
+  const api_route = import.meta.env.VITE_API_URL_CONTENT;
+
 
   const handleCommunityClick = (communityId) => {
     navigate(`/community/${communityId}`);

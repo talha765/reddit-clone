@@ -19,6 +19,7 @@ const NavBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false); // State for mobile menu
   const navigate = useNavigate();
   const [searchInput, setSearchInput] = useState("");
+  const api_route = import.meta.env.VITE_API_URL_CONTENT;
 
   const handleUserIconClick = async () => {
     setShowDropdown((prev) => !prev);
@@ -30,7 +31,7 @@ const NavBar = () => {
           console.log("No token found. Please log in.");
           return;
         }
-        const response = await axios.get('https://www.studentresearchlab.com/api/auth/user', {
+        const response = await axios.get(`${api_route}/user`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setUser(response.data);

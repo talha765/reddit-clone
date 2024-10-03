@@ -5,7 +5,8 @@ import { useNavigate } from "react-router-dom";
 import _ from "lodash";
 import Cookies from "js-cookie";
 import { Filter } from "bad-words";
-const api_route = "https://www.studentresearchlab.com/api/content";
+const api_route_content = import.meta.env.VITE_API_URL_CONTENT;
+const api_route_user = import.meta.env.VITE_API_URL_AUTH;
 
 const Research = () => {
   const navigate = useNavigate();
@@ -29,7 +30,7 @@ const Research = () => {
 
   useEffect(() => {
     axios
-      .get(`${api_route}/get-top-communities`)
+      .get(`${api_route_content}/get-top-communities`)
       .then((response) => {
         // Logic for top communities, sorted by member count
         console.log("API Response:", response.data); // Check the response structure
@@ -65,7 +66,7 @@ const Research = () => {
       };
 
       const response = await axios.get(
-        "https://www.studentresearchlab.com/api/auth/user",
+        `${api_route_user}/user`,
         config
       );
       setUserType(response.data.type);
@@ -78,7 +79,7 @@ const Research = () => {
   const handleLike = async (postId) => {
     try {
       const response = await axios.post(
-        `${api_route}/researchlike/${postId}`,
+        `${api_route_content}/researchlike/${postId}`,
         { userId }
       );
       setPosts((prevPosts) =>
@@ -159,7 +160,7 @@ const Research = () => {
         return;
       }
       axios
-        .post(`${api_route}/post-research/${userId}`, {
+        .post(`${api_route_content}/post-research/${userId}`, {
           title: newPostForm.title,
           description: newPostForm.content,
         })
@@ -189,7 +190,7 @@ const Research = () => {
   useEffect(() => {
     // Fetch posts and their comments
     axios
-      .get(`${api_route}/get-research`)
+      .get(`${api_route_content}/get-research`)
       .then(async (response) => {
         const fetchedPosts = response.data;
 
@@ -198,7 +199,7 @@ const Research = () => {
           fetchedPosts.map(async (post) => {
             try {
               const commentsResponse = await axios.get(
-                `${api_route}/research/${post.id}/comments`
+                `${api_route_content}/research/${post.id}/comments`
               );
               const comments = commentsResponse.data;
 
@@ -454,7 +455,7 @@ const CommentSection = ({ postId, comments, handleAddComment, token }) => {
       };
 
       await axios.post(
-        `${api_route}/createComment`,
+        `${api_route_content}/createComment`,
         {
           postId: postId,
           description: newComment,

@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import logo from '../assets/backpack.png';
 import axios from 'axios';
 
-const api_route = "https://www.studentresearchlab.com/api/auth/register";
+const api_route = import.meta.env.VITE_API_URL_AUTH;
 
 const SignupPage = () => {
     const navigate = useNavigate();
@@ -38,7 +38,7 @@ const SignupPage = () => {
         const phone = values.phone;
         // Add logic for API call or validation
         // Redirect to home page or dashboard after signup
-        axios.post(api_route, { firstName, lastName, email, password, username, type, phone})
+        axios.post(`${api_route}/register`, { firstName, lastName, email, password, username, type, phone})
             .then((response) => {
                 alert("signup successful");
                 navigate('/login');
