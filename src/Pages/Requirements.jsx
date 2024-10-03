@@ -248,7 +248,7 @@ const Requirements = () => {
               <FaPlus className="mr-2" /> Add Post
             </button>
           </div>
-          <div className="mb-5 pt-5 font-poppins pl-2 ">
+          <div className="mb-5 pt-5 font-poppins pl-2 text-s text-white">
                         <p>Get things done at almost no cost (linking workplaces and classrooms). Organizations can post problems for students to find solutions for them. Students will also be recognized or given course credit. 
 
 </p>

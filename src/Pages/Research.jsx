@@ -254,7 +254,7 @@ const Research = () => {
               <FaPlus className="mr-2" /> Add Post
             </button>
           </div>
-          <div className="mb-5 pt-5 font-poppins pl-2 ">
+          <div className="mb-5 pt-5 font-poppins pl-2 text-s text-white">
                         <p>Researchers can look for junior’s help in the same research discipline.
 
 </p>

@@ -170,8 +170,8 @@ const SideBar = () => {
 
           <div className="mt-4">
               <div className="flex items-center space-x-2">
-            <ExclamationCircleIcon className="mt-1 h-5 w-5" />
-               <p>This is the beta version</p>
+            <ExclamationCircleIcon className="mt-1 h-5 w-5 " />
+               <p className="text-white">This is the beta version</p>
               </div>
             </div>
 
