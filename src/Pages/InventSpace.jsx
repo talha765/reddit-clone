@@ -246,6 +246,11 @@ const InventSpace = () => {
               <FaPlus className="mr-2" /> Add Post
             </button>
           </div>
+          <div className="mb-5 pt-5 font-poppins pl-2 ">
+                        <p className="">Students can post their brief statement of issues and solutions here. Interested parties will connect with them for details and further discussions. Ideas which can change the world.
+</p>
+
+          </div>
 
           {posts.map((post) => (
             <div

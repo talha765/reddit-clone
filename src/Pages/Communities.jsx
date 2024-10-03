@@ -65,7 +65,13 @@ const Communities = () => {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold text-white">Communities</h1>
       </div>
+      <div className="mb-5 pt-5 font-poppins pl-2 ">
+        <p>Create world class teams. It’s where students can get help to solve their projects and find new projects looking for help. Knowledge sharing for a specific course or topic.
 
+
+</p>
+
+          </div>
       {/* Top Communities */}
       <div>
         <h4 className="font-bold text-white mb-4">Top Communities</h4>
