@@ -30,7 +30,7 @@ const NavBar = () => {
           console.log("No token found. Please log in.");
           return;
         }
-        const response = await axios.get('https://studentresreachlab.com/api/auth/user', {
+        const response = await axios.get('https://www.studentresearchlab.com/api/auth/user', {
           headers: { Authorization: `Bearer ${token}` },
         });
         setUser(response.data);
