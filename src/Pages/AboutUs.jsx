@@ -21,7 +21,7 @@ const AboutUsPage = () => {
     
         const { name, email, phone, feedback } = formData;
     
-        axios.post('http://localhost:3000/api/content/contact', { name, email, phone, feedback })
+        axios.post('https://www.studentresearchlab.com/api/content/contact', { name, email, phone, feedback })
             .then((response) => {
                 alert(response.data.message || 'Form submitted successfully!');
                 // Optionally, reset the form here

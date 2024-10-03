@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import logo from '../assets/backpack.png';
 import axios from 'axios';
 
-const api_route = "https://studentresreachlab.com/api/auth/register";
+const api_route = "https://www.studentresearchlab.com/api/auth/register";
 
 const SignupPage = () => {
     const navigate = useNavigate();

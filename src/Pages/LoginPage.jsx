@@ -5,7 +5,7 @@ import logo from '../assets/backpack.png';
 import axios from "axios";
 import Cookies from 'js-cookie';
 
-const api_route = "https://studentresreachlab.com/api/content"; // Updated to HTTP
+const api_route = "https://studentresreachlab.com/api/auth"; // Updated to HTTP
 
 const LoginPage = () => {
     const navigate = useNavigate();

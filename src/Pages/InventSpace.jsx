@@ -5,7 +5,7 @@ import _ from "lodash";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import { Filter } from "bad-words";
-const api_route = "https://studentresreachlab.com/api/content";
+const api_route = "https://www.studentresearchlab.com/api/content";
 
 const InventSpace = () => {
   const navigate = useNavigate();
@@ -61,7 +61,7 @@ const InventSpace = () => {
         },
       };
       const response = await axios.get(
-        "https://studentresreachlab.com/api/auth/user",
+        "https://www.studentresearchlab.com/api/auth/user",
         config
       );
       setUserType(response.data.type);
