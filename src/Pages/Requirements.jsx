@@ -76,7 +76,7 @@ const Requirements = () => {
 
   // Handle liking posts
   const handleLike = async (postId) => {
-    try {
+    try {    //http://localhost:3000/api/content/requirementlike/1
       const response = await axios.post(
         `${api_route_content}/requirementlike/${postId}`,
         { userId }

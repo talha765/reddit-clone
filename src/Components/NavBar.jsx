@@ -19,7 +19,7 @@ const NavBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false); // State for mobile menu
   const navigate = useNavigate();
   const [searchInput, setSearchInput] = useState("");
-  const api_route = import.meta.env.VITE_API_URL_CONTENT;
+  const api_route = import.meta.env.VITE_API_URL_AUTH;
 
   const handleUserIconClick = async () => {
     setShowDropdown((prev) => !prev);

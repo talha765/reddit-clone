@@ -28,7 +28,6 @@
     "pg-hstore": "^2.3.4",
     "postgres": "^3.4.4",
     "sequelize": "^6.37.3",
-    "validator": "^13.12.0",
-    "dialect": "postgres"
+    "validator": "^13.12.0"
   }
 }
