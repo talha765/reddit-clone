@@ -390,6 +390,26 @@ router.get("/get-research", async (req, res) => {
   }
 });
 
+router.get("/get-communities-posts", async (req, res) => {
+  try {
+    // Fetch the 3 most recent posts, including the associated User's username
+    let posts = await Post.findAll(
+      {
+      include: {
+        model: Community,
+        as: 'community',
+        attributes: ['name'], // Only include the username
+      },
+      order: [['createdAt', 'DESC']], // Order by createdAt in descending order (newest first)
+      limit: 3, // Limit the result to the three most recent posts
+    }
+    );
+    res.status(201).json(posts);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
 router.get("/get-communities", async (req, res) => {
   try {
     let communities = await Community.findAll();
