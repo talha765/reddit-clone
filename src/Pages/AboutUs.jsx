@@ -77,7 +77,7 @@ const AboutUsPage = () => {
                         <p className="mb-2">214-3485 Rebecca Street</p>
                         <p className="mb-2">Oakville</p>
                         <p className="mb-2">Phone: +1 416 786 0802</p>
-                        <p className="mb-2 text-xs md:text-sm">Email: Studentresearchlabhome@gmail.com</p>
+                        <p className="mb-2 text-xs md:text-sm">Email: studentresearchlabhome@gmail.com</p>
                     </div>
                 </section>
 

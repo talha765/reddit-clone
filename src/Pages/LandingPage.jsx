@@ -15,40 +15,51 @@ const LandingPage = () => {
     const [requirements, setRequirements] = useState([]);
     const [research, setResearch] = useState([]);
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-
+    const [comPosts, setComPosts] = useState([]);
     const navigate = useNavigate();
 
     useEffect(() => {
         axios
-            .get(`${api_route}/get-invent`)
-            .then((response) => {
-                const limitedInvents = response.data.slice(0, 3);
-                setInvent(limitedInvents);
-            })
-            .catch((error) => {
-                console.error("Error fetching invents:", error);
-            });
-
+          .get(`${api_route}/get-invent`)
+          .then((response) => {
+            const limitedInvents = response.data.slice(0, 3);
+            setInvent(limitedInvents);
+          })
+          .catch((error) => {
+            console.error("Error fetching invents:", error);
+          });
+    
         axios
-            .get(`${api_route}/get-requirements`)
-            .then((response) => {
-                const limitedReq = response.data.slice(0, 3);
-                setRequirements(limitedReq);
-            })
-            .catch((error) => {
-                console.error("Error fetching requirements:", error);
-            });
-
+          .get(`${api_route}/get-requirements`)
+          .then((response) => {
+            const limitedReq = response.data.slice(0, 3);
+            setRequirements(limitedReq);
+          })
+          .catch((error) => {
+            console.error("Error fetching requirements:", error);
+          });
+    
         axios
-            .get(`${api_route}/get-research`)
-            .then((response) => {
-                const limitedResearch = response.data.slice(0, 3);
-                setResearch(limitedResearch);
-            })
-            .catch((error) => {
-                console.error("Error fetching research:", error);
-            });
-    }, []);
+          .get(`${api_route}/get-research`)
+          .then((response) => {
+            const limitedResearch = response.data.slice(0, 3);
+            setResearch(limitedResearch);
+          })
+          .catch((error) => {
+            console.error("Error fetching research:", error);
+          });
+         
+          axios
+          .get(`${api_route}/get-communities-posts`)
+          .then((response) => {
+            const topCommunityPosts = response.data;
+            setComPosts(topCommunityPosts);
+            console.log(response);
+          })
+          .catch((error) => {
+            console.error("Error fetching posts:", error);
+          });
+      }, []);
 
     // Sidebar logic
     const toggleSidebar = () => {
@@ -92,9 +103,9 @@ const LandingPage = () => {
                             <h1 className="text-white text-3xl md:text-4xl font-bold mb-4">
                                 WELCOME TO STUDENT RESEARCH LAB!
                             </h1>
-                            <p className="text-xl md:text-3xl text-stone-300">
-                                Invent, Discuss And Innovate
-                            </p>
+                            <p className="md:text-2xl text-stone-300">
+              Invent, Discuss And Innovate - students' creativity can be a powerful asset, independent of experience. 
+            </p>
                         </div>
 
                         {/* Main content like cards */}
@@ -175,20 +186,35 @@ const LandingPage = () => {
                             </div>
 
                             {/* Top Communities Card */}
-                            <div className="bg-gray-900 rounded-2xl p-8 shadow-md flex-1 h-[28rem]">
-                                <h2
-                                    className="text-white text-xl md:text-2xl font-semibold mb-2 text-center cursor-pointer"
-                                    onClick={() => navigate("/communities")}
-                                >
-                                    Top Communities
-                                </h2>
-                                <p
-                                    className="text-white text-sm md:text-base text-center cursor-pointer"
-                                    onClick={() => navigate("/communities")}
-                                >
-                                    Join and Learn
-                                </p>
-                            </div>
+                            <div className="bg-gray-900 rounded-2xl p-8 shadow-md flex-1 h-[28rem] xl:row-start-2">
+              <h2
+                className="text-white text-xl md:text-2xl font-semibold mb-2 text-center cursor-pointer"
+                onClick={() => navigate("/communities")}
+              >
+                Communities
+              </h2>
+              <p
+                className="text-white text-sm md:text-base mb-2 text-center cursor-pointer"
+                onClick={() => navigate("/communities")}
+              >
+                Join and Learn
+              </p>
+              <div className="space-y-6 mt-4">
+                {comPosts.map((item, index) => (
+                  <div
+                    key={index}
+                    className="bg-gray-700 flex justify-between p-4 md:p-8 rounded-lg shadow-sm mx-auto w-full"
+                  >
+                    <p className="text-white text-sm md:text-base font-medium">
+                      {_.truncate(item.title, { length: 21 })}
+                    </p>
+                    <p className="text-teal-600 text-sm md:text-base font-medium">
+                      {_.truncate(item.community.name, { length: 21 })}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
                         </div>
                     </div>
                 </div>

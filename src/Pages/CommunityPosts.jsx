@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useParams } from "react-router-dom";
-import { FaThumbsUp, FaCommentAlt, FaPlus } from "react-icons/fa";
-import Cookies from 'js-cookie';
+import { useParams, useNavigate } from "react-router-dom";
+import { FaThumbsUp, FaPlus, FaCommentAlt } from "react-icons/fa";
+import Cookies from "js-cookie";
 import { Filter } from "bad-words";
 
 const api_route = import.meta.env.VITE_API_URL_CONTENT;
 
-
 const CommunityPosts = () => {
-  const userId = Cookies.get('id');
+  const userId = Cookies.get("id");
   const { communityId } = useParams(); // Get community ID from URL
+  const navigate = useNavigate(); // Use for navigating to the specific post page
   const [posts, setPosts] = useState([]);
   const [communityDetails, setCommunityDetails] = useState({});
   const [showAddPostModal, setShowAddPostModal] = useState(false); // Modal state for new post
@@ -20,11 +20,9 @@ const CommunityPosts = () => {
   // Fetch posts for the specific community
   useEffect(() => {
     axios
-      .get(
-        `${api_route}/get-posts-by-community/${communityId}`
-      )
+      .get(`${api_route}/get-posts-by-community/${communityId}`)
       .then((response) => {
-        setPosts(response.data.posts);
+        setPosts(response.data.posts); // Set posts from the API
         setCommunityDetails(response.data.community); // Also fetch community details
       })
       .catch((error) => {
@@ -72,18 +70,12 @@ const CommunityPosts = () => {
   const handleAddPost = () => {
     const filter = new Filter();
     if (newPostForm.title && newPostForm.description) {
-      if (
-        filter.isProfane(newPostForm.title) ||
-        filter.isProfane(newPostForm.content)
-      ) {
+      if (filter.isProfane(newPostForm.title) || filter.isProfane(newPostForm.content)) {
         alert("Your post contains inappropriate language. Please remove it.");
         return;
       }
       axios
-        .post(
-          `${api_route}/post-in-community/${communityId}/${userId}`,
-          newPostForm
-        )
+        .post(`${api_route}/post-in-community/${communityId}/${userId}`, newPostForm)
         .then((response) => {
           setPosts([...posts, response.data]); // Add new post to the list
           setShowAddPostModal(false); // Close the modal
@@ -94,15 +86,14 @@ const CommunityPosts = () => {
     }
   };
 
+  const handleViewPost = (post) => {
+    navigate(`/community/${communityId}/post/${post.id}`, { state: { post }});
+  };
+
   return (
-    <div
-      className="p-4 bg-gray-800 min-h-screen"
-      style={{ paddingTop: "80px" }}
-    >
+    <div className="p-4 bg-gray-800 min-h-screen" style={{ paddingTop: "80px" }}>
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-white">
-          {communityDetails.name}
-        </h1>
+        <h1 className="text-2xl font-bold text-white">{communityDetails.name}</h1>
         <button
           className="flex items-center bg-blue-600 hover:bg-blue-500 text-white py-2 px-4 rounded-lg transition duration-200 ease-in-out"
           onClick={handleOpenAddPostModal} // Open modal on click
@@ -112,9 +103,7 @@ const CommunityPosts = () => {
       </div>
 
       {posts.map((post) => (
-        <div
-          key={post.id}
-          className="mb-6 p-4 bg-gray-900 rounded-lg shadow-md"
+        <div onClick={() => handleViewPost(post)} key={post.id} className="mb-6 p-4 bg-gray-900 rounded-lg shadow-md border border-gray-600 transition duration-200 ease-in-out hover:cursor-pointer hover:bg-gray-700"
         >
           <h2 className="text-xl font-semibold text-white">{post.title}</h2>
           <p className="mt-2 text-white">{post.description}</p>
@@ -129,11 +118,11 @@ const CommunityPosts = () => {
                 />
                 <span className="text-white ml-2">{post.likes}</span>
               </div>
-              {/* <span className="flex items-center">
-                <FaCommentAlt className="mr-1" /> {post.comments.length}
-              </span> */}
+              <span className="flex items-center">
+                  <FaCommentAlt className="mr-1" /> {post.commentsCount}
+              </span>
             </div>
-            <button className="text-white underline">View Post</button>
+            
           </div>
         </div>
       ))}
@@ -154,36 +143,23 @@ const CommunityPosts = () => {
                 className="w-full p-2 mb-4 border border-gray-600 rounded-lg bg-gray-900 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Post Title"
                 value={newPostForm.title}
-                onChange={(e) =>
-                  setNewPostForm({ ...newPostForm, title: e.target.value })
-                }
+                onChange={(e) => setNewPostForm({ ...newPostForm, title: e.target.value })}
                 required
               />
               <textarea
                 className="w-full p-2 mb-4 border border-gray-600 rounded-lg bg-gray-900 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Post Content"
                 value={newPostForm.description}
-                onChange={(e) =>
-                  setNewPostForm({
-                    ...newPostForm,
-                    description: e.target.value,
-                  })
-                }
+                onChange={(e) => setNewPostForm({ ...newPostForm, description: e.target.value })}
                 required
               />
               <div className="flex justify-end">
-                <button
-                  type="submit"
-                  className="bg-blue-600 hover:bg-blue-500 text-white py-2 px-4 rounded-lg"
-                >
+                <button type="submit" className="bg-blue-600 hover:bg-blue-500 text-white py-2 px-4 rounded-lg">
                   Submit Post
                 </button>
               </div>
             </form>
-            <button
-              className="mt-4 bg-red-500 hover:bg-red-400 text-white py-2 px-4 rounded-lg"
-              onClick={handleCloseAddPostModal}
-            >
+            <button className="mt-4 bg-red-500 hover:bg-red-400 text-white py-2 px-4 rounded-lg" onClick={handleCloseAddPostModal}>
               Close
             </button>
           </div>
@@ -194,9 +170,7 @@ const CommunityPosts = () => {
       {showLoginModal && (
         <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex justify-center items-center">
           <div className="bg-gray-800 rounded-lg shadow-lg p-6 w-full max-w-lg">
-            <h2 className="text-lg text-white font-bold mb-4">
-              Login Required
-            </h2>
+            <h2 className="text-lg text-white font-bold mb-4">Login Required</h2>
             <p className="text-white mb-4">
               Please{" "}
               <a href="/login" className="text-blue-500 underline">
@@ -204,10 +178,7 @@ const CommunityPosts = () => {
               </a>{" "}
               to add a post.
             </p>
-            <button
-              className="mt-4 bg-red-500 hover:bg-red-400 text-white py-2 px-4 rounded-lg"
-              onClick={handleCloseAddPostModal}
-            >
+            <button className="mt-4 bg-red-500 hover:bg-red-400 text-white py-2 px-4 rounded-lg" onClick={handleCloseAddPostModal}>
               Close
             </button>
           </div>

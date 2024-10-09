@@ -19,6 +19,7 @@ const ResearchLike = require("./models/ResearchLike");
 const InventComment = require('./models/InventComment');
 const RequirementComment = require("./models/RequirementComment");
 const ResearchComment = require('./models/ResearchComment');
+const PostComment = require('./models/PostComment');
 
 const app = express();
 
@@ -101,6 +102,11 @@ Research.hasMany(ResearchComment, { foreignKey: 'postId' });
 ResearchComment.belongsTo(User, { foreignKey: 'userId' });
 ResearchComment.belongsTo(Research, { foreignKey: 'postId' });
 
+User.hasMany(PostComment, { foreignKey: 'userId' });
+Post.hasMany(PostComment, { foreignKey: 'postId' });
+PostComment.belongsTo(User, { foreignKey: 'userId' });
+PostComment.belongsTo(Research, { foreignKey: 'postId' });
+
 // Serve static files from the React frontend app
 app.use(express.static(path.join(__dirname, '../dist')));
 
@@ -108,6 +114,8 @@ app.use(express.static(path.join(__dirname, '../dist')));
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../dist', 'index.html'));
 });
+
+sequelize.sync({ alter: true }); 
 
 // Sync the database and start the server
 sequelize.sync({ force: false })

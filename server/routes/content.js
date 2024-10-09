@@ -12,6 +12,7 @@ const InventLike = require("../models/InventLike");
 const RequirementLike = require("../models/RequirementLike");
 const ResearchLike = require("../models/ResearchLike");
 const PostLike = require('../models/PostLike');
+const PostComment = require('../models/PostComment');
 const InventComment = require('../models/InventComment');
 const RequirementComment = require('../models/RequirementComment');
 const ResearchComment = require('../models/ResearchComment');
@@ -38,7 +39,7 @@ router.post('/contact', async (req, res) => {
     // Email options
     const mailOptions = {
         from: email, // sender address (user's email)
-        to: 'sameermuhammad19@gmail.com', // the recipient email
+        to: 'studentresearchlabhome@gmail.com', // the recipient email
         subject: `New Contact Form Submission from ${name}`,
         text: `
         Name: ${name}
@@ -85,6 +86,41 @@ router.get('/inventspace/:postId/comments', async (req, res) => {
     const comments = await InventComment.findAll({
       where: { postId },
       include: ['user'], // Include user details
+    });
+    res.status(200).json(comments);
+  } catch (error) {
+    res.status(500).json({ error: 'Error fetching comments' });
+  }
+});
+
+router.post('/add-post-comment/:postId', async (req, res) => {
+  const { userId, content } = req.body;
+  const {postId} = req.params; // Assuming user ID is in the token
+
+  try {
+    const comment = await PostComment.create({
+      postId,
+      userId,
+      content,
+    });
+    await Post.increment('commentsCount', { where: { id: postId } });
+    res.status(201).json({ message: 'Comment added successfully', comment });
+  } catch (error) {
+    res.status(500).json({ error: error });
+  }
+});
+
+router.get('/post/:postId/comments', async (req, res) => {
+  const { postId } = req.params;
+
+  try {
+    const comments = await PostComment.findAll({
+      include: {
+        model: User,
+        as: 'user',
+        attributes: ['username'],
+      },
+      where: { postId },
     });
     res.status(200).json(comments);
   } catch (error) {
@@ -273,15 +309,18 @@ router.get("/search", async (req, res) => {
         ],
       },
     });
-
-    const communityResults = await Community.findAll({
+    const communityResults = await Post.findAll({
       where: {
         [Op.or]: [
-          { name: { [Op.iLike]: `%${query}%` } },
+          { title: { [Op.iLike]: `%${query}%` } },
           { description: { [Op.iLike]: `%${query}%` } },
-          { subject: { [Op.iLike]: `%${query}%` } },
         ],
       },
+      include: {
+        model: Community,
+        as: 'community',
+        attributes: ['name'],
+      }
     });
 
     const results = {
@@ -341,6 +380,7 @@ router.get('/get-invent', async (req, res) => {
         as: 'user',
         attributes: ['username'], // Only include the username
       },
+      order: [['createdAt', 'DESC']], // Order by createdAt in descending order (newest first)
     });
     res.status(201).json(posts);
   } catch (error) {
@@ -367,6 +407,7 @@ router.get("/get-requirements", async (req, res) => {
         as: 'user',
         attributes: ['username'], // Only include the username
       },
+      order: [['createdAt', 'DESC']], // Order by createdAt in descending order (newest first)
     });
     res.status(201).json(posts);
   } catch (error) {
@@ -383,6 +424,7 @@ router.get("/get-research", async (req, res) => {
         as: 'user',
         attributes: ['username'], // Only include the username
       },
+      order: [['createdAt', 'DESC']], // Order by createdAt in descending order (newest first)
     });
     res.status(201).json(posts);
   } catch (error) {
@@ -459,6 +501,19 @@ router.get("/get-posts-by-community/:communityId", async (req, res) => {
     res.status(500).json({ error: "Error fetching community posts" });
   }
 });
+
+// //get specific post in specific community
+// router.get("/get-post-by-community/:communityId/:postId", async (req, res) => {
+//   const { communityId } = req.params.communityId;
+//   const { postId } = req.params.postId;
+//   try {
+//     const community = await Community.findByPk(communityId);
+//     const post = await Post.findByPk(postId);
+//     res.status(200).json({ community, post });
+//   } catch (error) {
+//     res.status(500).json({ error: "Error fetching community posts" });
+//   }
+// });
 
 router.post("/post-in-community/:communityId/:userId", async (req, res) => {
   const { communityId, userId } = req.params;

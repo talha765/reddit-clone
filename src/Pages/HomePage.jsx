@@ -67,8 +67,8 @@ const HomePage = () => {
             <h1 className="text-white text-3xl md:text-4xl font-bold mb-4">
               WELCOME TO STUDENT RESEARCH LAB!
             </h1>
-            <p className="text-xl md:text-3xl text-stone-300">
-              Invent, Discuss And Innovate
+            <p className="md:text-2xl text-stone-300">
+              Invent, Discuss And Innovate - students' creativity can be a powerful asset, independent of experience. 
             </p>
           </div>
           {/* Cards Section */}

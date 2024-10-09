@@ -4,19 +4,20 @@ import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 const Communities = () => {
   const [topCommunities, setTopCommunities] = useState([]);
   const [communities, setCommunities] = useState([]);
   const navigate = useNavigate();
-
   const api_route = import.meta.env.VITE_API_URL_CONTENT;
 
-  const handleCommunityClick = (communityId) => {
-    navigate(`/community/${communityId}`);
+  // Handle navigating to CommunityPosts when a community is clicked
+  const handleCommunityClick = (community) => {
+    navigate(`/community/${community.id}`, { state: { community } });
   };
 
+  // Fetch top communities on page load
   useEffect(() => {
     axios
       .get(`${api_route}/get-top-communities`)
@@ -29,6 +30,7 @@ const Communities = () => {
       });
   }, []);
 
+  // Fetch all communities on page load
   useEffect(() => {
     axios
       .get(`${api_route}/get-communities`)
@@ -47,9 +49,7 @@ const Communities = () => {
         <h1 className="text-2xl font-bold text-white">Communities</h1>
       </div>
       <div className="mb-5 pt-5 font-poppins pl-2">
-        <p>
-          Create world-class teams. It’s where students can get help to solve their projects and find new projects looking for help. Knowledge sharing for a specific course or topic.
-        </p>
+        <p>Create world-class teams and share knowledge on projects and topics.</p>
       </div>
 
       {/* Top Communities */}
@@ -60,7 +60,7 @@ const Communities = () => {
             <Card
               key={community.id}
               sx={{ width: { xs: "100%", sm: "calc(50% - 16px)", md: "200px" }, backgroundColor: "rgb(17 24 39)", color: "white" }}
-              onClick={() => handleCommunityClick(community.id)}
+              onClick={() => handleCommunityClick(community)} // Navigates to CommunityPosts
             >
               <CardContent>
                 <Typography variant="h5" component="div">
@@ -81,7 +81,7 @@ const Communities = () => {
         <ul>
           {communities.map((community) => (
             <li key={community.id}>
-              <a onClick={() => handleCommunityClick(community.id)} className="text-white hover:underline">
+              <a onClick={() => handleCommunityClick(community)} className="text-white hover:underline cursor-pointer">
                 {community.name}
               </a>
             </li>
