@@ -4,7 +4,6 @@ import axios from "axios";
 import PostCard from "../Components/PostCard"; // Assuming you have a PostCard component
 import { useNavigate } from "react-router-dom";
 
-const api_route = import.meta.env.VITE_API_URL_CONTENT;
 
 const SearchResults = () => {
   const navigate = useNavigate();
@@ -12,7 +11,6 @@ const SearchResults = () => {
     inventspace: [],
     requirements: [],
     research: [],
-    community: [],
   });
   const location = useLocation();
 
@@ -23,7 +21,9 @@ const SearchResults = () => {
     const fetchSearchResults = async () => {
       try {
         const response = await axios.get(
-          `${api_route}/search?query=${encodeURIComponent(query)}`
+          `http://localhost:3000/api/content/search?query=${encodeURIComponent(
+            query
+          )}`
         );
         setResults(response.data);
       } catch (error) {
@@ -65,15 +65,11 @@ const SearchResults = () => {
           <h2 className="text-xl font-semibold mb-5">Requirements</h2>
           <ul>
             {results.requirements.map((item) => (
-              <PostCard
-                handleClick={() =>
-                  navigate(`/requirement-post/${item.id}`, {
-                    state: { post: item },
-                  })
-                }
-                key={item.id}
-                post={item}
-              />
+              <PostCard handleClick={() =>
+                navigate(`/requirement-post/${item.id}`, { state: { post: item } })
+              }
+              key={item.id}
+              post={item} />
             ))}
           </ul>
         </>
@@ -84,47 +80,19 @@ const SearchResults = () => {
           <h2 className="text-xl font-semibold mb-5">Research</h2>
           <ul>
             {results.research.map((item) => (
-              <PostCard
-                handleClick={() =>
-                  navigate(`/research-post/${item.id}`, {
-                    state: { post: item },
-                  })
-                }
-                key={item.id}
-                post={item}
-              />
+              <PostCard handleClick={() =>
+                navigate(`/research-post/${item.id}`, { state: { post: item } })
+              }
+              key={item.id}
+              post={item} />
             ))}
           </ul>
         </>
       )}
 
-{results.community && results.community.length > 0 && (
-  <>
-    <h2 className="text-xl font-semibold mb-5">Community posts</h2>
-    <ul>
-      {results.community.map((item) => (
-        <li key={item.id}> {/* Add a wrapping <li> tag */}
-          <h2>{item.community.name}</h2>
-          <PostCard
-            handleClick={() =>
-              navigate(`/community/${item.communityId}/post/${item.id}`, {
-                state: { post: item },
-              })
-            }
-            post={item}
-          />
-        </li>
-      ))}
-    </ul>
-  </>
-)}
-
-
       {!results.inventspace?.length &&
         !results.requirements?.length &&
-        !results.research?.length &&
-        !results.community?.length &&  
-        <p>No results found.</p>}
+        !results.research?.length && <p>No results found.</p>}
     </div>
   );
 };

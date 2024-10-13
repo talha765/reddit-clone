@@ -5,8 +5,7 @@ import { useNavigate } from "react-router-dom";
 import _ from "lodash";
 import Cookies from "js-cookie";
 import { Filter } from "bad-words";
-const api_route_content = import.meta.env.VITE_API_URL_CONTENT;
-const api_route_user = import.meta.env.VITE_API_URL_AUTH;
+const api_route = "http://localhost:3000/api/content";
 
 const Research = () => {
   const navigate = useNavigate();
@@ -30,10 +29,10 @@ const Research = () => {
 
   useEffect(() => {
     axios
-      .get(`${api_route_content}/get-top-communities`)
+      .get(`${api_route}/get-top-communities`)
       .then((response) => {
         // Logic for top communities, sorted by member count
-         // Check the response structure
+        console.log("API Response:", response.data); // Check the response structure
         const unfilteredCommunities = response.data;
 
         // Sort all communities by memberCount in descending order
@@ -43,7 +42,7 @@ const Research = () => {
 
         // Set the top 5 communities
         setTopCommunities(sortedByMemberCount.slice(0, 5));
-        
+        console.log("top communities: ", topCommunities);
       })
       .catch((error) => {
         console.error("Error fetching top communities:", error);
@@ -66,7 +65,7 @@ const Research = () => {
       };
 
       const response = await axios.get(
-        `${api_route_user}/user`,
+        "http://localhost:3000/api/auth/user",
         config
       );
       setUserType(response.data.type);
@@ -79,7 +78,7 @@ const Research = () => {
   const handleLike = async (postId) => {
     try {
       const response = await axios.post(
-        `${api_route_content}/researchlike/${postId}`,
+        `${api_route}/researchlike/${postId}`,
         { userId }
       );
       setPosts((prevPosts) =>
@@ -160,7 +159,7 @@ const Research = () => {
         return;
       }
       axios
-        .post(`${api_route_content}/post-research/${userId}`, {
+        .post(`${api_route}/post-research/${userId}`, {
           title: newPostForm.title,
           description: newPostForm.content,
         })
@@ -190,7 +189,7 @@ const Research = () => {
   useEffect(() => {
     // Fetch posts and their comments
     axios
-      .get(`${api_route_content}/get-research`)
+      .get(`${api_route}/get-research`)
       .then(async (response) => {
         const fetchedPosts = response.data;
 
@@ -199,7 +198,7 @@ const Research = () => {
           fetchedPosts.map(async (post) => {
             try {
               const commentsResponse = await axios.get(
-                `${api_route_content}/research/${post.id}/comments`
+                `${api_route}/research/${post.id}/comments`
               );
               const comments = commentsResponse.data;
 
@@ -254,12 +253,7 @@ const Research = () => {
               <FaPlus className="mr-2" /> Add Post
             </button>
           </div>
-          <div className="mb-5 pt-5 font-poppins pl-2 text-s text-white">
-                        <p>Researchers can look for junior’s help in the same research discipline.
 
-</p>
-
-          </div>
           {posts.map((post) => (
             <div
               key={post.id}
@@ -455,7 +449,7 @@ const CommentSection = ({ postId, comments, handleAddComment, token }) => {
       };
 
       await axios.post(
-        `${api_route_content}/createComment`,
+        `${api_route}/createComment`,
         {
           postId: postId,
           description: newComment,

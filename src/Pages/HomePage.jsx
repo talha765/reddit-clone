@@ -3,13 +3,12 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import _ from "lodash";
 import Cookies from 'js-cookie';
-const api_route = import.meta.env.VITE_API_URL_CONTENT;
+const api_route = "http://localhost:3000/api/content";
 
 const HomePage = () => {
   const [invent, setInvent] = useState([]);
   const [requirements, setRequirements] = useState([]);
   const [research, setResearch] = useState([]);
-  const [comPosts, setComPosts] = useState([]);
 
   const navigate = useNavigate();
 
@@ -43,17 +42,6 @@ const HomePage = () => {
       .catch((error) => {
         console.error("Error fetching research:", error);
       });
-     
-      axios
-      .get(`${api_route}/get-communities-posts`)
-      .then((response) => {
-        const topCommunityPosts = response.data;
-        setComPosts(topCommunityPosts);
-        console.log(response);
-      })
-      .catch((error) => {
-        console.error("Error fetching posts:", error);
-      });
   }, []);
 
   return (
@@ -67,8 +55,8 @@ const HomePage = () => {
             <h1 className="text-white text-3xl md:text-4xl font-bold mb-4">
               WELCOME TO STUDENT RESEARCH LAB!
             </h1>
-            <p className="md:text-2xl text-stone-300">
-              Invent, Discuss And Innovate - Student's creativity can be a powerful asset, independent of experience. 
+            <p className="text-xl md:text-3xl text-stone-300">
+              Invent, Discuss And Innovate
             </p>
           </div>
           {/* Cards Section */}
@@ -107,7 +95,7 @@ const HomePage = () => {
                 className="text-white text-xl md:text-2xl font-semibold mb-2 text-center cursor-pointer"
                 onClick={() => navigate("/requirements")}
               >
-                Requirements & Co Ops
+                Requirements
               </h2>
               <p
                 className="text-white text-sm md:text-base mb-2 text-center cursor-pointer"
@@ -163,31 +151,16 @@ const HomePage = () => {
                 className="text-white text-xl md:text-2xl font-semibold mb-2 text-center cursor-pointer"
                 onClick={() => navigate("/communities")}
               >
-                Communities
+                Top Communities
               </h2>
               <p
-                className="text-white text-sm md:text-base mb-2 text-center cursor-pointer"
+                className="text-white text-sm md:text-base text-center cursor-pointer"
                 onClick={() => navigate("/communities")}
               >
                 Join and Learn
               </p>
-              <div className="space-y-6 mt-4">
-                {comPosts.map((item, index) => (
-                  <div
-                    key={index}
-                    className="bg-gray-700 flex justify-between p-4 md:p-8 rounded-lg shadow-sm mx-auto w-full"
-                  >
-                    <p className="text-white text-sm md:text-base font-medium">
-                      {_.truncate(item.title, { length: 21 })}
-                    </p>
-                    <p className="text-teal-600 text-sm md:text-base font-medium">
-                      {_.truncate(item.community.name, { length: 21 })}
-                    </p>
-                  </div>
-                ))}
-              </div>
             </div>
-          </div>
+          </div>{" "}
         </div>
       </div>
     </div>

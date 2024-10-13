@@ -1,9 +1,6 @@
 const { Sequelize } = require('sequelize');
 require('dotenv').config(); // Load environment variables from .env file
 
-const testPass= process.env.DB_PASSWORD;
-console.log("pass: ",testPass);
-
 // Initialize Sequelize with environment variables
 const sequelize = new Sequelize(
   process.env.DB_NAME,
@@ -12,13 +9,13 @@ const sequelize = new Sequelize(
   {
     host: process.env.DB_HOST,
     port: process.env.DB_PORT, // Add port here
-    dialect: "postgres"
-    // dialectOptions: { // Add SSL options here
-    //   // ssl: {
-    //   //   require: true,
-    //   //   rejectUnauthorized: false
-    //   // }
-    // }
+    dialect: process.env.DB_DIALECT,
+    dialectOptions: { // Add SSL options here
+      ssl: {
+        require: true,
+        rejectUnauthorized: false
+      }
+    }
   }
 );
 

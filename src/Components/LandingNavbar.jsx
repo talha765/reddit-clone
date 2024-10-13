@@ -3,6 +3,7 @@ import logo from "../assets/backpack.png";
 import { Link, useNavigate } from "react-router-dom";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline"; // Icons for mobile menu
 import Cookies from 'js-cookie';
+
 const NavBar = () => {
   const [searchInput, setSearchInput] = useState("");
   const [isMenuOpen, setIsMenuOpen] = useState(false); // State to toggle mobile menu
@@ -13,7 +14,6 @@ const NavBar = () => {
       e.preventDefault();
       if (searchInput.trim()) {
         navigate(`/search?query=${encodeURIComponent(searchInput.trim())}`);
-        setSearchInput("");
       }
     }
   };
@@ -103,12 +103,6 @@ const NavBar = () => {
           <div className="flex flex-col items-start w-full">
             <button
               className="text-white hover:bg-gray-700 w-full text-left p-2"
-              onClick={() => navigate("/homepage")}
-            >
-              Home
-            </button>
-            <button
-              className="text-white hover:bg-gray-700 w-full text-left p-2"
               onClick={() => navigate("/qna")}
             >
               InventSpaces
@@ -138,16 +132,10 @@ const NavBar = () => {
               AboutUs
             </button>
             <button
-              className="text-green-400 hover:bg-gray-700 w-full text-left p-2"
-              onClick={() => navigate("/login")}
+              className="text-red-600 hover:bg-red-500 w-full text-left p-2"
+              onClick={handleLogout}
             >
-              Login
-            </button>
-            <button
-              className="text-green-400 hover:bg-gray-700 w-full text-left p-2"
-              onClick={() => navigate("/signup")}
-            >
-              Sign Up
+              Logout
             </button>
           </div>
         </div>

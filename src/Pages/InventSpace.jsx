@@ -5,8 +5,7 @@ import _ from "lodash";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import { Filter } from "bad-words";
-const api_route_content =  import.meta.env.VITE_API_URL_CONTENT;
-const api_route_user=import.meta.env.VITE_API_URL_AUTH;
+const api_route = "http://localhost:3000/api/content";
 
 const InventSpace = () => {
   const navigate = useNavigate();
@@ -29,10 +28,10 @@ const InventSpace = () => {
 
   useEffect(() => {
     axios
-      .get(`${api_route_content}/get-top-communities`)
+      .get(`${api_route}/get-top-communities`)
       .then((response) => {
         // Logic for top communities, sorted by member count
-        
+        console.log("API Response:", response.data); // Check the response structure
         const unfilteredCommunities = response.data;
 
         // Sort all communities by memberCount in descending order
@@ -42,7 +41,7 @@ const InventSpace = () => {
 
         // Set the top 5 communities
         setTopCommunities(sortedByMemberCount.slice(0, 5));
-        
+        console.log("top communities: ", topCommunities);
       })
       .catch((error) => {
         console.error("Error fetching top communities:", error);
@@ -62,7 +61,7 @@ const InventSpace = () => {
         },
       };
       const response = await axios.get(
-        `${api_route_user}/user`,
+        "http://localhost:3000/api/auth/user",
         config
       );
       setUserType(response.data.type);
@@ -79,7 +78,7 @@ const InventSpace = () => {
   useEffect(() => {
     // Fetch posts and their comments
     axios
-      .get(`${api_route_content}/get-invent`)
+      .get(`${api_route}/get-invent`)
       .then(async (response) => {
         const fetchedPosts = response.data;
 
@@ -88,7 +87,7 @@ const InventSpace = () => {
           fetchedPosts.map(async (post) => {
             try {
               const commentsResponse = await axios.get(
-                `${api_route_content}/inventspace/${post.id}/comments`
+                `${api_route}/inventspace/${post.id}/comments`
               );
               const comments = commentsResponse.data;
 
@@ -129,7 +128,7 @@ const InventSpace = () => {
   const handleAddComment = async (postId, content) => {
     try {
       const response = await axios.post(
-        `${api_route_content}/add-invent-comment/${postId}`,
+        `${api_route}/add-invent-comment/${postId}`,
         { userId, content },
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -177,7 +176,7 @@ const InventSpace = () => {
   const handleLike = async (postId) => {
     try {
       const response = await axios.post(
-        `${api_route_content}/inventlike/${postId}`,
+        `${api_route}/inventlike/${postId}`,
         { userId }
       );
       setPosts((prevPosts) =>
@@ -209,7 +208,7 @@ const InventSpace = () => {
         return;
       }
       axios
-        .post(`${api_route_content}/post-invent/${userId}`, {
+        .post(`${api_route}/post-invent/${userId}`, {
           title: newPostForm.title,
           description: newPostForm.content,
         })
@@ -246,11 +245,6 @@ const InventSpace = () => {
             >
               <FaPlus className="mr-2" /> Add Post
             </button>
-          </div>
-          <div className="mb-5  font-poppins pl-2 text-s text-white">
-                        <p className="">Students can post their brief statement of issues and solutions here. Interested parties will connect with them for details and further discussions. Ideas which can change the world.
-</p>
-
           </div>
 
           {posts.map((post) => (
