@@ -103,7 +103,7 @@ const SideBar = () => {
                   to="/requirements"
                   className="py-2 px-4 w-full text-left hover:bg-gray-800 cursor-pointer rounded-md flex justify-between items-center text-sm font-semibold text-white transition-colors duration-200 focus:ring-gray-500"
                 >
-                  Requirements
+                  Requirements & Co Ops
                 </Link>
               </div>
             </li>
@@ -170,8 +170,8 @@ const SideBar = () => {
 
           <div className="mt-4">
               <div className="flex items-center space-x-2">
-            <ExclamationCircleIcon className="mt-1 h-5 w-5" />
-               <p>This is the beta version</p>
+            <ExclamationCircleIcon className="mt-1 h-5 w-5 " />
+               <p className="text-white">This is the beta version</p>
               </div>
             </div>
 

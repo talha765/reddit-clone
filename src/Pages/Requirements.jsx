@@ -5,7 +5,8 @@ import { useNavigate } from "react-router-dom";
 import _ from "lodash";
 import Cookies from "js-cookie";
 import { Filter } from "bad-words";
-const api_route = "http://localhost:3000/api/content";
+const api_route_content = import.meta.env.VITE_API_URL_CONTENT;
+const api_route_user = import.meta.env.VITE_API_URL_AUTH;
 
 const Requirements = () => {
   const navigate = useNavigate();
@@ -29,10 +30,10 @@ const Requirements = () => {
 
   useEffect(() => {
     axios
-      .get(`${api_route}/get-top-communities`)
+      .get(`${api_route_content}/get-top-communities`)
       .then((response) => {
         // Logic for top communities, sorted by member count
-        console.log("API Response:", response.data); // Check the response structure
+        
         const unfilteredCommunities = response.data;
 
         // Sort all communities by memberCount in descending order
@@ -42,7 +43,7 @@ const Requirements = () => {
 
         // Set the top 5 communities
         setTopCommunities(sortedByMemberCount.slice(0, 5));
-        console.log("top communities: ", topCommunities);
+        
       })
       .catch((error) => {
         console.error("Error fetching top communities:", error);
@@ -64,7 +65,7 @@ const Requirements = () => {
       };
 
       const response = await axios.get(
-        "http://localhost:3000/api/auth/user",
+        `${api_route_user}/user`,
         config
       );
       setUserType(response.data.type);
@@ -75,9 +76,9 @@ const Requirements = () => {
 
   // Handle liking posts
   const handleLike = async (postId) => {
-    try {
+    try {    //http://localhost:3000/api/content/requirementlike/1
       const response = await axios.post(
-        `${api_route}/requirementlike/${postId}`,
+        `${api_route_content}/requirementlike/${postId}`,
         { userId }
       );
       setPosts((prevPosts) =>
@@ -154,7 +155,7 @@ const Requirements = () => {
       }
       try {
         await axios.post(
-          `${api_route}/post-requirement/${userId}`,
+          `${api_route_content}/post-requirement/${userId}`,
           {
             title: newPostForm.title,
             description: newPostForm.content,
@@ -183,7 +184,7 @@ const Requirements = () => {
   useEffect(() => {
     // Fetch posts and their comments
     axios
-      .get(`${api_route}/get-requirements`)
+      .get(`${api_route_content}/get-requirements`)
       .then(async (response) => {
         const fetchedPosts = response.data;
 
@@ -192,7 +193,7 @@ const Requirements = () => {
           fetchedPosts.map(async (post) => {
             try {
               const commentsResponse = await axios.get(
-                `${api_route}/requirement/${post.id}/comments`
+                `${api_route_content}/requirement/${post.id}/comments`
               );
               const comments = commentsResponse.data;
 
@@ -239,13 +240,19 @@ const Requirements = () => {
         {/* Main Posts Section */}
         <div className="col-span-2">
           <div className="flex justify-between items-center mb-6">
-            <h1 className="text-2xl font-bold text-white">Requirements</h1>
+            <h1 className="text-2xl font-bold text-white">Requirements & Co Ops</h1>
             <button
               className="flex items-center bg-blue-600 hover:bg-blue-500 text-white py-2 px-4 rounded-lg transition duration-200 ease-in-out"
               onClick={openAddPostModal}
             >
               <FaPlus className="mr-2" /> Add Post
             </button>
+          </div>
+          <div className="mb-5 pt-5 font-poppins pl-2 text-s text-white">
+                        <p>Get things done at almost no cost (linking workplaces and classrooms). Organizations can post problems for students to find solutions for them. Students will also be recognized or given course credit. 
+
+</p>
+
           </div>
 
           {posts.map((post) => (

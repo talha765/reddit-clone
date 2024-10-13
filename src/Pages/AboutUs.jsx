@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from "axios";
+const api_route = import.meta.env.VITE_API_URL_CONTENT;
 
 const AboutUsPage = () => {
     const [formData, setFormData] = useState({
@@ -21,7 +22,7 @@ const AboutUsPage = () => {
     
         const { name, email, phone, feedback } = formData;
     
-        axios.post('http://localhost:3000/api/content/contact', { name, email, phone, feedback })
+        axios.post(`${api_route}/contact`, { name, email, phone, feedback })
             .then((response) => {
                 alert(response.data.message || 'Form submitted successfully!');
                 // Optionally, reset the form here
@@ -39,7 +40,7 @@ const AboutUsPage = () => {
     };
 
     return (
-        <div className="flex flex-col bg-gray-800 text-white p-10 h-screen mt-12"> {/* Add h-screen to make it full height */}
+        <div className="flex flex-col bg-gray-800 text-white p-10  mt-12"> {/* Add h-screen to make it full height */}
             <div className="flex-flex mt-10 grid grid-cols-1 lg:grid-cols-2 gap-8"> {/* Added flex-1 here */}
                 {/* About Us Section */}
                 <section className="bg-gray-900 p-6 rounded-lg">
@@ -76,7 +77,7 @@ const AboutUsPage = () => {
                         <p className="mb-2">214-3485 Rebecca Street</p>
                         <p className="mb-2">Oakville</p>
                         <p className="mb-2">Phone: +1 416 786 0802</p>
-                        <p className="mb-2">Email: Studentresearchlabhome@gmail.com</p>
+                        <p className="mb-2 text-xs md:text-sm">Email: studentresearchlabhome@gmail.com</p>
                     </div>
                 </section>
 
@@ -84,7 +85,7 @@ const AboutUsPage = () => {
                 <section className="bg-gray-900 p-6 rounded-lg">
                     <h2 className="text-3xl font-semibold mb-4">Get Involved</h2>
                     <p className="text-lg leading-relaxed">
-                        Contact Us to promote your services, Sponsors or Advertisements (this is dummy text).
+                        Contact Us to promote your services, Sponsors or Advertisements .
                     </p>
                 </section>
             </div>

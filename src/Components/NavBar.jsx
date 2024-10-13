@@ -19,6 +19,7 @@ const NavBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false); // State for mobile menu
   const navigate = useNavigate();
   const [searchInput, setSearchInput] = useState("");
+  const api_route = import.meta.env.VITE_API_URL_AUTH;
 
   const handleUserIconClick = async () => {
     setShowDropdown((prev) => !prev);
@@ -30,7 +31,7 @@ const NavBar = () => {
           console.log("No token found. Please log in.");
           return;
         }
-        const response = await axios.get('http://localhost:3000/api/auth/user', {
+        const response = await axios.get(`${api_route}/user`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setUser(response.data);
@@ -47,6 +48,7 @@ const NavBar = () => {
       e.preventDefault();
       if (searchInput.trim()) {
         navigate(`/search?query=${encodeURIComponent(searchInput.trim())}`);
+        setSearchInput("");
       }
     }
   };
@@ -154,6 +156,7 @@ const NavBar = () => {
 
           {/* Menu options */}
           <div className="flex flex-col items-start mx-4">
+            <button className="text-white hover:bg-gray-700 w-full text-left p-2" onClick={()=> navigate("/homepage")}>Home</button>
             <button className="text-white hover:bg-gray-700 w-full text-left p-2" onClick={()=> navigate("/qna")}>InventSpaces</button>
             <button className="text-white hover:bg-gray-700 w-full text-left p-2" onClick={()=> navigate("/requirements")} >Requirements</button>
             <button className="text-white hover:bg-gray-700 w-full text-left p-2" onClick={()=> navigate("/communities")}>Community</button>

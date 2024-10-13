@@ -19,6 +19,10 @@ const Post = sequelize.define('post', {
     type: DataTypes.INTEGER,
     defaultValue: 0,
   },
+  commentsCount: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0,
+  }
 });
 
 

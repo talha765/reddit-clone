@@ -1,5 +1,5 @@
-// server.js
 const express = require('express');
+const path = require('path'); // Import path to handle file paths
 const authRoutes = require('./routes/auth');
 const sequelize = require('./src/db');
 const contentRoutes = require('./routes/content');
@@ -18,25 +18,24 @@ const RequirementLike = require("./models/RequirementLike");
 const ResearchLike = require("./models/ResearchLike");
 const InventComment = require('./models/InventComment');
 const RequirementComment = require("./models/RequirementComment");
-const ResearchComment = require("./models/ResearchComment")
-
+const ResearchComment = require('./models/ResearchComment');
+const PostComment = require('./models/PostComment');
 
 const app = express();
 
 app.use(cors({
   origin: 'http://localhost:5172', // Allow only your frontend origin
-  credentials: true, // Allow credentials (cookies, authorization headers, etc.)
+
 }));
 
 app.use(express.json());
-app.use(express.urlencoded({extended: false}));
-
+app.use(express.urlencoded({ extended: false }));
 
 // Use the auth routes
 app.use('/api/auth', authRoutes);
 app.use('/api/content', contentRoutes);
 
-
+// Database associations
 User.hasMany(InventSpace, { as: "inventspaces", foreignKey: "userId" });
 InventSpace.belongsTo(User, { foreignKey: "userId" });
 
@@ -46,16 +45,16 @@ Requirement.belongsTo(User, { foreignKey: "userId" });
 User.hasMany(Research, { as: "research", foreignKey: "userId" });
 Research.belongsTo(User, { foreignKey: "userId" });
 
-Community.hasMany(Post, { as: 'posts' });  // A community can have many posts
+Community.hasMany(Post, { as: 'posts' });
 Community.belongsToMany(User, { through: UserCommunity, as: 'users' });
 
-Post.belongsTo(User, { as: 'author' });  // A post is created by one user
-Post.belongsTo(Community, { as: 'community' });  // A post belongs to one community
-Post.hasMany(PostImage, { as: 'images' });  // A post can have multiple images
+Post.belongsTo(User, { as: 'author' });
+Post.belongsTo(Community, { as: 'community' });
+Post.hasMany(PostImage, { as: 'images' });
 PostImage.belongsTo(Post);
 
-User.belongsToMany(Community, { through: UserCommunity, as: 'communities' });  // User can join multiple communities
-User.hasMany(Post, { as: 'posts' });  // User can create many posts
+User.belongsToMany(Community, { through: UserCommunity, as: 'communities' });
+User.hasMany(Post, { as: 'posts' });
 
 Community.hasMany(UserCommunity, { foreignKey: 'communityId', as: 'user_communities' });
 
@@ -64,29 +63,29 @@ UserCommunity.belongsTo(Community, { foreignKey: 'communityId' });
 
 User.hasMany(UserCommunity, { foreignKey: 'userId' });
 
-InventSpace.hasMany(InventLike); // A post can be liked by many users
-User.hasMany(InventLike); // A user can like many posts
+InventSpace.hasMany(InventLike);
+User.hasMany(InventLike);
 
-InventLike.belongsTo(User); // A like belongs to a user
-InventLike.belongsTo(InventSpace); // A like belongs to a post
+InventLike.belongsTo(User);
+InventLike.belongsTo(InventSpace);
 
-InventSpace.hasMany(RequirementLike); // A post can be liked by many users
-User.hasMany(RequirementLike); // A user can like many posts
+InventSpace.hasMany(RequirementLike);
+User.hasMany(RequirementLike);
 
-RequirementLike.belongsTo(User); // A like belongs to a user
-RequirementLike.belongsTo(InventSpace); // A like belongs to a post
+RequirementLike.belongsTo(User);
+RequirementLike.belongsTo(InventSpace);
 
-InventSpace.hasMany(ResearchLike); // A post can be liked by many users
-User.hasMany(ResearchLike); // A user can like many posts
+InventSpace.hasMany(ResearchLike);
+User.hasMany(ResearchLike);
 
-ResearchLike.belongsTo(User); // A like belongs to a user
-ResearchLike.belongsTo(InventSpace); // A like belongs to a post
+ResearchLike.belongsTo(User);
+ResearchLike.belongsTo(InventSpace);
 
-Post.hasMany(PostLike); // A post can be liked by many users
-User.hasMany(PostLike); // A user can like many posts
+Post.hasMany(PostLike);
+User.hasMany(PostLike);
 
-PostLike.belongsTo(User); // A like belongs to a user
-PostLike.belongsTo(Post); // A like belongs to a post
+PostLike.belongsTo(User);
+PostLike.belongsTo(Post);
 
 User.hasMany(InventComment, { foreignKey: 'userId' });
 InventSpace.hasMany(InventComment, { foreignKey: 'postId' });
@@ -103,7 +102,20 @@ Research.hasMany(ResearchComment, { foreignKey: 'postId' });
 ResearchComment.belongsTo(User, { foreignKey: 'userId' });
 ResearchComment.belongsTo(Research, { foreignKey: 'postId' });
 
-sequelize.sync({ alter: true });   
+User.hasMany(PostComment, { foreignKey: 'userId' });
+Post.hasMany(PostComment, { foreignKey: 'postId' });
+PostComment.belongsTo(User, { foreignKey: 'userId' });
+PostComment.belongsTo(Research, { foreignKey: 'postId' });
+
+// Serve static files from the React frontend app
+app.use(express.static(path.join(__dirname, '../dist')));
+
+// Handle React routing, return all requests to React app
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../dist', 'index.html'));
+});
+
+sequelize.sync({ alter: true }); 
 
 // Sync the database and start the server
 sequelize.sync({ force: false })

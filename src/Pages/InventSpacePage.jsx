@@ -4,7 +4,7 @@ import { FaThumbsUp } from "react-icons/fa";
 import axios from "axios";
 import CommentSection from "../Components/CommentSection";
 import Cookies from "js-cookie";
-const api_route = "http://localhost:3000/api/content";
+const api_route = import.meta.env.VITE_API_URL_CONTENT;
 
 const Invent_Page = () => {
   const location = useLocation();
@@ -25,7 +25,7 @@ const Invent_Page = () => {
         );
         if (response.data) {
           setComments(response.data); // Set the fetched comments in state
-          console.log("comments: ", response.data);
+          
         } else {
           console.error("No comments found in the response.");
         }
