@@ -131,6 +131,13 @@ const NavBar = () => {
                     <p>User not logged in or no data found.</p>
                   )}
                   <button
+                    onClick={() =>
+                      navigate(`/user-posts/${user.id}`)}
+                    className="mt-4 w-full py-2 bg-teal-600 hover:bg-teal-500 text-white rounded-md"
+                  >
+                    Your Posts
+                  </button>
+                  <button
                     onClick={handleLogout}
                     className="mt-4 w-full py-2 bg-red-600 hover:bg-red-500 text-white rounded-md"
                   >

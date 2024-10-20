@@ -85,3 +85,12 @@ button:focus-visible {
   scrollbar-width: thin;
   scrollbar-color: #555 #2d2d2d;
 }
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge, and Firefox */
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;     /* Firefox */
+}

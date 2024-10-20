@@ -17,7 +17,7 @@ const HomePage = () => {
     axios
       .get(`${api_route}/get-invent`)
       .then((response) => {
-        const limitedInvents = response.data.slice(0, 3);
+        const limitedInvents = response.data.slice(0, 7);
         setInvent(limitedInvents);
       })
       .catch((error) => {
@@ -27,7 +27,7 @@ const HomePage = () => {
     axios
       .get(`${api_route}/get-requirements`)
       .then((response) => {
-        const limitedReq = response.data.slice(0, 3);
+        const limitedReq = response.data.slice(0, 7);
         setRequirements(limitedReq);
       })
       .catch((error) => {
@@ -37,7 +37,7 @@ const HomePage = () => {
     axios
       .get(`${api_route}/get-research`)
       .then((response) => {
-        const limitedResearch = response.data.slice(0, 3);
+        const limitedResearch = response.data.slice(0, 7);
         setResearch(limitedResearch);
       })
       .catch((error) => {
@@ -82,21 +82,25 @@ const HomePage = () => {
                 InventSpace
               </h2>
               <p
-                className="text-white text-sm md:text-base mb-2 text-center cursor-pointer"
+                className="text-white text-sm md:text-base mb-2 text-center cursor-pointer "
                 onClick={() => navigate("/qna")}
               >
                 Create and Innovate
               </p>
-              <div className="space-y-6 mt-4">
+              <div className="space-y-6 mt-4 overflow-y-auto h-[18rem] scrollbar-hide">
                 {invent.map((item, index) => (
                   <div
-                    key={index}
-                    className="bg-gray-700 p-4 md:p-8 rounded-lg shadow-sm mx-auto w-full"
-                  >
-                    <p className="text-white text-sm md:text-base font-medium">
-                      {_.truncate(item.title, { length: 21 })}
-                    </p>
-                  </div>
+                  onClick={() =>
+                    navigate(`/invent-post/${item.id}`, { state: { post: item } })
+                  }
+                  key={index}
+                  className="bg-gray-700 p-4 md:p-8 rounded-lg shadow-sm mx-auto w-full hover:bg-gray-600 hover:scale-105 transform transition-transform duration-300"
+                >
+                  <p className="text-white text-sm md:text-base font-medium">
+                    {_.truncate(item.title, { length: 21 })}
+                  </p>
+                </div>
+                
                 ))}
               </div>
             </div>
@@ -115,47 +119,57 @@ const HomePage = () => {
               >
                 Organization help
               </p>
-              <div className="space-y-6 mt-4">
+              <div className="space-y-6 mt-4 space-y-6 mt-4 overflow-y-auto h-[18rem] scrollbar-hide">
                 {requirements.map((item, index) => (
                   <div
-                    key={index}
-                    className="bg-gray-700 p-4 md:p-8 rounded-lg shadow-sm mx-auto w-full"
-                  >
-                    <p className="text-white text-sm md:text-base font-medium">
-                      {_.truncate(item.title, { length: 21 })}
-                    </p>
-                  </div>
+                  onClick={() =>
+                    navigate(`/requirement-post/${item.id}`, { state: { post: item } })
+                  }
+                  key={index}
+                  className="bg-gray-700 p-4 md:p-8 rounded-lg shadow-sm mx-auto w-full hover:bg-gray-600 hover:scale-105 transform transition-transform duration-300"
+                >
+                  <p className="text-white text-sm md:text-base font-medium">
+                    {_.truncate(item.title, { length: 21 })}
+                  </p>
+                </div>
+                
                 ))}
               </div>
             </div>
 
-            {/* Research Card */}
-            <div className="bg-gray-900 rounded-2xl p-8 shadow-md flex-1 h-[28rem] xl:row-start-2">
-              <h2
-                className="text-white text-xl md:text-2xl font-semibold mb-2 text-center cursor-pointer"
-                onClick={() => navigate("/research")}
-              >
-                Research
-              </h2>
-              <p
-                className="text-white text-sm md:text-base mb-2 text-center cursor-pointer"
-                onClick={() => navigate("/research")}
-              >
-                Personalized research
-              </p>
-              <div className="space-y-6 mt-4">
-                {research.map((item, index) => (
-                  <div
-                    key={index}
-                    className="bg-gray-700 p-4 md:p-8 rounded-lg shadow-sm mx-auto w-full"
-                  >
-                    <p className="text-white text-sm md:text-base font-medium">
-                      {_.truncate(item.title, { length: 21 })}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
+{/* Research Card */}
+<div className="bg-gray-900 rounded-2xl p-8 shadow-md flex-1 h-[28rem] xl:row-start-2">
+  <h2
+    className="text-white text-xl md:text-2xl font-semibold mb-2 text-center cursor-pointer"
+    onClick={() => navigate("/research")}
+  >
+    Research
+  </h2>
+  <p
+    className="text-white text-sm md:text-base mb-2 text-center cursor-pointer"
+    onClick={() => navigate("/research")}
+  >
+    Personalized research
+  </p>
+
+  {/* Scrollable Div without visible scrollbar */}
+  <div className="space-y-6 mt-4 overflow-y-auto h-[18rem] scrollbar-hide">
+    {research.map((item, index) => (
+      <div
+        onClick={() =>
+          navigate(`/research-post/${item.id}`, { state: { post: item } })
+        }
+        key={index}
+        className="bg-gray-700 p-4 md:p-8 rounded-lg shadow-sm mx-auto w-full hover:bg-gray-600 hover:scale-105 transform transition-transform duration-300"
+      >
+        <p className="text-white text-sm md:text-base font-medium">
+          {_.truncate(item.title, { length: 21 })}
+        </p>
+      </div>
+    ))}
+  </div>
+</div>
+
 
             {/* Top Communities Card */}
             <div className="bg-gray-900 rounded-2xl p-8 shadow-md flex-1 h-[28rem] xl:row-start-2">
@@ -171,19 +185,23 @@ const HomePage = () => {
               >
                 Join and Learn
               </p>
-              <div className="space-y-6 mt-4">
+              <div className="space-y-6 mt-4 space-y-6 mt-4 overflow-y-auto h-[18rem] scrollbar-hide">
                 {comPosts.map((item, index) => (
                   <div
-                    key={index}
-                    className="bg-gray-700 flex justify-between p-4 md:p-8 rounded-lg shadow-sm mx-auto w-full"
-                  >
-                    <p className="text-white text-sm md:text-base font-medium">
-                      {_.truncate(item.title, { length: 21 })}
-                    </p>
-                    <p className="text-teal-600 text-sm md:text-base font-medium">
-                      {_.truncate(item.community.name, { length: 21 })}
-                    </p>
-                  </div>
+                  onClick={() =>
+                    navigate(`/community/${item.communityId}/post/${item.id}`, { state: { post: item } })
+                  }
+                  key={index}
+                  className="bg-gray-700 flex justify-between p-4 md:p-8 rounded-lg shadow-sm mx-auto w-full hover:bg-gray-600 hover:scale-105 transform transition-transform duration-300"
+                >
+                  <p className="text-white text-sm md:text-base font-medium">
+                    {_.truncate(item.title, { length: 21 })}
+                  </p>
+                  <p className="text-teal-600 text-sm md:text-base font-medium">
+                    {_.truncate(item.community.name, { length: 21 })}
+                  </p>
+                </div>
+                
                 ))}
               </div>
             </div>

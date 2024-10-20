@@ -16,6 +16,7 @@ import Invent_Page from "./Pages/InventSpacePage";
 import Requirement_Page from "./Pages/RequirementPage";
 import Research_Page from "./Pages/ResearchPage";
 import CommunityPage from "./Pages/CommunityPage";
+import UserPosts from "./Pages/UserPosts";
 
 const App = () => (
   <Router>
@@ -43,6 +44,7 @@ const App = () => (
         <Route path="/invent-post/:postId" element={<Invent_Page />} />
         <Route path="/requirement-post/:postId" element={<Requirement_Page />} />
         <Route path="/research-post/:postId" element={<Research_Page />} />
+        <Route path="/user-posts/:userId" element={<UserPosts />} />
       </Route>
     </Routes>
   </Router>
