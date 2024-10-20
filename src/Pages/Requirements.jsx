@@ -240,7 +240,7 @@ const Requirements = () => {
         {/* Main Posts Section */}
         <div className="col-span-2">
           <div className="flex justify-between items-center mb-6">
-            <h1 className="text-2xl font-bold text-white">Requirements</h1>
+            <h1 className="text-2xl font-bold text-white">Requirements & Co Ops</h1>
             <button
               className="flex items-center bg-blue-600 hover:bg-blue-500 text-white py-2 px-4 rounded-lg transition duration-200 ease-in-out"
               onClick={openAddPostModal}

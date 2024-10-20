@@ -68,7 +68,7 @@ const HomePage = () => {
               WELCOME TO STUDENT RESEARCH LAB!
             </h1>
             <p className="md:text-2xl text-stone-300">
-              Invent, Discuss And Innovate - students' creativity can be a powerful asset, independent of experience. 
+              Invent, Discuss And Innovate - Student's creativity can be a powerful asset, independent of experience. 
             </p>
           </div>
           {/* Cards Section */}
@@ -111,7 +111,7 @@ const HomePage = () => {
                 className="text-white text-xl md:text-2xl font-semibold mb-2 text-center cursor-pointer"
                 onClick={() => navigate("/requirements")}
               >
-                Requirements
+                Requirements & Co Ops
               </h2>
               <p
                 className="text-white text-sm md:text-base mb-2 text-center cursor-pointer"

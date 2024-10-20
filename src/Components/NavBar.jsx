@@ -48,6 +48,7 @@ const NavBar = () => {
       e.preventDefault();
       if (searchInput.trim()) {
         navigate(`/search?query=${encodeURIComponent(searchInput.trim())}`);
+        setSearchInput("");
       }
     }
   };
