@@ -5,12 +5,9 @@ import _ from "lodash";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import { Filter } from "bad-words";
-import { 
-    TrashIcon,
-    PencilSquareIcon
-  } from '@heroicons/react/24/outline'; 
-const api_route_content =  import.meta.env.VITE_API_URL_CONTENT;
-const api_route_user=import.meta.env.VITE_API_URL_AUTH;
+import { TrashIcon, PencilSquareIcon } from "@heroicons/react/24/outline";
+const api_route_content = import.meta.env.VITE_API_URL_CONTENT;
+const api_route_user = import.meta.env.VITE_API_URL_AUTH;
 
 const InventSpace = () => {
   const navigate = useNavigate();
@@ -36,7 +33,7 @@ const InventSpace = () => {
       .get(`${api_route_content}/get-top-communities`)
       .then((response) => {
         // Logic for top communities, sorted by member count
-        
+
         const unfilteredCommunities = response.data;
 
         // Sort all communities by memberCount in descending order
@@ -46,7 +43,6 @@ const InventSpace = () => {
 
         // Set the top 5 communities
         setTopCommunities(sortedByMemberCount.slice(0, 5));
-        
       })
       .catch((error) => {
         console.error("Error fetching top communities:", error);
@@ -65,10 +61,7 @@ const InventSpace = () => {
           Authorization: `Bearer ${token}`,
         },
       };
-      const response = await axios.get(
-        `${api_route_user}/user`,
-        config
-      );
+      const response = await axios.get(`${api_route_user}/user`, config);
       setUserType(response.data.type);
     } catch (error) {
       console.error("Error fetching user type:", error);
@@ -245,51 +238,77 @@ const InventSpace = () => {
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-2xl font-bold text-white">Your Posts</h1>
           </div>
-          
 
           {posts.map((post) => (
-  <div
-    key={post.id}
-    className="relative mb-6 p-4 bg-gray-900 rounded-lg shadow-md border border-gray-600 transition duration-200 ease-in-out hover:cursor-pointer hover:bg-gray-700"
-    onClick={() => navigate(`/invent-post/${post.id}`, { state: { post } })}
-    style={{ maxWidth: "100%", minHeight: "180px" }} // Increased minHeight
-  >
-    <h2 className="text-xl font-semibold text-white">
-      {_.truncate(post.title, { length: 30 })}
-    </h2>
-    <p className="mt-2 text-white overflow-hidden text-ellipsis">
-      {_.truncate(post.content, { length: 30 })}
-    </p>
+            <div
+              key={post.id}
+              className="relative mb-6 p-4 bg-gray-900 rounded-lg shadow-md border border-gray-600 transition duration-200 ease-in-out hover:cursor-pointer hover:bg-gray-700"
+              onClick={() =>
+                navigate(`/invent-post/${post.id}`, { state: { post } })
+              }
+              style={{ maxWidth: "100%", minHeight: "150px" }} // Increased minHeight
+            >
+              <h2 className="text-xl font-semibold text-white">
+                {_.truncate(post.title, { length: 30 })}
+              </h2>
+              <p className="mt-2 text-white overflow-hidden text-ellipsis">
+                {_.truncate(post.content, { length: 30 })}
+              </p>
 
-    {/* Post interaction icons like like and comments */}
-    <div className="mt-4 flex items-center justify-between text-white">
-      <div className="flex">
-        <div className="mr-4 flex items-center">
-          <span className="flex items-center text-white ml-2">
-            <FaThumbsUp
-              className={`mr-1`} // Change color based on like state
-              onClick={(e) => {
-                e.stopPropagation();
-                handleLike(post.id);
-              }}
-            />
-            {post.likes}
-          </span>
-        </div>
-        <span className="flex items-center">
-          <FaCommentAlt className="mr-1" /> {post.commentsCount}
-        </span>
-      </div>
-    </div>
+              {/* Post interaction icons like like and comments */}
+              <div className="mt-4 flex items-center justify-between text-white">
+                <div className="flex">
+                  <div className="mr-4 flex items-center">
+                    <span className="flex items-center text-white ml-2">
+                      <FaThumbsUp
+                        className={`mr-1`} // Change color based on like state
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleLike(post.id);
+                        }}
+                      />
+                      {post.likes}
+                    </span>
+                  </div>
+                  <span className="flex items-center">
+                    <FaCommentAlt className="mr-1" /> {post.commentsCount}
+                  </span>
+                </div>
+                <div className="flex">
+                  <div className="mr-4 flex items-center">
+                    <span className="flex items-center text-white ml-2">
+                      <PencilSquareIcon
+                        onClick={(e) => {
+                          e.stopPropagation(); // Prevents triggering the onClick of the post
+                          openAddPostModal();
+                        }}
+                        className="h-6 w-6 cursor-pointer text-blue-500" // Increased size and added color
+                      />
+                    </span>
+                  </div>
+                  <span className="flex items-center text-white ml-2">
+                    <TrashIcon
+                      onClick={(e) => {
+                        e.stopPropagation(); // Prevents triggering the onClick of the post
+                        // Add your delete logic here
+                      }}
+                      className="h-6 w-6 cursor-pointer text-red-500" // Increased size and added color
+                    />
+                  </span>
+                </div>
+              </div>
 
-    {/* Update and Trash Icons positioned at the bottom-right */}
+              {/* Update and Trash Icons positioned at the bottom-right */}
 
-<div className="ml-1 mt-3 h-7 absolute bottom-4 right-4 flex space-x-4">
-  <PencilSquareIcon className="cursor-pointer text-blue" />
-  <TrashIcon className="cursor-pointer text-red-500" />
-</div>
-</div>
-))}
+              {/* <div className="flex">
+                <PencilSquareIcon
+                  onClick={openAddPostModal}
+                  className="cursor-pointer text-blue"
+                />
+                <TrashIcon className="cursor-pointer text-red-500" />
+              </div> */}
+            </div>
+          ))}
         </div>
 
         {/* Top Communities Section */}
@@ -347,7 +366,7 @@ const InventSpace = () => {
       {showAddPostModal && (
         <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex justify-center items-center">
           <div className="bg-gray-800 rounded-lg shadow-lg p-6 w-full max-w-3xl">
-            <h2 className="text-lg text-white font-bold mb-4">Add New Post</h2>
+            <h2 className="text-lg text-white font-bold mb-4">Update Post</h2>
             <input
               className="w-full mb-4 p-2 rounded-lg bg-gray-700 text-white"
               type="text"
