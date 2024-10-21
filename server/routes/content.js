@@ -432,6 +432,33 @@ router.get('/get-user-posts/:userId', async (req, res) => {
   }
 });
 
+router.put('/update-post/:userId/:postId', async (req, res) => {
+  const { userId, postId } = req.params;
+  const { title, description } = req.body;
+
+  try {
+    let user = await User.findByPk(userId);
+    if (user.type === 'student') {
+      let post = await inventspace.findByPk(postId);
+      await post.update({ title, description });
+      res.status(201).json(post);
+    } else if (user.type === 'researcher') {
+      let post = await Research.findByPk(postId);
+      await post.update({ title, description });
+      res.status(201).json(post);
+    } else if (user.type === 'company') {
+      let post = await Requirement.findByPk(postId);
+      await post.update({ title, description });
+      res.status(201).json(post);
+    } else {
+      res.status(404).json({ message: 'User not found' });
+    }
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
+
 router.get('/get-invent/:id', async (req, res) => {
   const {postId} = req.params;
   try {
@@ -441,6 +468,7 @@ router.get('/get-invent/:id', async (req, res) => {
     res.status(500).json(error);
   }
 });
+
 
 router.get("/get-requirements", async (req, res) => {
   try {

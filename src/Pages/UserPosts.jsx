@@ -20,11 +20,7 @@ const InventSpace = () => {
   const [showAddPostModal, setShowAddPostModal] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showStudentWarning, setShowStudentWarning] = useState(false);
-  const [newPostForm, setNewPostForm] = useState({
-    title: "",
-    content: "",
-    userId: "",
-  });
+  const [newPostForm, setNewPostForm] = useState({});
 
   const token = Cookies.get("token");
 
@@ -155,13 +151,12 @@ const InventSpace = () => {
     setActivePost(null);
   };
 
-  const openAddPostModal = () => {
+  const openAddPostModal = (post) => {
     if (!userId) {
       setShowLoginModal(true);
-    } else if (userType !== "student") {
-      setShowStudentWarning(true);
     } else {
       setShowAddPostModal(true);
+      setNewPostForm(post);
     }
   };
 
@@ -205,8 +200,9 @@ const InventSpace = () => {
         alert("Your post contains inappropriate language. Please remove it.");
         return;
       }
+      const postId = newPostForm.id;
       axios
-        .post(`${api_route_content}/post-invent/${userId}`, {
+        .put(`${api_route_content}/update-post/${userId}/${postId}`, {
           title: newPostForm.title,
           description: newPostForm.content,
         })
@@ -280,7 +276,7 @@ const InventSpace = () => {
                       <PencilSquareIcon
                         onClick={(e) => {
                           e.stopPropagation(); // Prevents triggering the onClick of the post
-                          openAddPostModal();
+                          openAddPostModal(post);
                         }}
                         className="h-6 w-6 cursor-pointer text-blue-500" // Increased size and added color
                       />
@@ -297,16 +293,6 @@ const InventSpace = () => {
                   </span>
                 </div>
               </div>
-
-              {/* Update and Trash Icons positioned at the bottom-right */}
-
-              {/* <div className="flex">
-                <PencilSquareIcon
-                  onClick={openAddPostModal}
-                  className="cursor-pointer text-blue"
-                />
-                <TrashIcon className="cursor-pointer text-red-500" />
-              </div> */}
             </div>
           ))}
         </div>

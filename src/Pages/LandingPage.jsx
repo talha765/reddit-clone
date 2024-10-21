@@ -5,10 +5,7 @@ import SideBar from "../Components/sidebar";
 import axios from "axios";
 import _ from "lodash";
 
-// const api_route = "https://www.studentresearchlab.com/api/content";
 const api_route = import.meta.env.VITE_API_URL_CONTENT;
-
-
 
 const LandingPage = () => {
     const [invent, setInvent] = useState([]);
@@ -54,14 +51,12 @@ const LandingPage = () => {
           .then((response) => {
             const topCommunityPosts = response.data;
             setComPosts(topCommunityPosts);
-            console.log(response);
           })
           .catch((error) => {
             console.error("Error fetching posts:", error);
           });
       }, []);
 
-    // Sidebar logic
     const toggleSidebar = () => {
         setIsSidebarOpen(!isSidebarOpen);
     };
@@ -87,29 +82,27 @@ const LandingPage = () => {
         <div className="flex flex-col min-h-screen bg-gray-800 font-poppins">
             <LandingNavbar />
             <div className="flex flex-1">
-                {/* Sidebar with conditional width and translation */}
+                {/* Sidebar */}
                 <div
-                    className={`fixed top-0 left-0 h-screen transition-transform duration-300 ease-in-out ${
-                        isSidebarOpen ? 'w-64 translate-x-0' : 'w-0 -translate-x-full'
-                    }`}
+                    className={`fixed top-0 left-0 h-screen transition-transform duration-300 ease-in-out ${isSidebarOpen ? 'w-64 translate-x-0' : 'w-0 -translate-x-full'}`}
                 >
                     <SideBar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
                 </div>
               
                 <div className={`flex-1 transition-all duration-300 ease-in-out ${isSidebarOpen ? 'ml-64' : 'ml-0'}`}>
-                    <div className="flex-grow flex flex-col justify-start mt-24 p-4">
-                        {/* Welcome Message */}
+                    <div className="flex-grow flex flex-col justify-start mt-24 p-4 md:pl-10 md:pr-10">
+                        {/* Welcome Section */}
                         <div className="bg-gray-900 rounded-2xl p-10 mb-12 shadow-lg w-full">
                             <h1 className="text-white text-3xl md:text-4xl font-bold mb-4">
                                 WELCOME TO STUDENT RESEARCH LAB!
                             </h1>
                             <p className="md:text-2xl text-stone-300">
-              Invent, Discuss And Innovate - Student's creativity can be a powerful asset, independent of experience. 
-            </p>
+                                Invent, Discuss And Innovate - Student's creativity can be a powerful asset, independent of experience. 
+                            </p>
                         </div>
 
-                        {/* Main content like cards */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-2 gap-6">
+                        {/* Cards Section */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-6 xl:grid-rows-2">
                             {/* InventSpace Card */}
                             <div className="bg-gray-900 rounded-2xl p-8 shadow-md flex-1 h-[28rem]">
                                 <h2
@@ -124,9 +117,13 @@ const LandingPage = () => {
                                 >
                                     Create and Innovate
                                 </p>
-                                <div className="space-y-6 mt-4">
+                                <div className="space-y-6 mt-4 overflow-y-auto h-[18rem] scrollbar-hide">
                                     {invent.map((item, index) => (
-                                        <div key={index} className="bg-gray-700 p-4 md:p-8 rounded-lg shadow-sm mx-auto w-full">
+                                        <div
+                                            onClick={() => navigate(`/invent-post/${item.id}`, { state: { post: item } })}
+                                            key={index}
+                                            className="bg-gray-700 p-4 md:p-8 rounded-lg shadow-sm mx-auto w-full hover:bg-gray-600 hover:scale-105 transform transition-transform duration-300"
+                                        >
                                             <p className="text-white text-sm md:text-base font-medium">
                                                 {_.truncate(item.title, { length: 21 })}
                                             </p>
@@ -136,7 +133,7 @@ const LandingPage = () => {
                             </div>
 
                             {/* Requirements Card */}
-                            <div className="bg-gray-900 rounded-2xl p-8 shadow-md flex-1 h-[28rem]">
+                            <div className="bg-gray-900 rounded-2xl p-7 shadow-md flex-1 h-[28rem]">
                                 <h2
                                     className="text-white text-xl md:text-2xl font-semibold mb-2 text-center cursor-pointer"
                                     onClick={() => navigate("/requirements")}
@@ -149,9 +146,13 @@ const LandingPage = () => {
                                 >
                                     Organization help
                                 </p>
-                                <div className="space-y-6 mt-4">
+                                <div className="space-y-6 mt-4 overflow-y-auto h-[18rem] scrollbar-hide">
                                     {requirements.map((item, index) => (
-                                        <div key={index} className="bg-gray-700 p-4 md:p-8 rounded-lg shadow-sm mx-auto w-full">
+                                        <div
+                                            onClick={() => navigate(`/requirement-post/${item.id}`, { state: { post: item } })}
+                                            key={index}
+                                            className="bg-gray-700 p-4 md:p-8 rounded-lg shadow-sm mx-auto w-full hover:bg-gray-600 hover:scale-105 transform transition-transform duration-300"
+                                        >
                                             <p className="text-white text-sm md:text-base font-medium">
                                                 {_.truncate(item.title, { length: 21 })}
                                             </p>
@@ -174,9 +175,13 @@ const LandingPage = () => {
                                 >
                                     Personalized research
                                 </p>
-                                <div className="space-y-6 mt-4">
+                                <div className="space-y-6 mt-4 overflow-y-auto h-[18rem] scrollbar-hide">
                                     {research.map((item, index) => (
-                                        <div key={index} className="bg-gray-700 p-4 md:p-8 rounded-lg shadow-sm mx-auto w-full">
+                                        <div
+                                            onClick={() => navigate(`/research-post/${item.id}`, { state: { post: item } })}
+                                            key={index}
+                                            className="bg-gray-700 p-4 md:p-8 rounded-lg shadow-sm mx-auto w-full hover:bg-gray-600 hover:scale-105 transform transition-transform duration-300"
+                                        >
                                             <p className="text-white text-sm md:text-base font-medium">
                                                 {_.truncate(item.title, { length: 21 })}
                                             </p>
@@ -186,35 +191,36 @@ const LandingPage = () => {
                             </div>
 
                             {/* Top Communities Card */}
-                            <div className="bg-gray-900 rounded-2xl p-8 shadow-md flex-1 h-[28rem] xl:row-start-2">
-              <h2
-                className="text-white text-xl md:text-2xl font-semibold mb-2 text-center cursor-pointer"
-                onClick={() => navigate("/communities")}
-              >
-                Communities
-              </h2>
-              <p
-                className="text-white text-sm md:text-base mb-2 text-center cursor-pointer"
-                onClick={() => navigate("/communities")}
-              >
-                Join and Learn
-              </p>
-              <div className="space-y-6 mt-4">
-                {comPosts.map((item, index) => (
-                  <div
-                    key={index}
-                    className="bg-gray-700 flex justify-between p-4 md:p-8 rounded-lg shadow-sm mx-auto w-full"
-                  >
-                    <p className="text-white text-sm md:text-base font-medium">
-                      {_.truncate(item.title, { length: 21 })}
-                    </p>
-                    <p className="text-teal-600 text-sm md:text-base font-medium">
-                      {_.truncate(item.community.name, { length: 21 })}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
+                            <div className="bg-gray-900 rounded-2xl p-8 shadow-md flex-1 h-[28rem]">
+                                <h2
+                                    className="text-white text-xl md:text-2xl font-semibold mb-2 text-center cursor-pointer"
+                                    onClick={() => navigate("/communities")}
+                                >
+                                    Communities
+                                </h2>
+                                <p
+                                    className="text-white text-sm md:text-base mb-2 text-center cursor-pointer"
+                                    onClick={() => navigate("/communities")}
+                                >
+                                    Join and Learn
+                                </p>
+                                <div className="space-y-6 mt-4 overflow-y-auto h-[18rem] scrollbar-hide">
+                                    {comPosts.map((item, index) => (
+                                        <div
+                                            onClick={() => navigate(`/community/${item.communityId}/post/${item.id}`, { state: { post: item } })}
+                                            key={index}
+                                            className="bg-gray-700 flex justify-between p-4 md:p-8 rounded-lg shadow-sm mx-auto w-full hover:bg-gray-600 hover:scale-105 transform transition-transform duration-300"
+                                        >
+                                            <p className="text-white text-sm md:text-base font-medium">
+                                                {_.truncate(item.title, { length: 21 })}
+                                            </p>
+                                            <p className="text-teal-600 text-sm md:text-base font-medium">
+                                                {_.truncate(item.community.name, { length: 21 })}
+                                            </p>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

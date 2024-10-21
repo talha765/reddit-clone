@@ -178,12 +178,12 @@ const SideBar = () => {
           
           {/* Logout (Bottom-right) */}
           {token && ( // Only display if the token exists
-            <div className="absolute bottom-5 left-0 w-full px-4">
-              <div className="flex items-center space-x-2">
-                <ArrowLeftOnRectangleIcon className="w-5 h-5 text-white mb-4" />
+            <div className="absolute bottom-5 left-0 w-full px-4 ">
+              <div className="flex items-center space-x-2 ">
+                <ArrowLeftOnRectangleIcon className="w-5 h-5 text-white mb-4 " />
                 <button
                   onClick={handleLogout}
-                  className="py-2 px-4 mb-5 w-full hover:bg-gray-800 text-left cursor-pointer rounded-md flex justify-between items-center text-sm font-semibold text-white transition-colors duration-200 hover:text-red-600 focus:ring-gray-500"
+                  className=" py-2 px-4 mb-5 w-full hover:bg-gray-800 text-left cursor-pointer rounded-md flex justify-between items-center text-sm font-semibold text-white transition-colors duration-200 hover:text-red-600 "
                 >
                   Logout
                 </button>
