@@ -1,9 +1,42 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import _ from "lodash";
+import ResizeObserver from "resize-observer-polyfill";
 import Cookies from 'js-cookie';
 const api_route = import.meta.env.VITE_API_URL_CONTENT;
+
+const DynamicTruncateText = ({ text }) => {
+  const [truncateLength, setTruncateLength] = useState(21); // Default truncate length
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    const adjustTruncateLength = () => {
+      if (containerRef.current) {
+        const containerWidth = containerRef.current.offsetWidth;
+
+        // Adjust length based on container width (customize values as needed)
+        const newLength = containerWidth > 600 ? 50 : containerWidth > 400 ? 30 : 21;
+        setTruncateLength(newLength);
+      }
+    };
+
+    // Create a ResizeObserver to detect size changes
+    const resizeObserver = new ResizeObserver(adjustTruncateLength);
+    if (containerRef.current) {
+      resizeObserver.observe(containerRef.current);
+    }
+
+    // Cleanup on component unmount
+    return () => resizeObserver.disconnect();
+  }, []);
+
+  return (
+    <p ref={containerRef} className="text-white text-sm md:text-base font-medium">
+      {_.truncate(text, { length: truncateLength })}
+    </p>
+  );
+};
 
 const HomePage = () => {
   const [invent, setInvent] = useState([]);
@@ -44,7 +77,7 @@ const HomePage = () => {
         console.error("Error fetching research:", error);
       });
      
-      axios
+    axios
       .get(`${api_route}/get-communities-posts`)
       .then((response) => {
         const topCommunityPosts = response.data;
@@ -57,12 +90,9 @@ const HomePage = () => {
   }, []);
 
   return (
-   
-   <div className="flex flex-col min-h-screen bg-gray-800 font-poppins">
+    <div className="flex flex-col min-h-screen bg-gray-800 font-poppins">
       <div className="flex flex-col md:flex-row">
         <div className="flex-grow flex flex-col justify-start mt-24 p-4 md:pl-10 md:pr-10">
-          {/* Main Card for Heading */}
-          
           <div className="bg-gray-900 rounded-2xl p-10 mb-12 shadow-lg w-full">
             <h1 className="text-white text-3xl md:text-4xl font-bold mb-4">
               WELCOME TO STUDENT RESEARCH LAB!
@@ -71,9 +101,7 @@ const HomePage = () => {
               Invent, Discuss And Innovate - Student's creativity can be a powerful asset, independent of experience. 
             </p>
           </div>
-          {/* Cards Section */}
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-6 xl:grid-rows-2">
-            {/* InventSpace Card */}
             <div className="bg-gray-900 rounded-2xl p-8 shadow-md flex-1 h-[28rem]">
               <h2
                 className="text-white text-xl md:text-2xl font-semibold mb-2 text-center cursor-pointer"
@@ -82,7 +110,7 @@ const HomePage = () => {
                 InventSpace
               </h2>
               <p
-                className="text-white text-sm md:text-base mb-2 text-center cursor-pointer "
+                className="text-white text-sm md:text-base mb-2 text-center cursor-pointer"
                 onClick={() => navigate("/qna")}
               >
                 Create and Innovate
@@ -90,22 +118,18 @@ const HomePage = () => {
               <div className="space-y-6 mt-4 overflow-y-auto h-[18rem] scrollbar-hide">
                 {invent.map((item, index) => (
                   <div
-                  onClick={() =>
-                    navigate(`/invent-post/${item.id}`, { state: { post: item } })
-                  }
-                  key={index}
-                  className="bg-gray-700 p-4 md:p-8 rounded-lg shadow-sm mx-auto w-full hover:bg-gray-600 hover:scale-105 transform transition-transform duration-300"
-                >
-                  <p className="text-white text-sm md:text-base font-medium">
-                    {_.truncate(item.title, { length: 21 })}
-                  </p>
-                </div>
-                
+                    onClick={() =>
+                      navigate(`/invent-post/${item.id}`, { state: { post: item } })
+                    }
+                    key={index}
+                    className="bg-gray-700 p-4 md:p-8 rounded-lg shadow-sm mx-auto w-full hover:bg-gray-600 hover:scale-105 transform transition-transform duration-300"
+                  >
+                    <DynamicTruncateText text={item.title} />
+                  </div>
                 ))}
               </div>
             </div>
 
-            {/* Requirements Card */}
             <div className="bg-gray-900 rounded-2xl p-7 shadow-md flex-1 h-[28rem]">
               <h2
                 className="text-white text-xl md:text-2xl font-semibold mb-2 text-center cursor-pointer"
@@ -119,59 +143,49 @@ const HomePage = () => {
               >
                 Organization help
               </p>
-              <div className="space-y-6 mt-4 space-y-6 mt-4 overflow-y-auto h-[18rem] scrollbar-hide">
+              <div className="space-y-6 mt-4 overflow-y-auto h-[18rem] scrollbar-hide">
                 {requirements.map((item, index) => (
                   <div
-                  onClick={() =>
-                    navigate(`/requirement-post/${item.id}`, { state: { post: item } })
-                  }
-                  key={index}
-                  className="bg-gray-700 p-4 md:p-8 rounded-lg shadow-sm mx-auto w-full hover:bg-gray-600 hover:scale-105 transform transition-transform duration-300"
-                >
-                  <p className="text-white text-sm md:text-base font-medium">
-                    {_.truncate(item.title, { length: 21 })}
-                  </p>
-                </div>
-                
+                    onClick={() =>
+                      navigate(`/requirement-post/${item.id}`, { state: { post: item } })
+                    }
+                    key={index}
+                    className="bg-gray-700 p-4 md:p-8 rounded-lg shadow-sm mx-auto w-full hover:bg-gray-600 hover:scale-105 transform transition-transform duration-300"
+                  >
+                    <DynamicTruncateText text={item.title} />
+                  </div>
                 ))}
               </div>
             </div>
 
-{/* Research Card */}
-<div className="bg-gray-900 rounded-2xl p-8 shadow-md flex-1 h-[28rem] xl:row-start-2">
-  <h2
-    className="text-white text-xl md:text-2xl font-semibold mb-2 text-center cursor-pointer"
-    onClick={() => navigate("/research")}
-  >
-    Research
-  </h2>
-  <p
-    className="text-white text-sm md:text-base mb-2 text-center cursor-pointer"
-    onClick={() => navigate("/research")}
-  >
-    Personalized research
-  </p>
+            <div className="bg-gray-900 rounded-2xl p-8 shadow-md flex-1 h-[28rem] xl:row-start-2">
+              <h2
+                className="text-white text-xl md:text-2xl font-semibold mb-2 text-center cursor-pointer"
+                onClick={() => navigate("/research")}
+              >
+                Research
+              </h2>
+              <p
+                className="text-white text-sm md:text-base mb-2 text-center cursor-pointer"
+                onClick={() => navigate("/research")}
+              >
+                Personalized research
+              </p>
+              <div className="space-y-6 mt-4 overflow-y-auto h-[18rem] scrollbar-hide">
+                {research.map((item, index) => (
+                  <div
+                    onClick={() =>
+                      navigate(`/research-post/${item.id}`, { state: { post: item } })
+                    }
+                    key={index}
+                    className="bg-gray-700 p-4 md:p-8 rounded-lg shadow-sm mx-auto w-full hover:bg-gray-600 hover:scale-105 transform transition-transform duration-300"
+                  >
+                    <DynamicTruncateText text={item.title} />
+                  </div>
+                ))}
+              </div>
+            </div>
 
-  {/* Scrollable Div without visible scrollbar */}
-  <div className="space-y-6 mt-4 overflow-y-auto h-[18rem] scrollbar-hide">
-    {research.map((item, index) => (
-      <div
-        onClick={() =>
-          navigate(`/research-post/${item.id}`, { state: { post: item } })
-        }
-        key={index}
-        className="bg-gray-700 p-4 md:p-8 rounded-lg shadow-sm mx-auto w-full hover:bg-gray-600 hover:scale-105 transform transition-transform duration-300"
-      >
-        <p className="text-white text-sm md:text-base font-medium">
-          {_.truncate(item.title, { length: 21 })}
-        </p>
-      </div>
-    ))}
-  </div>
-</div>
-
-
-            {/* Top Communities Card */}
             <div className="bg-gray-900 rounded-2xl p-8 shadow-md flex-1 h-[28rem] xl:row-start-2">
               <h2
                 className="text-white text-xl md:text-2xl font-semibold mb-2 text-center cursor-pointer"
@@ -185,23 +199,18 @@ const HomePage = () => {
               >
                 Join and Learn
               </p>
-              <div className="space-y-6 mt-4 space-y-6 mt-4 overflow-y-auto h-[18rem] scrollbar-hide">
+              <div className="space-y-6 mt-4 overflow-y-auto h-[18rem] scrollbar-hide">
                 {comPosts.map((item, index) => (
                   <div
-                  onClick={() =>
-                    navigate(`/community/${item.communityId}/post/${item.id}`, { state: { post: item } })
-                  }
-                  key={index}
-                  className="bg-gray-700 flex justify-between p-4 md:p-8 rounded-lg shadow-sm mx-auto w-full hover:bg-gray-600 hover:scale-105 transform transition-transform duration-300"
-                >
-                  <p className="text-white text-sm md:text-base font-medium">
-                    {_.truncate(item.title, { length: 21 })}
-                  </p>
-                  <p className="text-teal-600 text-sm md:text-base font-medium">
-                    {_.truncate(item.community.name, { length: 21 })}
-                  </p>
-                </div>
-                
+                    onClick={() =>
+                      navigate(`/community/${item.communityId}/post/${item.id}`, { state: { post: item } })
+                    }
+                    key={index}
+                    className="bg-gray-700 flex justify-between p-4 md:p-8 rounded-lg shadow-sm mx-auto w-full hover:bg-gray-600 hover:scale-105 transform transition-transform duration-300"
+                  >
+                    <DynamicTruncateText text={item.title} />
+                    <DynamicTruncateText text={item.community.name} />
+                  </div>
                 ))}
               </div>
             </div>
