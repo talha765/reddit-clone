@@ -1,7 +1,6 @@
 import { Outlet } from 'react-router-dom';
 import NavBar from './NavBar';
 import SideBar from './sidebar';
-import LandingNavbar from './LandingNavbar';
 import { useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
 
@@ -34,7 +33,7 @@ const Layout = () => {
   return (
     <div className="flex flex-col min-h-screen">
       {/* Navbar on top */}
-      {token ? <NavBar toggleSidebar={toggleSidebar} /> : <LandingNavbar />}
+      <NavBar toggleSidebar={toggleSidebar} />
 
       <div className="flex flex-1">
         {/* Sidebar with conditional width and translation */}

@@ -9,7 +9,9 @@ import {
   ArrowLeftOnRectangleIcon,
   InformationCircleIcon,
   QuestionMarkCircleIcon,
-  ExclamationCircleIcon
+  ExclamationCircleIcon,
+  PencilSquareIcon,
+  UserGroupIcon 
 } from "@heroicons/react/24/outline";
 import Cookies from 'js-cookie';
 
@@ -120,7 +122,7 @@ const SideBar = () => {
             {/* Communities */}
             <li className="mt-4">
               <div className="flex items-center space-x-2">
-                <ClipboardDocumentCheckIcon className="w-5 h-5 text-white" />
+                <UserGroupIcon  className="w-5 h-5 text-white" />
                 <Link
                   to="/communities"
                   className="py-2 px-4 w-full text-left hover:bg-gray-800 cursor-pointer rounded-md flex justify-between items-center text-sm font-semibold text-white transition-colors duration-200 focus:ring-gray-500"
@@ -144,6 +146,24 @@ const SideBar = () => {
                   className="py-2 px-4 w-full text-left hover:bg-gray-800 cursor-pointer rounded-md flex justify-between items-center text-sm font-semibold text-white transition-colors duration-200 focus:ring-gray-500"
                 >
                   Research
+                </Link>
+              </div>
+            </li>
+
+            {/* Divider (White Line) */}
+            <li>
+              <hr className="border-t border-white border-opacity-20" />
+            </li>
+
+            {/* Research */}
+            <li className="mt-4">
+              <div className="flex items-center space-x-2">
+                <PencilSquareIcon className="w-5 h-5 text-white" />
+                <Link
+                  to="/LnD"
+                  className="py-2 px-4 w-full text-left hover:bg-gray-800 cursor-pointer rounded-md flex justify-between items-center text-sm font-semibold text-white transition-colors duration-200 focus:ring-gray-500"
+                >
+                  Learning and Development
                 </Link>
               </div>
             </li>
