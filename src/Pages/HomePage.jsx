@@ -89,10 +89,19 @@ const HomePage = () => {
       });
   }, []);
 
-  return (
-    <div className="flex flex-col min-h-screen bg-gray-800 font-poppins">
-      <div className="flex flex-col md:flex-row">
-        <div className="flex-grow flex flex-col justify-start mt-24 p-4 md:pl-10 md:pr-10">
+  return (    
+    <div className="relative flex flex-col min-h-screen bg-gray-800 font-poppins">
+
+      {/* Should display info of LnD sessions */}
+      {/* News Ticker Row */}
+      <div className="bg-gray-900 text-teal-300 p-2 text-center mt-14 w-full">
+        <marquee behavior="scroll" direction="left" className="text-s">
+        🚨 Welcome to the Student Research Lab! 🚨 | Breaking News: New learning resources available! | Upcoming workshop on innovation | Join our communities for collaboration!
+        </marquee>
+      </div>
+      
+      <div className="flex flex-col md:flex-row ">
+        <div className="flex-grow flex flex-col justify-start mt-0 p-4 md:pl-10 md:pr-10">
           <div className="bg-gray-900 rounded-2xl p-10 mb-12 shadow-lg w-full">
             <h1 className="text-white text-3xl md:text-4xl font-bold mb-4">
               WELCOME TO STUDENT RESEARCH LAB!
@@ -129,7 +138,7 @@ const HomePage = () => {
                 ))}
               </div>
             </div>
-
+  
             <div className="bg-gray-900 rounded-2xl p-7 shadow-md flex-1 h-[28rem]">
               <h2
                 className="text-white text-xl md:text-2xl font-semibold mb-2 text-center cursor-pointer"
@@ -157,7 +166,7 @@ const HomePage = () => {
                 ))}
               </div>
             </div>
-
+  
             <div className="bg-gray-900 rounded-2xl p-8 shadow-md flex-1 h-[28rem] xl:row-start-2">
               <h2
                 className="text-white text-xl md:text-2xl font-semibold mb-2 text-center cursor-pointer"
@@ -185,7 +194,7 @@ const HomePage = () => {
                 ))}
               </div>
             </div>
-
+  
             <div className="bg-gray-900 rounded-2xl p-8 shadow-md flex-1 h-[28rem] xl:row-start-2">
               <h2
                 className="text-white text-xl md:text-2xl font-semibold mb-2 text-center cursor-pointer"
@@ -218,7 +227,7 @@ const HomePage = () => {
         </div>
       </div>
     </div>
-  );
-};
+  ); 
+} 
 
 export default HomePage;
