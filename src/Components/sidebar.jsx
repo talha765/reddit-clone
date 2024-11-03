@@ -28,11 +28,15 @@ const SideBar = () => {
       Cookies.remove('id');
       Cookies.remove('type');
       console.log("Logging out...");
-      navigate("/landing"); // Redirect to landing page
+      navigate("/"); // Redirect to the root directory
+  
+      // Reload the page to ensure all components re-render for non-logged-in view
+      window.location.reload();
     } catch (error) {
       console.log(error);
     }
   };
+  
 
   return (
     <div className="relative flex">

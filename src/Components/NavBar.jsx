@@ -54,12 +54,20 @@ const NavBar = () => {
   };
 
   const handleLogout = () => {
-    Cookies.remove('token');
-    Cookies.remove('id');
-    Cookies.remove('type');
-    console.log("Logging out...");
-    navigate('/landing');
+    try {
+      Cookies.remove('token');
+      Cookies.remove('id');
+      Cookies.remove('type');
+      console.log("Logging out...");
+      navigate("/"); // Redirect to the root directory
+  
+      // Reload the page to ensure all components re-render for non-logged-in view
+      window.location.reload();
+    } catch (error) {
+      console.log(error);
+    }
   };
+  
 
   const handleDropdownClick = (event) => {
     event.stopPropagation();
