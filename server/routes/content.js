@@ -388,6 +388,77 @@ router.get('/get-invent', async (req, res) => {
   }
 });
 
+router.get('/get-user-posts/:userId', async (req, res) => {
+  const {userId} = req.params;
+  try {
+    let user = await User.findByPk(userId);
+    if(user.type === "student"){
+      let posts = await inventspace.findAll({where: {userId: userId}}, {
+        include: {
+          model: User,
+          as: 'user',
+          attributes: ['username'], // Only include the username
+        },
+        order: [['createdAt', 'DESC']], // Order by createdAt in descending order (newest first)
+      });
+      res.status(201).json(posts);
+    }
+    else if (user.type === "researcher"){
+      let posts = await Research.findAll({where: {userId: userId}}, {
+        include: {
+          model: User,
+          as: 'user',
+          attributes: ['username'], // Only include the username
+        },
+        order: [['createdAt', 'DESC']], // Order by createdAt in descending order (newest first)
+      });
+      res.status(201).json(posts);
+    } else if (user.type === "company") {
+      let posts = await Requirement.findAll({where: {userId: userId}}, {
+        include: {
+          model: User,
+          as: 'user',
+          attributes: ['username'], // Only include the username
+        },
+        order: [['createdAt', 'DESC']], // Order by createdAt in descending order (newest first)
+      });
+      res.status(201).json(posts);
+    } else {
+      res.status(404).json({message: "User not found"})
+    }
+    
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
+router.put('/update-post/:userId/:postId', async (req, res) => {
+  const { userId, postId } = req.params;
+  const { title, description } = req.body;
+
+  try {
+    let user = await User.findByPk(userId);
+    if (user.type === 'student') {
+      let post = await inventspace.findByPk(postId);
+      await post.update({ title, description });
+      res.status(201).json(post);
+    } else if (user.type === 'researcher') {
+      let post = await Research.findByPk(postId);
+      await post.update({ title, description });
+      res.status(201).json(post);
+    } else if (user.type === 'company') {
+      let post = await Requirement.findByPk(postId);
+      await post.update({ title, description });
+      res.status(201).json(post);
+    } else {
+      res.status(404).json({ message: 'User not found' });
+    }
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
+
 router.get('/get-invent/:id', async (req, res) => {
   const {postId} = req.params;
   try {
@@ -397,6 +468,7 @@ router.get('/get-invent/:id', async (req, res) => {
     res.status(500).json(error);
   }
 });
+
 
 router.get("/get-requirements", async (req, res) => {
   try {
@@ -443,7 +515,7 @@ router.get("/get-communities-posts", async (req, res) => {
         attributes: ['name'], // Only include the username
       },
       order: [['createdAt', 'DESC']], // Order by createdAt in descending order (newest first)
-      limit: 3, // Limit the result to the three most recent posts
+      limit: 7, // Limit the result to the three most recent posts
     }
     );
     res.status(201).json(posts);

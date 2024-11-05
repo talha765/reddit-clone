@@ -9,7 +9,9 @@ import {
   ArrowLeftOnRectangleIcon,
   InformationCircleIcon,
   QuestionMarkCircleIcon,
-  ExclamationCircleIcon
+  ExclamationCircleIcon,
+  PencilSquareIcon,
+  UserGroupIcon 
 } from "@heroicons/react/24/outline";
 import Cookies from 'js-cookie';
 
@@ -28,11 +30,15 @@ const SideBar = () => {
       Cookies.remove('id');
       Cookies.remove('type');
       console.log("Logging out...");
-      navigate("/landing"); // Redirect to landing page
+      navigate("/"); // Redirect to the root directory
+  
+      // Reload the page to ensure all components re-render for non-logged-in view
+      window.location.reload();
     } catch (error) {
       console.log(error);
     }
   };
+  
 
   return (
     <div className="relative flex">
@@ -116,7 +122,7 @@ const SideBar = () => {
             {/* Communities */}
             <li className="mt-4">
               <div className="flex items-center space-x-2">
-                <ClipboardDocumentCheckIcon className="w-5 h-5 text-white" />
+                <UserGroupIcon  className="w-5 h-5 text-white" />
                 <Link
                   to="/communities"
                   className="py-2 px-4 w-full text-left hover:bg-gray-800 cursor-pointer rounded-md flex justify-between items-center text-sm font-semibold text-white transition-colors duration-200 focus:ring-gray-500"
@@ -140,6 +146,24 @@ const SideBar = () => {
                   className="py-2 px-4 w-full text-left hover:bg-gray-800 cursor-pointer rounded-md flex justify-between items-center text-sm font-semibold text-white transition-colors duration-200 focus:ring-gray-500"
                 >
                   Research
+                </Link>
+              </div>
+            </li>
+
+            {/* Divider (White Line) */}
+            <li>
+              <hr className="border-t border-white border-opacity-20" />
+            </li>
+
+            {/* Research */}
+            <li className="mt-4">
+              <div className="flex items-center space-x-2">
+                <PencilSquareIcon className="w-5 h-5 text-white" />
+                <Link
+                  to="/LnD"
+                  className="py-2 px-4 w-full text-left hover:bg-gray-800 cursor-pointer rounded-md flex justify-between items-center text-sm font-semibold text-white transition-colors duration-200 focus:ring-gray-500"
+                >
+                  Learning and Development
                 </Link>
               </div>
             </li>
@@ -178,12 +202,12 @@ const SideBar = () => {
           
           {/* Logout (Bottom-right) */}
           {token && ( // Only display if the token exists
-            <div className="absolute bottom-5 left-0 w-full px-4">
-              <div className="flex items-center space-x-2">
-                <ArrowLeftOnRectangleIcon className="w-5 h-5 text-white mb-4" />
+            <div className="absolute bottom-5 left-0 w-full px-4 ">
+              <div className="flex items-center space-x-2 ">
+                <ArrowLeftOnRectangleIcon className="w-5 h-5 text-white mb-4 " />
                 <button
                   onClick={handleLogout}
-                  className="py-2 px-4 mb-5 w-full hover:bg-gray-800 text-left cursor-pointer rounded-md flex justify-between items-center text-sm font-semibold text-white transition-colors duration-200 hover:text-red-600 focus:ring-gray-500"
+                  className=" py-2 px-4 mb-5 w-full hover:bg-gray-800 text-left cursor-pointer rounded-md flex justify-between items-center text-sm font-semibold text-white transition-colors duration-200 hover:text-red-600 "
                 >
                   Logout
                 </button>

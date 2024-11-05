@@ -13,7 +13,7 @@ const Invent_Page = () => {
   const [post, setPost] = useState(location.state?.post || null);
   const token = Cookies.get("token");
   const [comments, setComments] = useState([]);
-
+  console.log(post);
   // Fetch comments when the component mounts or when post changes
   useEffect(() => {
     const fetchComments = async () => {
