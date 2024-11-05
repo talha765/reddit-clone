@@ -122,7 +122,7 @@ const Requirements = () => {
   const openAddPostModal = () => {
     if (!userId) {
       setShowLoginModal(true);
-    } else if (userType !== "company") {
+    } else if (userType !== "company" && userType!== "admin") {
       setShowCompanyWarning(true);
     } else {
       setShowAddPostModal(true);

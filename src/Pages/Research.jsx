@@ -125,7 +125,7 @@ const Research = () => {
   const openAddPostModal = () => {
     if (!userId) {
       setShowLoginModal(true); // If not logged in, show login prompt
-    } else if (userType !== "researcher") {
+    } else if (userType !== "researcher" && userType!== "admin") {
       setShowResearcherWarning(true); // Only allow researchers to add posts
     } else {
       setShowAddPostModal(true); // Show warning if user is not a researcher

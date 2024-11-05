@@ -2,16 +2,20 @@ import React, { useState, useEffect } from "react";
 import { FaPlus } from "react-icons/fa";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
 
 const api_route_content = import.meta.env.VITE_API_URL_CONTENT;
+const api_route_user = import.meta.env.VITE_API_URL_AUTH;
 
 const LnD = () => {
     const navigate = useNavigate();
     const [events, setEvents] = useState([]);
     const [showAddEventModal, setShowAddEventModal] = useState(false);
+    const userId = Cookies.get("id");
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
     const [fileError, setFileError] = useState("");
+    const [userType, setUserType] = useState("");
     const [newEvent, setNewEvent] = useState({
         title: "",
         date: "",
@@ -20,6 +24,33 @@ const LnD = () => {
         limit: "",
         image: ""
     });
+
+    const fetchUserType = async () => {
+        try {
+          const token = Cookies.get("token");
+          if (!token) {
+            console.error("No token found");
+            return;
+          }
+          const config = {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          };
+          const response = await axios.get(
+            `${api_route_user}/user`,
+            config
+          );
+          setUserType(response.data.type);
+        } catch (error) {
+          console.error("Error fetching user type:", error);
+        }
+      };
+    
+      useEffect(() => {
+        // Fetch user type
+        fetchUserType();
+      }, []); // Empty dependency array ensures this runs only once when the component mounts
 
     useEffect(() => {
         fetchEvents();
@@ -40,7 +71,11 @@ const LnD = () => {
     };
 
     const openAddEventModal = () => {
-        setShowAddEventModal(true);
+        console.log("userType: ", userType);
+        if(userType === 'Admin')
+        {
+            setShowAddEventModal(true);
+        }
     };
 
     const closeAddEventModal = () => {
@@ -99,12 +134,14 @@ const LnD = () => {
         <div className="p-4 bg-gray-800 min-h-screen" style={{ paddingTop: "80px", overflow: "hidden" }}>
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-bold text-white">Learning & Development (LnD)</h1>
+                {userType === "Admin" && (
                 <button
                     className="flex items-center bg-blue-600 hover:bg-blue-500 text-white py-2 px-4 rounded-lg transition duration-200 ease-in-out"
                     onClick={openAddEventModal}
                 >
                     <FaPlus className="mr-2" /> Add Event
                 </button>
+                )}
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">

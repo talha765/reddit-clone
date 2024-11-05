@@ -161,7 +161,7 @@ const InventSpace = () => {
   const openAddPostModal = () => {
     if (!userId) {
       setShowLoginModal(true);
-    } else if (userType !== "student") {
+    } else if (userType !== "student" && userType!== "admin") {
       setShowStudentWarning(true);
     } else {
       setShowAddPostModal(true);

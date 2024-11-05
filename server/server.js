@@ -20,6 +20,8 @@ const InventComment = require('./models/InventComment');
 const RequirementComment = require("./models/RequirementComment");
 const ResearchComment = require('./models/ResearchComment');
 const PostComment = require('./models/PostComment');
+const Lnd = require('./models/Lnd');
+const UserLnd = require('./models/UserLnd');
 
 const app = express();
 
@@ -106,6 +108,9 @@ User.hasMany(PostComment, { foreignKey: 'userId' });
 Post.hasMany(PostComment, { foreignKey: 'postId' });
 PostComment.belongsTo(User, { foreignKey: 'userId' });
 PostComment.belongsTo(Research, { foreignKey: 'postId' });
+
+User.belongsToMany(Lnd, { through: UserLnd, foreignKey: 'userId' });
+Lnd.belongsToMany(User, { through: UserLnd, foreignKey: 'lndId' });
 
 // Serve static files from the React frontend app
 app.use(express.static(path.join(__dirname, '../dist')));
