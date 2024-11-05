@@ -60,19 +60,19 @@ const SideBar = () => {
       <div
         className={`${
           isOpen ? "translate-x-0" : "-translate-x-full"
-        } fixed top-0 left-0 h-screen w-64 bg-gradient-to-br from-gray-900 to-gray-800
+        } fixed top-0 left-0 h-screen md:w-56 lg:w-64 bg-gradient-to-br from-gray-900 to-gray-800
           border-r border-white transition-transform duration-300 ease-in-out z-40 md:translate-x-0
           overflow-y-hidden hover:overflow-y-auto mt-7`}
       >
         <nav className="pt-9 p-3 h-full relative">
-          <ul className="space-y-4">
+          <ul className="space-y-3">
             {/* Help Center (QnA) */}
             <li className="mt-6">
               <div className="flex items-center space-x-2">
                 <HomeIcon className="w-5 h-5 text-white" />
                 <Link
                   to="/homepage"
-                  className="py-2 px-4 w-full text-left hover:bg-gray-800 cursor-pointer rounded-md flex justify-between items-center text-sm font-semibold text-white transition-colors duration-200 focus:ring-gray-500"
+                  className="py-1 px-4 w-full text-left hover:bg-gray-800 cursor-pointer rounded-md flex justify-between items-center text-sm font-semibold text-white transition-colors duration-200 focus:ring-gray-500"
                 >
                   Home
                 </Link>

@@ -94,3 +94,21 @@ button:focus-visible {
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;     /* Firefox */
 }
+/* Default styles for small screens */
+/* General styles */
+#sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 250px; /* Adjust the width as needed */
+  background-color: #f0f0f0;
+  overflow-y: auto;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  #sidebar {
+    width: 60%; /* Adjust the width as needed */
+  }
+}
