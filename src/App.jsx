@@ -16,6 +16,7 @@ import Requirement_Page from "./Pages/RequirementPage";
 import Research_Page from "./Pages/ResearchPage";
 import CommunityPage from "./Pages/CommunityPage";
 import UserPosts from "./Pages/UserPosts";
+import LnD from "./Pages/LnD";
 
 const App = () => (
   <Router>
@@ -33,7 +34,7 @@ const App = () => (
         <Route path="/communities" element={<Communities />} />
         <Route path="/research" element={<Research />} />
         <Route path="/about" element={<AboutUsPage />} />
-
+        <Route path="/LnD" element={<LnD />} />
         {/* Nested Routes for Community and Posts */}
         <Route path="/community/:communityId" element={<CommunityPosts />} />
         <Route path="/community/:communityId/post/:postId" element={<CommunityPage />} />

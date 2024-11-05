@@ -5,8 +5,8 @@ import _ from "lodash";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import { Filter } from "bad-words";
-const api_route_content =  import.meta.env.VITE_API_URL_CONTENT;
-const api_route_user=import.meta.env.VITE_API_URL_AUTH;
+const api_route_content = import.meta.env.VITE_API_URL_CONTENT;
+const api_route_user = import.meta.env.VITE_API_URL_AUTH;
 
 const InventSpace = () => {
   const navigate = useNavigate();
@@ -32,7 +32,7 @@ const InventSpace = () => {
       .get(`${api_route_content}/get-top-communities`)
       .then((response) => {
         // Logic for top communities, sorted by member count
-        
+
         const unfilteredCommunities = response.data;
 
         // Sort all communities by memberCount in descending order
@@ -42,7 +42,7 @@ const InventSpace = () => {
 
         // Set the top 5 communities
         setTopCommunities(sortedByMemberCount.slice(0, 5));
-        
+
       })
       .catch((error) => {
         console.error("Error fetching top communities:", error);
@@ -184,12 +184,12 @@ const InventSpace = () => {
         prevPosts.map((post) =>
           post.id === postId
             ? {
-                ...post,
-                likes:
-                  response.data.message === "Liked"
-                    ? post.likes + 1
-                    : post.likes - 1,
-              }
+              ...post,
+              likes:
+                response.data.message === "Liked"
+                  ? post.likes + 1
+                  : post.likes - 1,
+            }
             : post
         )
       );
@@ -248,8 +248,8 @@ const InventSpace = () => {
             </button>
           </div>
           <div className="mb-5  font-poppins pl-2 text-s text-white">
-                        <p className="">Students can post their brief statement of issues and solutions here. Interested parties will connect with them for details and further discussions. Ideas which can change the world.
-</p>
+            <p className="">Students can post their brief statement of issues and solutions here. Interested parties will connect with them for details and further discussions. Ideas which can change the world.
+            </p>
 
           </div>
 
