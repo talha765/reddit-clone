@@ -16,6 +16,8 @@ const PostComment = require('../models/PostComment');
 const InventComment = require('../models/InventComment');
 const RequirementComment = require('../models/RequirementComment');
 const ResearchComment = require('../models/ResearchComment');
+const Lnd = require('../models/Lnd');
+const UserLnd = require('../models/UserLnd');
 const sequelize = require("../src/db");
 const nodemailer = require('nodemailer');
 
@@ -211,6 +213,8 @@ router.post('/inventlike/:postId', async (req, res) => {
       res.status(500).json({ error: 'Error processing like' });
   }
 });
+
+
 
 router.post('/postlike/:postId', async (req, res) => {
   const { userId } = req.body;
@@ -613,5 +617,124 @@ router.post("/post-community", async (req, res) => {
     .then((com) => res.status(201).json(com))
     .catch((err) => res.status(500).json(err));
 });
+
+// Route to create a new Lnd entry
+router.post('/lnd', async (req, res) => {
+  const { title, date, description, location, limit, image } = req.body;
+
+  if (!title || !date || !description || !location || !limit) {
+    return res.status(400).json({ message: 'All fields except image are required.' });
+  }
+
+  try {
+    // If an image is provided, convert it from Base64 to binary
+    const imageBuffer = image ? Buffer.from(image, 'base64') : null;
+
+    const newLnd = await Lnd.create({
+      title,
+      date,
+      description,
+      location,
+      limit,
+      image: imageBuffer
+    });
+    res.status(201).json({ message: 'Lnd event created successfully', lnd: newLnd });
+  } catch (error) {
+    console.error('Error creating Lnd:', error);
+    res.status(500).json({ message: 'Error creating Lnd event' });
+  }
+});
+
+
+// Route to retrieve all Lnd entries
+router.get('/lnd', async (req, res) => {
+  try {
+    const lnds = await Lnd.findAll();
+    res.status(200).json(lnds);
+  } catch (error) {
+    console.error('Error fetching Lnd events:', error);
+    res.status(500).json({ message: 'Error fetching Lnd events' });
+  }
+});
+
+// Route to retrieve a single Lnd entry by ID
+router.get('/lnd/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const lnd = await Lnd.findByPk(id);
+    if (!lnd) {
+      return res.status(404).json({ message: 'Lnd event not found' });
+    }
+    res.status(200).json(lnd);
+  } catch (error) {
+    console.error('Error fetching Lnd event:', error);
+    res.status(500).json({ message: 'Error fetching Lnd event' });
+  }
+});
+
+router.post('/lnd/:lndId/apply', async (req, res) => {
+  const { userId } = req.body; // ID of the user applying
+  const { lndId } = req.params; // ID of the Lnd event
+
+  try {
+    // Check if the user has already applied
+    const existingApplication = await UserLnd.findOne({
+      where: { userId, lndId }
+    });
+
+    if (existingApplication) {
+      return res.status(400).json({ message: 'User has already applied to this event.' });
+    }
+
+    // Create the application
+    const application = await UserLnd.create({
+      userId,
+      lndId
+    });
+
+    // Increment the registration count for the Lnd event
+    await Lnd.increment('registrationCount', { where: { id: lndId } });
+
+    res.status(201).json({ message: 'Application successful', application });
+  } catch (error) {
+    console.error('Error applying to Lnd event:', error);
+    res.status(500).json({ message: 'Error applying to event' });
+  }
+});
+
+router.get('/lnd/:lndId/applicants', async (req, res) => {
+  const { lndId } = req.params;
+
+  try {
+    const applicants = await UserLnd.findAll({
+      where: { lndId },
+      include: [{ model: User, attributes: ['id', 'username', 'email'] }] // Adjust attributes as needed
+    });
+
+    res.status(200).json(applicants);
+  } catch (error) {
+    console.error('Error fetching applicants:', error);
+    res.status(500).json({ message: 'Error fetching applicants' });
+  }
+});
+
+router.get('/user/:userId/applications', async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const applications = await UserLnd.findAll({
+      where: { userId },
+      include: [{ model: Lnd, attributes: ['id', 'title', 'date', 'location'] }] // Adjust attributes as needed
+    });
+
+    res.status(200).json(applications);
+  } catch (error) {
+    console.error('Error fetching applications:', error);
+    res.status(500).json({ message: 'Error fetching applications' });
+  }
+});
+
+
 
 module.exports = router;

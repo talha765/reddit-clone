@@ -24,7 +24,7 @@ const Lnd = sequelize.define('Lnd', {
     allowNull: false
   },
   image: {
-    type: DataTypes.STRING,
+    type: DataTypes.BLOB('long'), // Store image as binary data
     allowNull: true
   },
   registrationCount: {
