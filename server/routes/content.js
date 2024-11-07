@@ -650,7 +650,14 @@ router.post('/lnd', async (req, res) => {
 router.get('/lnd', async (req, res) => {
   try {
     const lnds = await Lnd.findAll();
-    res.status(200).json(lnds);
+
+    // Convert image buffer to Base64 string
+    const lndsWithImage = lnds.map(lnd => ({
+      ...lnd.toJSON(),
+      image: lnd.image ? `data:image/png;base64,${lnd.image.toString('base64')}` : null // Prefix the Base64 data
+    }));
+
+    res.status(200).json(lndsWithImage);
   } catch (error) {
     console.error('Error fetching Lnd events:', error);
     res.status(500).json({ message: 'Error fetching Lnd events' });
@@ -663,15 +670,24 @@ router.get('/lnd/:id', async (req, res) => {
 
   try {
     const lnd = await Lnd.findByPk(id);
+
     if (!lnd) {
       return res.status(404).json({ message: 'Lnd event not found' });
     }
-    res.status(200).json(lnd);
+
+    // Convert image buffer to Base64 string
+    const lndWithImage = {
+      ...lnd.toJSON(),
+      image: lnd.image ? `data:image/png;base64,${lnd.image.toString('base64')}` : null
+    };
+
+    res.status(200).json(lndWithImage);
   } catch (error) {
     console.error('Error fetching Lnd event:', error);
     res.status(500).json({ message: 'Error fetching Lnd event' });
   }
 });
+
 
 router.post('/lnd/:lndId/apply', async (req, res) => {
   const { userId } = req.body; // ID of the user applying

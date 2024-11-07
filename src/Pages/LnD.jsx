@@ -8,242 +8,260 @@ const api_route_content = import.meta.env.VITE_API_URL_CONTENT;
 const api_route_user = import.meta.env.VITE_API_URL_AUTH;
 
 const LnD = () => {
-    const navigate = useNavigate();
-    const [events, setEvents] = useState([]);
-    const [showAddEventModal, setShowAddEventModal] = useState(false);
-    const userId = Cookies.get("id");
-    const [page, setPage] = useState(1);
-    const [hasMore, setHasMore] = useState(true);
-    const [fileError, setFileError] = useState("");
-    const [userType, setUserType] = useState("");
-    const [newEvent, setNewEvent] = useState({
-        title: "",
-        date: "",
-        description: "",
-        location: "",
-        limit: "",
-        image: ""
+  const navigate = useNavigate();
+  const [events, setEvents] = useState([]);
+  const [showAddEventModal, setShowAddEventModal] = useState(false);
+  const [fileError, setFileError] = useState("");
+  const [userType, setUserType] = useState("");
+  const userId = Cookies.get("id");
+  const [newEvent, setNewEvent] = useState({
+    title: "",
+    date: "",
+    description: "",
+    location: "",
+    limit: "",
+    image: "",
+  });
+
+  // Fetch user type to verify permissions
+  const fetchUserType = async () => {
+    try {
+      const token = Cookies.get("token");
+      if (!token) return;
+      const config = { headers: { Authorization: `Bearer ${token}` } };
+      const response = await axios.get(`${api_route_user}/user`, config);
+      setUserType(response.data.type);
+    } catch (error) {
+      console.error("Error fetching user type:", error);
+    }
+  };
+
+  // Fetch events from backend
+  const fetchEvents = async () => {
+    try {
+      const response = await axios.get(`${api_route_content}/lnd`);
+      setEvents(response.data); // Assume response.data is an array of LnD events
+    } catch (error) {
+      console.error("Error fetching events:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchUserType();
+    fetchEvents();
+  }, []);
+
+  const openAddEventModal = () => {
+    if (userType === "Admin") setShowAddEventModal(true);
+  };
+
+  const closeAddEventModal = () => {
+    setShowAddEventModal(false);
+    setFileError("");
+    setNewEvent({
+      title: "",
+      date: "",
+      description: "",
+      location: "",
+      limit: "",
+      image: "",
     });
+  };
 
-    const fetchUserType = async () => {
-        try {
-          const token = Cookies.get("token");
-          if (!token) {
-            console.error("No token found");
-            return;
-          }
-          const config = {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          };
-          const response = await axios.get(
-            `${api_route_user}/user`,
-            config
-          );
-          setUserType(response.data.type);
-        } catch (error) {
-          console.error("Error fetching user type:", error);
-        }
-      };
-    
-      useEffect(() => {
-        // Fetch user type
-        fetchUserType();
-      }, []); // Empty dependency array ensures this runs only once when the component mounts
+  // Handle file upload and convert to Base64
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const allowedTypes = ["image/png", "image/jpeg", "image/svg+xml"];
+      if (!allowedTypes.includes(file.type)) {
+        setFileError("Only PNG, JPG, and SVG files are allowed.");
+        e.target.value = null;
+      } else {
+        setFileError("");
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setNewEvent((prevState) => ({
+            ...prevState,
+            image: reader.result.split(",")[1],
+          }));
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+  };
 
-    useEffect(() => {
-        fetchEvents();
-    }, [page]);
+  // Handle form input changes
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setNewEvent((prevState) => ({ ...prevState, [name]: value }));
+  };
 
-    const fetchEvents = async () => {
-        try {
-            const response = await axios.get(`${api_route_content}/get-events?page=${page}`);
-            const newEvents = response.data.events;
-            if (newEvents.length === 0) {
-                setHasMore(false);
-            } else {
-                setEvents((prevEvents) => [...prevEvents, ...newEvents]);
-            }
-        } catch (error) {
-            console.error("Error fetching events:", error);
-        }
-    };
+  // Submit new event to backend
+  const handleAddPost = async () => {
+    try {
+      const token = Cookies.get("token");
+      if (!token) return;
+      const config = { headers: { Authorization: `Bearer ${token}` } };
+      await axios.post(`${api_route_content}/lnd`, newEvent, config);
+      setEvents([...events, newEvent]);
+      closeAddEventModal();
+      fetchEvents();
+    } catch (error) {
+      console.error("Error adding event:", error);
+    }
+  };
 
-    const openAddEventModal = () => {
-        console.log("userType: ", userType);
-        if(userType === 'Admin')
-        {
-            setShowAddEventModal(true);
-        }
-    };
+  // Handle applying to an event
+  const handleApply = async (lndId) => {
+    try {
+      const token = Cookies.get("token");
+      if (!token) return;
+      const config = { headers: { Authorization: `Bearer ${token}` } };
+      await axios.post(
+        `${api_route_content}/lnd/${lndId}/apply`,
+        { userId },
+        config
+      );
+      alert("Applied successfully!");
+    } catch (error) {
+      console.error("Error applying to event:", error);
+      alert("Could not apply. Please try again.");
+    }
+  };
 
-    const closeAddEventModal = () => {
-        setShowAddEventModal(false);
-        setFileError(""); // Reset file error on close
-        setNewEvent({
-            title: "",
-            date: "",
-            description: "",
-            location: "",
-            limit: "",
-            image: ""
-        }); // Reset form fields
-    };
+  return (
+    <div
+      className="p-4 bg-gray-800 min-h-screen"
+      style={{ paddingTop: "80px" }}
+    >
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold text-white">
+          Learning & Development (LnD)
+        </h1>
+        {userType === "Admin" && (
+          <button
+            className="flex items-center bg-blue-600 hover:bg-blue-500 text-white py-2 px-4 rounded-lg"
+            onClick={openAddEventModal}
+          >
+            <FaPlus className="mr-2" /> Add Event
+          </button>
+        )}
+      </div>
 
-    const handleScroll = () => {
-        if (window.innerHeight + document.documentElement.scrollTop >= document.documentElement.offsetHeight - 50 && hasMore) {
-            setPage((prevPage) => prevPage + 1);
-        }
-    };
-
-    useEffect(() => {
-        window.addEventListener("scroll", handleScroll);
-        return () => window.removeEventListener("scroll", handleScroll);
-    }, [hasMore]);
-
-    const handleFileChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            const allowedTypes = ["image/png", "image/jpeg", "image/svg+xml"];
-            if (!allowedTypes.includes(file.type)) {
-                setFileError("Only PNG, JPG, and SVG files are allowed.");
-                e.target.value = null; // Clear the file input
-            } else {
-                setFileError("");
-                const reader = new FileReader();
-                reader.onloadend = () => {
-                    setNewEvent((prevState) => ({ ...prevState, image: reader.result }));
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-    };
-
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setNewEvent((prevState) => ({ ...prevState, [name]: value }));
-    };
-
-    const handleAddPost = () => {
-        setEvents((prevEvents) => [...prevEvents, newEvent]);
-        closeAddEventModal();
-    };
-
-    return (
-        <div className="p-4 bg-gray-800 min-h-screen" style={{ paddingTop: "80px", overflow: "hidden" }}>
-            <div className="flex justify-between items-center mb-6">
-                <h1 className="text-2xl font-bold text-white">Learning & Development (LnD)</h1>
-                {userType === "Admin" && (
-                <button
-                    className="flex items-center bg-blue-600 hover:bg-blue-500 text-white py-2 px-4 rounded-lg transition duration-200 ease-in-out"
-                    onClick={openAddEventModal}
-                >
-                    <FaPlus className="mr-2" /> Add Event
-                </button>
-                )}
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {events.map((event, index) => (
-                    <div
-                        key={index}
-                        className="h-80 w-80 bg-gray-900 rounded-lg shadow-md border border-gray-600 transition duration-200 ease-in-out hover:cursor-pointer hover:bg-gray-700 flex items-center justify-center"
-                        onClick={() => navigate(`/lnd-event/${event.id}`, { state: { event } })}
-                    >
-                        {event.image ? (
-                            <img
-                                src={event.image}
-                                alt={event.title}
-                                className="h-full w-full object-cover rounded-lg"
-                            />
-                        ) : (
-                            <div className="h-full w-full bg-gray-700 flex items-center justify-center text-gray-400">
-                                Event Content Here
-                            </div>
-                        )}
-                    </div>
-                ))}
-            </div>
-
-
-
-            {showAddEventModal && (
-                <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex justify-center items-center">
-                    <div className="bg-gray-800 rounded-lg shadow-lg p-8 w-full max-w-lg">
-                        <h2 className="text-lg text-white font-bold mb-4">Add New Event</h2>
-                        <form className="space-y-4">
-                            <div className="grid grid-cols-2 gap-4">
-                                <input
-                                    type="text"
-                                    name="title"
-                                    value={newEvent.title}
-                                    onChange={handleInputChange}
-                                    placeholder="Title"
-                                    className="w-full px-4 py-3 bg-gray-700 rounded-full text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                />
-                                <input
-                                    type="date"
-                                    name="date"
-                                    value={newEvent.date}
-                                    onChange={handleInputChange}
-                                    className="w-full px-4 py-3 bg-gray-700 rounded-full text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                />
-                            </div>
-                            <textarea
-                                name="description"
-                                value={newEvent.description}
-                                onChange={handleInputChange}
-                                placeholder="Description"
-                                className="w-full px-4 py-3 bg-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 h-24"
-                            ></textarea>
-                            <div className="grid grid-cols-2 gap-4">
-                                <input
-                                    type="text"
-                                    name="location"
-                                    value={newEvent.location}
-                                    onChange={handleInputChange}
-                                    placeholder="Location/Address"
-                                    className="w-full px-4 py-3 bg-gray-700 rounded-full text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                />
-                                <input
-                                    type="number"
-                                    name="limit"
-                                    value={newEvent.limit}
-                                    onChange={handleInputChange}
-                                    placeholder="Limit (int)"
-                                    className="w-full px-4 py-3 bg-gray-700 rounded-full text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                />
-                            </div>
-                            <input
-                                type="file"
-                                accept=".png, .jpg, .jpeg, .svg"
-                                onChange={handleFileChange}
-                                className="w-full px-4 py-3 bg-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            />
-                            {fileError && <p className="text-red-500 text-sm mt-2">{fileError}</p>}
-                            <div className="flex justify-end space-x-2 mt-4">
-                                <button
-                                    type="button"
-                                    onClick={handleAddPost}
-                                    className="bg-blue-600 hover:bg-blue-500 text-white py-2 px-4 rounded-lg transition duration-200 ease-in-out"
-                                >
-                                    Add Post
-                                </button>
-                                <button
-                                    type="button"
-                                    className="bg-red-500 hover:bg-red-400 text-white py-2 px-4 rounded-lg transition duration-200 ease-in-out"
-                                    onClick={closeAddEventModal}
-                                >
-                                    Cancel
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {events.map((event, index) => (
+          <div
+            key={index}
+            className="bg-gray-900 rounded-lg shadow-md border border-gray-600 p-4 flex flex-col justify-between"
+          >
+            {event.image ? (
+            // Rendering the image in the event card
+              <img
+                src={`data:image/png;base64,${event.image.replace(
+                  /^data:image\/(png|jpeg|jpg|svg\+xml);base64,/,
+                  ""
+                )}`}
+                alt={event.title}
+                className="h-full w-full object-cover rounded-lg"
+              />
+            ) : (
+              <div className="h-full w-full bg-gray-700 flex items-center justify-center text-gray-400">
+                No Image Available
+              </div>
             )}
+            <div className="text-white">
+              <h2 className="text-xl font-bold mb-2">{event.title}</h2>
+              <p className="text-gray-400 text-sm mb-2">
+                Date: {new Date(event.date).toLocaleDateString()}
+              </p>
+              <p className="text-gray-400 text-sm mb-2">
+                Location: {event.location}
+              </p>
+              <p className="text-gray-300 mb-4">{event.description}</p>
+              <p className="text-gray-400 text-sm mb-4">Limit: {event.limit}</p>
+            </div>
+            <button
+              className="mt-4 bg-green-600 hover:bg-green-500 text-white py-2 px-4 rounded-lg"
+              onClick={() => handleApply(event.id)}
+            >
+              Apply
+            </button>
+          </div>
+        ))}
+      </div>
+
+      {showAddEventModal && (
+        <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex justify-center items-center">
+          <div className="bg-gray-800 rounded-lg shadow-lg p-8 w-full max-w-lg">
+            <h2 className="text-lg text-white font-bold mb-4">Add New Event</h2>
+            <form className="space-y-4">
+              <input
+                type="text"
+                name="title"
+                value={newEvent.title}
+                onChange={handleInputChange}
+                placeholder="Title"
+                className="w-full px-4 py-3 bg-gray-700 rounded-full text-white"
+              />
+              <input
+                type="date"
+                name="date"
+                value={newEvent.date}
+                onChange={handleInputChange}
+                className="w-full px-4 py-3 bg-gray-700 rounded-full text-white"
+              />
+              <textarea
+                name="description"
+                value={newEvent.description}
+                onChange={handleInputChange}
+                placeholder="Description"
+                className="w-full px-4 py-3 bg-gray-700 rounded-lg text-white h-24"
+              ></textarea>
+              <input
+                type="text"
+                name="location"
+                value={newEvent.location}
+                onChange={handleInputChange}
+                placeholder="Location/Address"
+                className="w-full px-4 py-3 bg-gray-700 rounded-full text-white"
+              />
+              <input
+                type="number"
+                name="limit"
+                value={newEvent.limit}
+                onChange={handleInputChange}
+                placeholder="Limit"
+                className="w-full px-4 py-3 bg-gray-700 rounded-full text-white"
+              />
+              <input
+                type="file"
+                accept=".png, .jpg, .jpeg, .svg"
+                onChange={handleFileChange}
+                className="w-full px-4 py-3 bg-gray-700 rounded-lg text-white"
+              />
+              {fileError && <p className="text-red-500 text-sm">{fileError}</p>}
+              <div className="flex justify-end mt-4 space-x-2">
+                <button
+                  type="button"
+                  onClick={handleAddPost}
+                  className="bg-blue-600 hover:bg-blue-500 text-white py-2 px-4 rounded-lg"
+                >
+                  Add Event
+                </button>
+                <button
+                  type="button"
+                  onClick={closeAddEventModal}
+                  className="bg-red-500 hover:bg-red-400 text-white py-2 px-4 rounded-lg"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
-    );
+      )}
+    </div>
+  );
 };
 
 export default LnD;
