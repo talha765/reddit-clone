@@ -17,6 +17,8 @@ import Research_Page from "./Pages/ResearchPage";
 import CommunityPage from "./Pages/CommunityPage";
 import UserPosts from "./Pages/UserPosts";
 import LnD from "./Pages/LnD";
+import LnDPage from "./Pages/LnDPage"; // Import EventDetails component
+
 
 const App = () => (
   <Router>
@@ -35,6 +37,8 @@ const App = () => (
         <Route path="/research" element={<Research />} />
         <Route path="/about" element={<AboutUsPage />} />
         <Route path="/LnD" element={<LnD />} />
+        <Route path="/lnd/:id" element={<LnDPage />} />
+
         {/* Nested Routes for Community and Posts */}
         <Route path="/community/:communityId" element={<CommunityPosts />} />
         <Route path="/community/:communityId/post/:postId" element={<CommunityPage />} />
@@ -44,6 +48,7 @@ const App = () => (
         <Route path="/requirement-post/:postId" element={<Requirement_Page />} />
         <Route path="/research-post/:postId" element={<Research_Page />} />
         <Route path="/user-posts/:userId" element={<UserPosts />} />
+
       </Route>
     </Routes>
   </Router>

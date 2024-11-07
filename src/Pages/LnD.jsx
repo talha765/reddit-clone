@@ -157,21 +157,29 @@ const LnD = () => {
             key={index}
             className="bg-gray-900 rounded-lg shadow-md border border-gray-600 p-4 flex flex-col justify-between"
           >
-            {event.image ? (
-            // Rendering the image in the event card
-              <img
-                src={`data:image/png;base64,${event.image.replace(
-                  /^data:image\/(png|jpeg|jpg|svg\+xml);base64,/,
-                  ""
-                )}`}
-                alt={event.title}
-                className="h-full w-full object-cover rounded-lg"
-              />
-            ) : (
-              <div className="h-full w-full bg-gray-700 flex items-center justify-center text-gray-400">
-                No Image Available
-              </div>
-            )}
+           {event.image ? (
+  <div
+    className="overflow-hidden rounded-lg cursor-pointer"
+    onClick={() => navigate(`/lnd/${event.id}`)} // Navigate to event details on click
+  >
+    <img
+      src={`data:image/png;base64,${event.image.replace(
+        /^data:image\/(png|jpeg|jpg|svg\+xml);base64,/,
+        ""
+      )}`}
+      alt={event.title}
+      className="h-full w-full object-cover transform transition-transform duration-300 ease-in-out hover:scale-105"
+    />
+  </div>
+) : (
+  <div className="h-full w-full bg-gray-700 flex items-center justify-center text-gray-400 cursor-pointer"
+       onClick={() => navigate(`/lnd/${event.id}`)}
+  >
+    No Image Available
+  </div>
+)}
+
+
             <div className="text-white">
               <h2 className="text-xl font-bold mb-2">{event.title}</h2>
               <p className="text-gray-400 text-sm mb-2">
