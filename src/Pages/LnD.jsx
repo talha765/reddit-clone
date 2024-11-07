@@ -122,6 +122,9 @@ const LnD = () => {
         { userId },
         config
       );
+      setEvents(events.map(event => 
+        event.id === lndId ? { ...event, applied: true } : event
+      ));
       alert("Applied successfully!");
     } catch (error) {
       console.error("Error applying to event:", error);
@@ -181,10 +184,13 @@ const LnD = () => {
               <p className="text-gray-400 text-sm mb-4">Limit: {event.limit}</p>
             </div>
             <button
-              className="mt-4 bg-green-600 hover:bg-green-500 text-white py-2 px-4 rounded-lg"
-              onClick={() => handleApply(event.id)}
+              className={`mt-4 py-2 px-4 rounded-lg ${
+                event.applied ? "bg-gray-500 cursor-not-allowed" : "bg-green-600 hover:bg-green-500"
+              } text-white`}
+              onClick={() => !event.applied && handleApply(event.id)}
+              disabled={event.applied}
             >
-              Apply
+              {event.applied ? "Applied" : "Apply"}
             </button>
           </div>
         ))}
@@ -237,21 +243,21 @@ const LnD = () => {
                 type="file"
                 accept=".png, .jpg, .jpeg, .svg"
                 onChange={handleFileChange}
-                className="w-full px-4 py-3 bg-gray-700 rounded-lg text-white"
+                className="w-full px-4 py-3 bg-gray-700 rounded-full text-white"
               />
               {fileError && <p className="text-red-500 text-sm">{fileError}</p>}
-              <div className="flex justify-end mt-4 space-x-2">
+              <div className="flex justify-end">
                 <button
                   type="button"
+                  className="bg-blue-600 text-white px-4 py-2 rounded-lg mr-2"
                   onClick={handleAddPost}
-                  className="bg-blue-600 hover:bg-blue-500 text-white py-2 px-4 rounded-lg"
                 >
-                  Add Event
+                  Add Post
                 </button>
                 <button
                   type="button"
+                  className="bg-gray-600 text-white px-4 py-2 rounded-lg"
                   onClick={closeAddEventModal}
-                  className="bg-red-500 hover:bg-red-400 text-white py-2 px-4 rounded-lg"
                 >
                   Cancel
                 </button>
