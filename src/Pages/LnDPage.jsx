@@ -18,8 +18,15 @@ const LndEventDetails = () => {
 
   useEffect(() => {
     fetchUserType();
-    fetchEventDetails();
   }, [id]);
+
+  useEffect(() => {
+    if (userType && userId) {
+      fetchEventDetails();
+    }
+  }, [userType, userId]);
+  
+  
 
   const fetchUserType = async () => {
     try {
