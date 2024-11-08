@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import _ from "lodash";
 import ResizeObserver from "resize-observer-polyfill";
-import Cookies from 'js-cookie';
+import Cookies from "js-cookie";
+
 const api_route = import.meta.env.VITE_API_URL_CONTENT;
 
 const DynamicTruncateText = ({ text }) => {
@@ -16,7 +17,8 @@ const DynamicTruncateText = ({ text }) => {
         const containerWidth = containerRef.current.offsetWidth;
 
         // Adjust length based on container width (customize values as needed)
-        const newLength = containerWidth > 600 ? 50 : containerWidth > 400 ? 30 : 21;
+        const newLength =
+          containerWidth > 600 ? 50 : containerWidth > 400 ? 30 : 21;
         setTruncateLength(newLength);
       }
     };
@@ -32,7 +34,10 @@ const DynamicTruncateText = ({ text }) => {
   }, []);
 
   return (
-    <p ref={containerRef} className="text-white text-sm md:text-base font-medium">
+    <p
+      ref={containerRef}
+      className="text-white text-sm md:text-base font-medium"
+    >
       {_.truncate(text, { length: truncateLength })}
     </p>
   );
@@ -43,8 +48,27 @@ const HomePage = () => {
   const [requirements, setRequirements] = useState([]);
   const [research, setResearch] = useState([]);
   const [comPosts, setComPosts] = useState([]);
+  const [events, setEvents] = useState([]);
 
   const navigate = useNavigate();
+
+  // Fetch LnD events for news ticker
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const response = await axios.get(`${api_route}/lnd`);
+        const eventData = response.data.map((event) => ({
+          id: event.id,
+          title: event.title,
+          date: new Date(event.date).toLocaleDateString(), // Format the date for display
+        }));
+        setEvents(eventData);
+      } catch (error) {
+        console.error("Error fetching events:", error);
+      }
+    };
+    fetchEvents();
+  }, []);
 
   useEffect(() => {
     axios
@@ -76,7 +100,7 @@ const HomePage = () => {
       .catch((error) => {
         console.error("Error fetching research:", error);
       });
-     
+
     axios
       .get(`${api_route}/get-communities-posts`)
       .then((response) => {
@@ -89,17 +113,38 @@ const HomePage = () => {
       });
   }, []);
 
-  return (    
-    <div className="relative flex flex-col min-h-screen bg-gray-800 font-poppins">
+  // Handle click to navigate to the specific event page
+  const handleEventClick = (id) => {
+    navigate(`/lnd/${id}`);
+  };
 
-      {/* Should display info of LnD sessions */}
+  return (
+    <div className="relative flex flex-col min-h-screen bg-gray-800 font-poppins">
       {/* News Ticker Row */}
       <div className="bg-gray-900 text-teal-300 p-2 text-center mt-14 w-full">
-        <marquee behavior="scroll" direction="left" className="text-s">
-        🚨 Welcome to the Student Research Lab! 🚨 | Breaking News: New learning resources available! | Upcoming workshop on innovation | Join our communities for collaboration!
+        <marquee
+          behavior="scroll"
+          direction="left"
+          className="text-s"
+          scrollamount="10"
+        >
+          🚨 WELCOME TO STUDENT RESEARCH LABS 🚨 Upcomming Events:
+          {events.length > 0
+            ? events.map((event, index) => (
+                <span
+                  key={event.id}
+                  onClick={() => handleEventClick(event.id)}
+                  className="cursor-pointer hover:underline mx-4"
+                >
+                  | {event.title} - {event.date}
+                  {index < events.length - 1 && " | "}{" "}
+                  {/* Add separator between items */}
+                </span>
+              ))
+            : "Loading events..."}
         </marquee>
       </div>
-      
+
       <div className="flex flex-col md:flex-row ">
         <div className="flex-grow flex flex-col justify-start mt-0 p-4 md:pl-10 md:pr-10">
           <div className="bg-gray-900 rounded-2xl p-10 mb-12 shadow-lg w-full">
@@ -107,7 +152,8 @@ const HomePage = () => {
               WELCOME TO STUDENT RESEARCH LAB!
             </h1>
             <p className="md:text-2xl text-stone-300">
-              Invent, Discuss And Innovate - Student's creativity can be a powerful asset, independent of experience. 
+              Invent, Discuss And Innovate - Student's creativity can be a
+              powerful asset, independent of experience.
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-6 xl:grid-rows-2">
@@ -128,7 +174,9 @@ const HomePage = () => {
                 {invent.map((item, index) => (
                   <div
                     onClick={() =>
-                      navigate(`/invent-post/${item.id}`, { state: { post: item } })
+                      navigate(`/invent-post/${item.id}`, {
+                        state: { post: item },
+                      })
                     }
                     key={index}
                     className="bg-gray-700 p-4 md:p-8 rounded-lg shadow-sm mx-auto w-full hover:bg-gray-600 hover:scale-105 transform transition-transform duration-300"
@@ -138,7 +186,7 @@ const HomePage = () => {
                 ))}
               </div>
             </div>
-  
+
             <div className="bg-gray-900 rounded-2xl p-7 shadow-md flex-1 h-[28rem]">
               <h2
                 className="text-white text-xl md:text-2xl font-semibold mb-2 text-center cursor-pointer"
@@ -156,7 +204,9 @@ const HomePage = () => {
                 {requirements.map((item, index) => (
                   <div
                     onClick={() =>
-                      navigate(`/requirement-post/${item.id}`, { state: { post: item } })
+                      navigate(`/requirement-post/${item.id}`, {
+                        state: { post: item },
+                      })
                     }
                     key={index}
                     className="bg-gray-700 p-4 md:p-8 rounded-lg shadow-sm mx-auto w-full hover:bg-gray-600 hover:scale-105 transform transition-transform duration-300"
@@ -166,7 +216,7 @@ const HomePage = () => {
                 ))}
               </div>
             </div>
-  
+
             <div className="bg-gray-900 rounded-2xl p-8 shadow-md flex-1 h-[28rem] xl:row-start-2">
               <h2
                 className="text-white text-xl md:text-2xl font-semibold mb-2 text-center cursor-pointer"
@@ -184,7 +234,9 @@ const HomePage = () => {
                 {research.map((item, index) => (
                   <div
                     onClick={() =>
-                      navigate(`/research-post/${item.id}`, { state: { post: item } })
+                      navigate(`/research-post/${item.id}`, {
+                        state: { post: item },
+                      })
                     }
                     key={index}
                     className="bg-gray-700 p-4 md:p-8 rounded-lg shadow-sm mx-auto w-full hover:bg-gray-600 hover:scale-105 transform transition-transform duration-300"
@@ -194,31 +246,32 @@ const HomePage = () => {
                 ))}
               </div>
             </div>
-  
+
             <div className="bg-gray-900 rounded-2xl p-8 shadow-md flex-1 h-[28rem] xl:row-start-2">
               <h2
                 className="text-white text-xl md:text-2xl font-semibold mb-2 text-center cursor-pointer"
                 onClick={() => navigate("/communities")}
               >
-                Communities
+                Community and Blogs
               </h2>
               <p
                 className="text-white text-sm md:text-base mb-2 text-center cursor-pointer"
                 onClick={() => navigate("/communities")}
               >
-                Join and Learn
+                Student communities
               </p>
               <div className="space-y-6 mt-4 overflow-y-auto h-[18rem] scrollbar-hide">
                 {comPosts.map((item, index) => (
                   <div
                     onClick={() =>
-                      navigate(`/community/${item.communityId}/post/${item.id}`, { state: { post: item } })
+                      navigate(`/communities-post/${item.id}`, {
+                        state: { post: item },
+                      })
                     }
                     key={index}
-                    className="bg-gray-700 flex justify-between p-4 md:p-8 rounded-lg shadow-sm mx-auto w-full hover:bg-gray-600 hover:scale-105 transform transition-transform duration-300"
+                    className="bg-gray-700 p-4 md:p-8 rounded-lg shadow-sm mx-auto w-full hover:bg-gray-600 hover:scale-105 transform transition-transform duration-300"
                   >
                     <DynamicTruncateText text={item.title} />
-                    <DynamicTruncateText text={item.community.name} />
                   </div>
                 ))}
               </div>
@@ -227,7 +280,7 @@ const HomePage = () => {
         </div>
       </div>
     </div>
-  ); 
-} 
+  );
+};
 
 export default HomePage;

@@ -26,7 +26,7 @@ const LndEventDetails = () => {
     }
   }, [userType, userId]);
   
-  
+
 
   const fetchUserType = async () => {
     try {

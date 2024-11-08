@@ -122,9 +122,11 @@ const LnD = () => {
         { userId },
         config
       );
-      setEvents(events.map(event => 
-        event.id === lndId ? { ...event, applied: true } : event
-      ));
+      setEvents(
+        events.map((event) =>
+          event.id === lndId ? { ...event, applied: true } : event
+        )
+      );
       alert("Applied successfully!");
     } catch (error) {
       console.error("Error applying to event:", error);
@@ -139,7 +141,7 @@ const LnD = () => {
     >
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-white">
-          Learning & Development (LnD)
+          Our Learning & Development (LnD) Events
         </h1>
         {userType === "Admin" && (
           <button
@@ -157,28 +159,28 @@ const LnD = () => {
             key={index}
             className="bg-gray-900 rounded-lg shadow-md border border-gray-600 p-4 flex flex-col justify-between"
           >
-           {event.image ? (
-  <div
-    className="overflow-hidden rounded-lg cursor-pointer"
-    onClick={() => navigate(`/lnd/${event.id}`)} // Navigate to event details on click
-  >
-    <img
-      src={`data:image/png;base64,${event.image.replace(
-        /^data:image\/(png|jpeg|jpg|svg\+xml);base64,/,
-        ""
-      )}`}
-      alt={event.title}
-      className="h-full w-full object-cover transform transition-transform duration-300 ease-in-out hover:scale-105"
-    />
-  </div>
-) : (
-  <div className="h-full w-full bg-gray-700 flex items-center justify-center text-gray-400 cursor-pointer"
-       onClick={() => navigate(`/lnd/${event.id}`)}
-  >
-    No Image Available
-  </div>
-)}
-
+            {event.image ? (
+              <div
+                className="overflow-hidden rounded-lg cursor-pointer"
+                onClick={() => navigate(`/lnd/${event.id}`)} // Navigate to event details on click
+              >
+                <img
+                  src={`data:image/png;base64,${event.image.replace(
+                    /^data:image\/(png|jpeg|jpg|svg\+xml);base64,/,
+                    ""
+                  )}`}
+                  alt={event.title}
+                  className="h-full w-full object-cover transform transition-transform duration-300 ease-in-out hover:scale-105"
+                />
+              </div>
+            ) : (
+              <div
+                className="h-full w-full bg-gray-700 flex items-center justify-center text-gray-400 cursor-pointer"
+                onClick={() => navigate(`/lnd/${event.id}`)}
+              >
+                No Image Available
+              </div>
+            )}
 
             <div className="text-white">
               <h2 className="text-xl font-bold mb-2">{event.title}</h2>
@@ -193,7 +195,9 @@ const LnD = () => {
             </div>
             <button
               className={`mt-4 py-2 px-4 rounded-lg ${
-                event.applied ? "bg-gray-500 cursor-not-allowed" : "bg-green-600 hover:bg-green-500"
+                event.applied
+                  ? "bg-gray-500 cursor-not-allowed"
+                  : "bg-green-600 hover:bg-green-500"
               } text-white`}
               onClick={() => !event.applied && handleApply(event.id)}
               disabled={event.applied}
@@ -203,6 +207,21 @@ const LnD = () => {
           </div>
         ))}
       </div>
+
+    {/* Other Events Module */}
+      {/* <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold text-white mt-10">
+          Other Learning and Development Events
+        </h1>
+        {userType === "Admin" && (
+          <button
+            className="flex items-center bg-blue-600 hover:bg-blue-500 text-white py-2 px-4 rounded-lg"
+            onClick={openAddEventModal}
+          >
+            <FaPlus className="mr-2" /> Add Event
+          </button>
+        )}
+      </div> */}
 
       {showAddEventModal && (
         <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex justify-center items-center">
