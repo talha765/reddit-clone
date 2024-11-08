@@ -121,7 +121,7 @@ const HomePage = () => {
   return (
     <div className="relative flex flex-col min-h-screen bg-gray-800 font-poppins">
       {/* News Ticker Row */}
-      <div className="bg-gray-900 text-teal-300 p-2 text-center mt-14 w-full">
+      <div className="bg-gray-900 text-teal-300 p-2 text-center mt-14 w-full ">
         <marquee
           behavior="scroll"
           direction="left"
@@ -141,7 +141,8 @@ const HomePage = () => {
                   {/* Add separator between items */}
                 </span>
               ))
-            : "Loading events..."}
+            : "  (Loading events...)  "}
+          🚨 Invent, Discuss And Innovate 🚨
         </marquee>
       </div>
 
