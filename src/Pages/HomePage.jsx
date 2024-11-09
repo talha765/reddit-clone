@@ -265,12 +265,13 @@ const HomePage = () => {
                 {comPosts.map((item, index) => (
                   <div
                     onClick={() =>
-                      navigate(`/communities-post/${item.id}`, {
-                        state: { post: item },
-                      })
+                      navigate(
+                        `/community/${item.communityId}/post/${item.id}`,
+                        { state: { post: item } }
+                      )
                     }
                     key={index}
-                    className="bg-gray-700 p-4 md:p-8 rounded-lg shadow-sm mx-auto w-full hover:bg-gray-600 hover:scale-105 transform transition-transform duration-300"
+                    className="bg-gray-700 flex justify-between p-4 md:p-8 rounded-lg shadow-sm mx-auto w-full hover:bg-gray-600 hover:scale-105 transform transition-transform duration-300"
                   >
                     <DynamicTruncateText text={item.title} />
                   </div>
