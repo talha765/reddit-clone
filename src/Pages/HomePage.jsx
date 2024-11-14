@@ -128,7 +128,7 @@ const HomePage = () => {
           className="text-s"
           scrollamount="10"
         >
-          🚨 WELCOME TO STUDENT RESEARCH LABS 🚨 Upcomming Events:
+          🚨 WELCOME TO STUDENT RESEARCH LAB 🚨 Upcomming Events:
           {events.length > 0
             ? events.map((event, index) => (
                 <span
@@ -141,7 +141,7 @@ const HomePage = () => {
                   {/* Add separator between items */}
                 </span>
               ))
-            : "  (Loading events...)  "}
+            : "  (Comming Soon!)  "}
           🚨 Invent, Discuss And Innovate 🚨
         </marquee>
       </div>
