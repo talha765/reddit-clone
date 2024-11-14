@@ -141,7 +141,7 @@ const LnD = () => {
     >
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-white">
-          Our Learning & Development (LnD) Events
+          Workshops and Competitive events
         </h1>
         {userType === "Admin" && (
           <button

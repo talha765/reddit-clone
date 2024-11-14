@@ -150,7 +150,7 @@ const HomePage = () => {
         <div className="flex-grow flex flex-col justify-start mt-0 p-4 md:pl-10 md:pr-10">
           <div className="bg-gray-900 rounded-2xl p-10 mb-12 shadow-lg w-full">
             <h1 className="text-white text-3xl md:text-4xl font-bold mb-4">
-              WELCOME TO STUDENT RESEARCH LAB!
+              Bridging ideas with organizational environments
             </h1>
             <p className="md:text-2xl text-stone-300">
               Invent, Discuss And Innovate - Student's creativity can be a
