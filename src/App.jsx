@@ -18,6 +18,9 @@ import CommunityPage from "./Pages/CommunityPage";
 import UserPosts from "./Pages/UserPosts";
 import LnD from "./Pages/LnD";
 import LnDPage from "./Pages/LnDPage"; // Import EventDetails component
+import ForgotPasswordPage from "./Pages/ForgotPasswordPage";
+import CheckEmailPage from "./Pages/CheckEmailPage";
+import ResetPasswordPage from "./Pages/ResetPasswordPage";
 
 
 const App = () => (
@@ -25,6 +28,9 @@ const App = () => (
     <Routes>
       <Route path="/login" element={<LoginPage />} />
       <Route path="/signup" element={<SignupPage />} />
+      <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+      <Route path="/check-email" element={<CheckEmailPage />} />
+      <Route path="/reset-password" element={<ResetPasswordPage />} />
 
       {/* Define the routes that will use the shared Layout */}
       <Route element={<Layout />}>

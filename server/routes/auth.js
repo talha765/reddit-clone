@@ -1,10 +1,20 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const nodemailer = require('nodemailer');
+const bcrypt = require('bcryptjs');
 const router = express.Router();
 
 // Use environment variable for JWT secret
 const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret';
+
+const transporter = nodemailer.createTransport({
+  service: 'Gmail',
+  auth: {
+    user: 'hamza.designservices2002@gmail.com',
+    pass: 'isjx kipr typn wgxw',
+  },
+});
 
 // Middleware to authenticate and extract user from token
 const authenticateToken = (req, res, next) => {
@@ -17,6 +27,52 @@ const authenticateToken = (req, res, next) => {
     next();
   });
 };
+
+router.post('/forgot-password', async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    const user = await User.findOne({ where: { email } });
+    if (!user) return res.status(404).json({ error: 'User not found' });
+
+    // Generate token with expiration
+    const token = jwt.sign({ id: user.id }, JWT_SECRET, { expiresIn: '1h' });
+
+    // Send email with reset link
+    const resetLink = `http://localhost:5172/reset-password?token=${token}`;
+    await transporter.sendMail({
+      from: 'hamza.designservices2002@gmail.com',
+      to: email,
+      subject: 'Password Reset',
+      html: `<p>Click <a href="${resetLink}">here</a> to reset your StudentResearchLab.com password.</p>`,
+    });
+
+    res.json({ message: 'Password reset email sent' });
+  } catch (error) {
+    res.status(500).json({ error: 'Something went wrong' });
+  }
+});
+
+router.post('/reset-password', async (req, res) => {
+  const { token } = req.query; // Fetch token from query parameter
+  const { newPassword } = req.body;
+
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    const user = await User.findByPk(decoded.id);
+    if (!user) return res.status(404).json({ error: 'User not found' });
+
+    // Update user password
+    const salt = await bcrypt.genSalt(10); // Ensure hashing is implemented in the User model
+    user.password = await bcrypt.hash(newPassword, salt);
+    await user.save();
+
+    res.json({ message: 'Password reset successful' });
+  } catch (error) {
+    res.status(400).json({ error: 'Invalid or expired token' });
+  }
+});
+
 
 // Get User Info Route
 router.get('/user', authenticateToken, async (req, res) => {

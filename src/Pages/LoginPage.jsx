@@ -102,6 +102,11 @@ const LoginPage = () => {
                     )}
                 </Formik>
 
+                <a href="/forgot-password" className="mt-3 text-blue-400 hover:underline">
+                 Forgot Password?
+                    </a>
+
+
                 <p className="text-white mt-4">
                     Don't have an account?{' '}
                     <a href="/signup" className="text-blue-400 hover:underline">
