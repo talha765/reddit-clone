@@ -121,14 +121,14 @@ const HomePage = () => {
   return (
     <div className="relative flex flex-col min-h-screen bg-gray-800 font-poppins">
       {/* News Ticker Row */}
-      <div className="bg-gray-900 text-teal-300 p-2 text-center mt-14 w-full">
+      <div className="bg-gray-900 text-teal-300 p-2 text-center mt-14 w-full ">
         <marquee
           behavior="scroll"
           direction="left"
           className="text-s"
           scrollamount="10"
         >
-          🚨 WELCOME TO STUDENT RESEARCH LABS 🚨 Upcomming Events:
+          🚨 WELCOME TO STUDENT RESEARCH LAB 🚨 Upcomming Events:
           {events.length > 0
             ? events.map((event, index) => (
                 <span
@@ -141,7 +141,8 @@ const HomePage = () => {
                   {/* Add separator between items */}
                 </span>
               ))
-            : "Loading events..."}
+            : "  (Comming Soon!)  "}
+          🚨 Invent, Discuss And Innovate 🚨
         </marquee>
       </div>
 
@@ -149,7 +150,7 @@ const HomePage = () => {
         <div className="flex-grow flex flex-col justify-start mt-0 p-4 md:pl-10 md:pr-10">
           <div className="bg-gray-900 rounded-2xl p-10 mb-12 shadow-lg w-full">
             <h1 className="text-white text-3xl md:text-4xl font-bold mb-4">
-              WELCOME TO STUDENT RESEARCH LAB!
+              Bridging ideas with organizational environments
             </h1>
             <p className="md:text-2xl text-stone-300">
               Invent, Discuss And Innovate - Student's creativity can be a
@@ -264,12 +265,13 @@ const HomePage = () => {
                 {comPosts.map((item, index) => (
                   <div
                     onClick={() =>
-                      navigate(`/communities-post/${item.id}`, {
-                        state: { post: item },
-                      })
+                      navigate(
+                        `/community/${item.communityId}/post/${item.id}`,
+                        { state: { post: item } }
+                      )
                     }
                     key={index}
-                    className="bg-gray-700 p-4 md:p-8 rounded-lg shadow-sm mx-auto w-full hover:bg-gray-600 hover:scale-105 transform transition-transform duration-300"
+                    className="bg-gray-700 flex justify-between p-4 md:p-8 rounded-lg shadow-sm mx-auto w-full hover:bg-gray-600 hover:scale-105 transform transition-transform duration-300"
                   >
                     <DynamicTruncateText text={item.title} />
                   </div>

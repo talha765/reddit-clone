@@ -163,7 +163,7 @@ const SideBar = () => {
                   to="/LnD"
                   className="py-2 px-4 w-full text-left hover:bg-gray-800 cursor-pointer rounded-md flex justify-between items-center text-sm font-semibold text-white transition-colors duration-200 focus:ring-gray-500"
                 >
-                  Learning and Development
+                  Workshops and Competitive events
                 </Link>
               </div>
             </li>
