@@ -39,7 +39,7 @@ router.post('/forgot-password', async (req, res) => {
     const token = jwt.sign({ id: user.id }, JWT_SECRET, { expiresIn: '1h' });
 
     // Send email with reset link
-    const resetLink = `http://localhost:5172/reset-password?token=${token}`;
+    const resetLink = `https://www.studentresearchlab.com/reset-password?token=${token}`;
     await transporter.sendMail({
       from: 'hamza.designservices2002@gmail.com',
       to: email,
