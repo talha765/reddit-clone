@@ -46,7 +46,7 @@ const SideBar = () => {
       <div className="md:hidden fixed top-4 left-4 z-50">
         <button
           onClick={toggleSidebar}
-          className="p-2 text-white bg-gray-700 rounded-full shadow-lg hover:bg-gray-600 transition-colors focus:outline-none"
+          className="p-2 text-black bg-slate-50 rounded-full shadow-lg hover:bg-slate-50 transition-colors focus:outline-none"
         >
           {isOpen ? (
             <XMarkIcon className="w-6 h-6" />
@@ -61,7 +61,7 @@ const SideBar = () => {
         className={`${
           isOpen ? "translate-x-0" : "-translate-x-full"
         } fixed top-0 left-0 h-screen md:w-56 lg:w-64 bg-gradient-to-br from-gray-900 to-gray-800
-          border-r border-white transition-transform duration-300 ease-in-out z-40 md:translate-x-0
+          border-r border-black transition-transform duration-300 ease-in-out z-40 md:translate-x-0
           overflow-y-hidden hover:overflow-y-auto mt-7`}
       >
         <nav className="pt-9 p-3 h-full relative">
@@ -69,7 +69,7 @@ const SideBar = () => {
             {/* Help Center (QnA) */}
             <li className="mt-6">
               <div className="flex items-center space-x-2">
-                <HomeIcon className="w-5 h-5 text-white" />
+                <HomeIcon className="w-5 h-5 text-black" />
                 <Link
                   to="/homepage"
                   className="py-1 px-4 w-full text-left hover:bg-gray-800 cursor-pointer rounded-md flex justify-between items-center text-sm font-semibold text-white transition-colors duration-200 focus:ring-gray-500"
@@ -143,7 +143,7 @@ const SideBar = () => {
                 <AcademicCapIcon className="w-5 h-5 text-white" />
                 <Link
                   to="/research"
-                  className="py-2 px-4 w-full text-left hover:bg-gray-800 cursor-pointer rounded-md flex justify-between items-center text-sm font-semibold text-white transition-colors duration-200 focus:ring-gray-500"
+                  className="py-2 px-4 w-full text-left hover:bg-slate-50 cursor-pointer rounded-md flex justify-between items-center text-sm font-semibold text-white transition-colors duration-200 focus:ring-gray-500"
                 >
                   Research
                 </Link>
@@ -161,7 +161,7 @@ const SideBar = () => {
                 <PencilSquareIcon className="w-5 h-5 text-white" />
                 <Link
                   to="/LnD"
-                  className="py-2 px-4 w-full text-left hover:bg-gray-800 cursor-pointer rounded-md flex justify-between items-center text-sm font-semibold text-white transition-colors duration-200 focus:ring-gray-500"
+                  className="py-2 px-4 w-full text-left hover:bg-slate-50 cursor-pointer rounded-md flex justify-between items-center text-sm font-semibold text-white transition-colors duration-200 focus:ring-gray-500"
                 >
                   Workshops and Competitive events
                 </Link>

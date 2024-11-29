@@ -36,7 +36,7 @@ const DynamicTruncateText = ({ text }) => {
   return (
     <p
       ref={containerRef}
-      className="text-white text-sm md:text-base font-medium"
+      className="text-black text-sm md:text-base font-medium"
     >
       {_.truncate(text, { length: truncateLength })}
     </p>
@@ -119,9 +119,9 @@ const HomePage = () => {
   };
 
   return (
-    <div className="relative flex flex-col min-h-screen bg-gray-800 font-poppins">
+    <div className="relative flex flex-col min-h-screen bg-slate-50 font-poppins">
       {/* News Ticker Row */}
-      <div className="bg-gray-900 text-teal-300 p-2 text-center mt-14 w-full ">
+      <div className="bg-slate-50 text-black p-2 text-center mt-14 w-full ">
         <marquee
           behavior="scroll"
           direction="left"
@@ -148,25 +148,41 @@ const HomePage = () => {
 
       <div className="flex flex-col md:flex-row ">
         <div className="flex-grow flex flex-col justify-start mt-0 p-4 md:pl-10 md:pr-10">
-          <div className="bg-gray-900 rounded-2xl p-10 mb-12 shadow-lg w-full">
-            <h1 className="text-white text-3xl md:text-4xl font-bold mb-4">
-              Bridging ideas with organizational environments
-            </h1>
-            <p className="md:text-2xl text-stone-300">
-              Invent, Discuss And Innovate - Student's creativity can be a
-              powerful asset, independent of experience.
-            </p>
+          <div className="bg-slate-50 rounded-2xl p-10 mb-12 shadow-lg w-full">
+            <div class="flex flex-col md:flex-row ">
+           
+              <div className="flex flex-col">
+                <h1 className="text-black text-2xl md:text-4xl font-bold mb-4">
+                  Student Led Solutions
+                </h1>
+                <p className="md:text-1xl text-black">
+                  Invent, Discuss And Innovate - Student's creativity can be a
+                  powerful asset, independent of experience.
+                </p>
+              </div>
+              <div className="flex flex-col  md:flex-row">
+                <img
+                  src="src/assets/student.jpg"
+                  style={{ width: 1000 + "px" }}
+                ></img>
+              </div>
+            </div>
           </div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-6 xl:grid-rows-2">
-            <div className="bg-gray-900 rounded-2xl p-8 shadow-md flex-1 h-[28rem]">
+            <div className="bg-slate-50 rounded-2xl p-8 shadow-md flex-1 h-[28rem]">
               <h2
-                className="text-white text-xl md:text-2xl font-semibold mb-2 text-center cursor-pointer"
+                className="text-black text-xl md:text-2xl font-semibold mb-2 text-center cursor-pointer"
                 onClick={() => navigate("/qna")}
               >
                 InventSpace
+                <img
+                  src="src/assets/innovate_robot.jpg"
+                  style={{ width: 500 + "px" }}
+                ></img>
               </h2>
               <p
-                className="text-white text-sm md:text-base mb-2 text-center cursor-pointer"
+                className="text-black text-sm md:text-base mb-2 text-center cursor-pointer"
                 onClick={() => navigate("/qna")}
               >
                 Create and Innovate
@@ -180,7 +196,7 @@ const HomePage = () => {
                       })
                     }
                     key={index}
-                    className="bg-gray-700 p-4 md:p-8 rounded-lg shadow-sm mx-auto w-full hover:bg-gray-600 hover:scale-105 transform transition-transform duration-300"
+                    className="bg-slate-50 p-4 md:p-8 rounded-lg shadow-sm mx-auto w-full hover:bg-gray-600 hover:scale-105 transform transition-transform duration-300"
                   >
                     <DynamicTruncateText text={item.title} />
                   </div>
@@ -188,15 +204,19 @@ const HomePage = () => {
               </div>
             </div>
 
-            <div className="bg-gray-900 rounded-2xl p-7 shadow-md flex-1 h-[28rem]">
+            <div className="bg-slate-50 rounded-2xl p-7 shadow-md flex-1 h-[28rem]">
               <h2
-                className="text-white text-xl md:text-2xl font-semibold mb-2 text-center cursor-pointer"
+                className="text-black text-xl md:text-2xl font-semibold mb-2 text-center cursor-pointer"
                 onClick={() => navigate("/requirements")}
               >
                 Requirements & Co Ops
+                <img
+                  src="src/assets/internship.jpg"
+                  style={{ width: 500 + "px" }}
+                ></img>
               </h2>
               <p
-                className="text-white text-sm md:text-base mb-2 text-center cursor-pointer"
+                className="text-black text-sm md:text-base mb-2 text-center cursor-pointer"
                 onClick={() => navigate("/requirements")}
               >
                 Organization help
@@ -210,7 +230,7 @@ const HomePage = () => {
                       })
                     }
                     key={index}
-                    className="bg-gray-700 p-4 md:p-8 rounded-lg shadow-sm mx-auto w-full hover:bg-gray-600 hover:scale-105 transform transition-transform duration-300"
+                    className="bg-slate-50 p-4 md:p-8 rounded-lg shadow-sm mx-auto w-full hover:bg-gray-600 hover:scale-105 transform transition-transform duration-300"
                   >
                     <DynamicTruncateText text={item.title} />
                   </div>
@@ -218,15 +238,19 @@ const HomePage = () => {
               </div>
             </div>
 
-            <div className="bg-gray-900 rounded-2xl p-8 shadow-md flex-1 h-[28rem] xl:row-start-2">
+            <div className="bg-slate-50 rounded-2xl p-8 shadow-md flex-1 h-[28rem] xl:row-start-2">
               <h2
-                className="text-white text-xl md:text-2xl font-semibold mb-2 text-center cursor-pointer"
+                className="text-black text-xl md:text-2xl font-semibold mb-2 text-center cursor-pointer"
                 onClick={() => navigate("/research")}
               >
                 Research
+                <img
+                  src="src/assets/research.jpg"
+                  style={{ width: 500 + "px" }}
+                ></img>
               </h2>
               <p
-                className="text-white text-sm md:text-base mb-2 text-center cursor-pointer"
+                className="text-black text-sm md:text-base mb-2 text-center cursor-pointer"
                 onClick={() => navigate("/research")}
               >
                 Personalized research
@@ -240,7 +264,7 @@ const HomePage = () => {
                       })
                     }
                     key={index}
-                    className="bg-gray-700 p-4 md:p-8 rounded-lg shadow-sm mx-auto w-full hover:bg-gray-600 hover:scale-105 transform transition-transform duration-300"
+                    className="bg-slate-50 p-4 md:p-8 rounded-lg shadow-sm mx-auto w-full hover:bg-gray-600 hover:scale-105 transform transition-transform duration-300"
                   >
                     <DynamicTruncateText text={item.title} />
                   </div>
@@ -248,15 +272,19 @@ const HomePage = () => {
               </div>
             </div>
 
-            <div className="bg-gray-900 rounded-2xl p-8 shadow-md flex-1 h-[28rem] xl:row-start-2">
+            <div className="bg-slate-50 rounded-2xl p-8 shadow-md flex-1 h-[28rem] xl:row-start-2">
               <h2
-                className="text-white text-xl md:text-2xl font-semibold mb-2 text-center cursor-pointer"
+                className="text-black text-xl md:text-2xl font-semibold mb-2 text-center cursor-pointer"
                 onClick={() => navigate("/communities")}
               >
                 Community and Blogs
+                <img
+                  src="src/assets/communities.jpg"
+                  style={{ width: 500 + "px" }}
+                ></img>
               </h2>
               <p
-                className="text-white text-sm md:text-base mb-2 text-center cursor-pointer"
+                className="text-black text-sm md:text-base mb-2 text-center cursor-pointer"
                 onClick={() => navigate("/communities")}
               >
                 Student communities
@@ -271,7 +299,7 @@ const HomePage = () => {
                       )
                     }
                     key={index}
-                    className="bg-gray-700 flex justify-between p-4 md:p-8 rounded-lg shadow-sm mx-auto w-full hover:bg-gray-600 hover:scale-105 transform transition-transform duration-300"
+                    className="bg-slate-50 flex justify-between p-4 md:p-8 rounded-lg shadow-sm mx-auto w-full hover:bg-gray-600 hover:scale-105 transform transition-transform duration-300"
                   >
                     <DynamicTruncateText text={item.title} />
                   </div>

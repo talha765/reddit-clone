@@ -40,10 +40,10 @@ const AboutUsPage = () => {
     };
 
     return (
-        <div className="flex flex-col bg-gray-800 text-white p-10  mt-12"> {/* Add h-screen to make it full height */}
+        <div className="flex flex-col bg-gray-800 text-black p-10  mt-12"> {/* Add h-screen to make it full height */}
             <div className="flex-flex mt-10 grid grid-cols-1 lg:grid-cols-2 gap-8"> {/* Added flex-1 here */}
                 {/* About Us Section */}
-                <section className="bg-gray-900 p-6 rounded-lg">
+                <section className="bg-slate-50 p-6 rounded-lg">
                     <h1 className="text-3xl font-semibold mb-4">About Us</h1>
                     <p className="text-lg leading-relaxed">
                         Student Research Lab is a platform (to link workplaces and classrooms) which provide opportunity for students to get rewarded for their educational excellence.
@@ -52,7 +52,7 @@ const AboutUsPage = () => {
                 </section>
 
                 {/* Our Mission Section */}
-                <section className="bg-gray-900 p-6 rounded-lg">
+                <section className="bg-slate-50 p-6 rounded-lg">
                     <h2 className="text-3xl font-semibold mb-4">Our Mission</h2>
                     <p className="text-lg leading-relaxed">
                         Our mission is to empower students before they enter the workforce and get businesses to work with this untapped resource. We are committed to delivering exceptional value through our expertise, creativity, and education to excellence.
@@ -63,7 +63,7 @@ const AboutUsPage = () => {
             {/* Values, Contact, Get Involved */}
             <div className="flex flex mt-10 grid grid-cols-1 lg:grid-cols-3 gap-8"> {/* Added flex-1 here */}
                 {/* Our Values Section */}
-                <section className="bg-gray-900 p-6 rounded-lg">
+                <section className="bg-slate-50 p-6 rounded-lg">
                     <h2 className="text-3xl font-semibold mb-4">Our Values</h2>
                     <p className="text-lg leading-relaxed">
                         At Student Research Lab, we adopt a student-centric approach, focusing on understanding our students’ needs and goals. Our team employs agile methodologies and best practices to deliver high-quality solutions that drive tangible results. This research can be referred on LinkedIn. We have links to all educational research.
@@ -71,7 +71,7 @@ const AboutUsPage = () => {
                 </section>
 
                 {/* Contact Us Section */}
-                <section className="bg-gray-900 p-6 rounded-lg">
+                <section className="bg-slate-50 p-6 rounded-lg">
                     <h2 className="text-3xl font-semibold mb-4">Contact Us</h2>
                     <div className="text-lg leading-relaxed">
                         <p className="mb-2">214-3485 Rebecca Street</p>
@@ -82,7 +82,7 @@ const AboutUsPage = () => {
                 </section>
 
                 {/* Get Involved Section */}
-                <section className="bg-gray-900 p-6 rounded-lg">
+                <section className="bg-slate-50 p-6 rounded-lg">
                     <h2 className="text-3xl font-semibold mb-4">Get Involved</h2>
                     <p className="text-lg leading-relaxed">
                         Contact Us to promote your services, Sponsors or Advertisements .
@@ -92,54 +92,54 @@ const AboutUsPage = () => {
 
                     {/* Contact Us Form */}
                     <div className="mt-10">
-                        <h2 className="text-3xl font-semibold mb-4 ">Contact Us</h2>
-                        <form className="bg-gray-900 p-6 rounded-lg mb-10" onSubmit={handleSubmit}>
+                        <h2 className="text-3xl font-semibold mb-4 text-white">Contact Us</h2>
+                        <form className="bg-gray-700 p-6 rounded-lg mb-10" onSubmit={handleSubmit}>
                         <div className="mb-4">
-                    <label htmlFor="name" className="block text-lg mb-2">Full Name:</label>
+                    <label htmlFor="name" className="block text-lg mb-2 text-white">Full Name:</label>
                     <input 
                     type="text" 
                     id="name" 
                     name="name" 
                     value={formData.name} 
                     onChange={handleInputChange} 
-                        className="w-full p-2 rounded bg-gray-700 text-white"
+                        className="w-full p-2 rounded bg-slate-50 text-black"
                 required
             />
                     </div>
 
                     
                     <div className="mb-4">
-                        <label htmlFor="email" className="block text-lg mb-2">Email:</label>
+                        <label htmlFor="email" className="block text-lg mb-2 text-white">Email:</label>
                         <input 
                             type="email" 
                             id="email" 
                             name="email" 
                             value={formData.email} 
                             onChange={handleInputChange} 
-                            className="w-full p-2 rounded bg-gray-700 text-white"
+                            className="w-full p-2 rounded bg-slate-5- text-black"
                             required
                         />
                     </div>
                     <div className="mb-4">
-                        <label htmlFor="phone" className="block text-lg mb-2">Phone:</label>
+                        <label htmlFor="phone" className="block text-lg mb-2 text-white">Phone:</label>
                         <input 
                             type="tel" 
                             id="phone" 
                             name="phone" 
                             value={formData.phone} 
                             onChange={handleInputChange} 
-                            className="w-full p-2 rounded bg-gray-700 text-white"
+                            className="w-full p-2 rounded bg-slate-50 text-black"
                             required
                         />
                     </div>
                     <div className="mb-4">
-                        <label htmlFor="feedback" className="block text-lg mb-2">Feedback:</label>
+                        <label htmlFor="feedback" className="block text-lg mb-2 text-white">Feedback:</label>
                         <textarea 
                             id="feedback" 
                             name="feedback" 
                             value={formData.feedback} 
                             onChange={handleInputChange} 
-                            className="w-full p-2 rounded bg-gray-700 text-white"
+                            className="w-full p-2 rounded bg-slate-50 text-black"
                             rows="4"
                             required
                         ></textarea>
